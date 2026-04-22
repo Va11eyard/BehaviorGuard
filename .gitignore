@@ -199,13 +199,64 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-datasets/*.json
-datasets/*.csv
-datasets/*.pkl
+# ══ BehaviorGuard — project-specific ══
+# Tracked: src/behaviorguard/, tests/, evaluation.py, pyproject.toml, README, .env.example, etc.
 
-full_evaluation_results.json
+# Secrets — never push
+.env
+*.env
+*.env.*
+secrets/
+config/local*.yaml
 
+# Model weights and embeddings cache
+models/
+*.bin
 *.pt
 *.pth
+*.onnx
+sentence_transformers/
+# Home-dir HF cache: ~ is not expanded in .gitignore; also ignore
+# in your user global gitignore (e.g. ~/.cache/huggingface/).
+
+# Evaluation outputs
+results/
+outputs/
+*.json.out
+evaluation_results/
+full_evaluation_results.json
+
+# Python (broader venv; template above has env/, venv/, .venv)
+.venv/
+
+# Data — do NOT push real TSARKA/FMA/Dana datasets
+data/raw/
+data/processed/
+datasets/
+
+# JSONL: ignore by default; allow tiny synthetic fixtures
+*.jsonl
+!tests/
+!tests/fixtures/
+!tests/fixtures/**
+
+# IDE
+.idea/
+.vscode/
+
+# Other runtime / local artifacts
 *.pkl
-models/checkpoints/
+
+# ── Runtime profile store ─────────────────────────────────────────────────
+profiles/
+
+# ── Internal planning / sensitive docs ───────────────────────────────────
+BehaviorGuard_Concerns_Register.md
+BehaviorGuard_Execution_Plan.md
+
+# ── PDF pre-print (publish via arXiv, not as a binary blob in git) ────────
+*.pdf
+
+
+# ── Paper ───────────────────────────────────────────────────────────────
+paper/

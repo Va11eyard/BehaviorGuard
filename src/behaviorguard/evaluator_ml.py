@@ -110,6 +110,12 @@ class BehaviorGuardEvaluatorML:
             component_scores, system_config, current_message, user_profile
         )
         anomaly_score = composite_result.anomaly_score
+        metadata["detection_mechanism"] = composite_result.detection_mechanism
+        metadata["applied_override_reason"] = (
+            composite_result.applied_overrides[0] if composite_result.applied_overrides else None
+        )
+        if composite_result.applied_overrides:
+            metadata["applied_overrides"] = composite_result.applied_overrides
 
         # Step 3: Confidence Assessment (meta-learning)
         if is_cold_start:

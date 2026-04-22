@@ -7,6 +7,7 @@ from behaviorguard.utils.output_formatter import OutputFormatter
 from behaviorguard.utils.policy_engine import PolicyDecisionEngine
 from behaviorguard.utils.rationale import RationaleGenerator
 from behaviorguard.utils.risk_classifier import RiskClassifier
+from behaviorguard.utils.profile_store import ProfileStore
 
 __all__ = [
     "ConfidenceAssessor",
@@ -16,4 +17,5 @@ __all__ = [
     "MonitoringRecommendationGenerator",
     "ColdStartHandler",
     "OutputFormatter",
+    "ProfileStore",
 ]

@@ -42,39 +42,47 @@ class CompositeScorer:
             CompositeScore with anomaly score and applied overrides
         """
         applied_overrides = []
+        overrides_enabled = getattr(system_config, "overrides_enabled", True)
 
-        # Check for instant HIGH_RISK overrides first
-        high_risk_override = self._check_high_risk_overrides(
-            component_scores, current_message, user_profile
-        )
-        if high_risk_override:
-            applied_overrides.append(high_risk_override)
-            return CompositeScore(anomaly_score=1.0, applied_overrides=applied_overrides)
-
-        # Check for instant NORMAL overrides
-        normal_override = self._check_normal_overrides(
-            component_scores, current_message
-        )
-        if normal_override:
-            applied_overrides.append(normal_override)
-            # Calculate base score but cap it low
-            base_score = self._calculate_weighted_score(
-                component_scores, system_config.sensitivity_level
+        if overrides_enabled:
+            # Check for instant HIGH_RISK overrides first
+            override_id, override_reason = self._check_high_risk_overrides(
+                component_scores, current_message, user_profile
             )
-            return CompositeScore(
-                anomaly_score=min(0.15, base_score), applied_overrides=applied_overrides
-            )
+            if override_id:
+                applied_overrides.append(override_reason)
+                return CompositeScore(
+                    anomaly_score=1.0,
+                    applied_overrides=applied_overrides,
+                    detection_mechanism=override_id,
+                )
 
-        # Calculate weighted composite score
+            # Check for instant NORMAL overrides
+            normal_override = self._check_normal_overrides(
+                component_scores, current_message, system_config
+            )
+            if normal_override:
+                applied_overrides.append(normal_override)
+                base_score = self._calculate_weighted_score(
+                    component_scores, system_config.sensitivity_level
+                )
+                return CompositeScore(
+                    anomaly_score=min(0.15, base_score),
+                    applied_overrides=applied_overrides,
+                    detection_mechanism="normal_override",
+                )
+
+        # Calculate weighted composite score (or when overrides disabled)
         anomaly_score = self._calculate_weighted_score(
             component_scores, system_config.sensitivity_level
         )
 
-        # Ensure score is bounded
         anomaly_score = max(0.0, min(1.0, anomaly_score))
 
         return CompositeScore(
-            anomaly_score=anomaly_score, applied_overrides=applied_overrides
+            anomaly_score=anomaly_score,
+            applied_overrides=applied_overrides,
+            detection_mechanism="composite_score",
         )
 
     def _calculate_weighted_score(
@@ -96,39 +104,43 @@ class CompositeScorer:
         component_scores: ComponentScores,
         current_message: CurrentMessage,
         user_profile: UserProfile,
-    ) -> str:
+    ) -> tuple:
         """
         Check for conditions that trigger instant HIGH_RISK override.
 
         Returns:
-            Override reason string if triggered, empty string otherwise
+            (override_id, reason_str) if triggered, ("", "") otherwise.
+            override_id: "override_1".."override_4" for attribution.
         """
         # Override 1: Semantic score >0.85 AND operation is critical
         if (
             component_scores.semantic > 0.85
             and current_message.requested_operation.risk_classification == "critical"
         ):
-            return "Extreme semantic deviation with critical operation"
+            return ("override_1", "Extreme semantic deviation with critical operation")
 
         # Override 2: Temporal score >0.9 (bot/automation indicator)
         if component_scores.temporal > 0.9:
-            return "Bot-like timing pattern detected"
+            return ("override_2", "Bot-like timing pattern detected")
 
         # Override 3: No history of sensitive operations BUT current request is critical
         if (
             not user_profile.operational_profile.has_requested_sensitive_ops
             and current_message.requested_operation.risk_classification == "critical"
         ):
-            return "Critical operation without precedent"
+            return ("override_3", "Critical operation without precedent")
 
         # Override 4: Message contains explicit ATO indicators (check message text)
         if self._contains_ato_indicators(current_message.text):
-            return "Explicit account takeover indicators detected"
+            return ("override_4", "Explicit account takeover indicators detected")
 
-        return ""
+        return ("", "")
 
     def _check_normal_overrides(
-        self, component_scores: ComponentScores, current_message: CurrentMessage
+        self,
+        component_scores: ComponentScores,
+        current_message: CurrentMessage,
+        system_config: SystemConfig,
     ) -> str:
         """
         Check for conditions that trigger instant NORMAL override.
@@ -136,10 +148,19 @@ class CompositeScorer:
         Returns:
             Override reason string if triggered, empty string otherwise
         """
-        # Calculate base anomaly score
-        base_score = (
-            component_scores.semantic + component_scores.linguistic + component_scores.temporal
-        ) / 3.0
+        # Average over enabled components only. Including a zeroed (disabled)
+        # component would artificially suppress the mean and fire the <0.15
+        # override on genuine anomalies during component ablations.
+        enabled_scores = [
+            s
+            for s, enabled in (
+                (component_scores.semantic, system_config.enable_semantic_scoring),
+                (component_scores.linguistic, system_config.enable_linguistic_scoring),
+                (component_scores.temporal, system_config.enable_temporal_scoring),
+            )
+            if enabled
+        ]
+        base_score = sum(enabled_scores) / len(enabled_scores) if enabled_scores else 1.0
 
         # Override 1: User explicitly states context change
         if self._contains_context_change_announcement(current_message.text):

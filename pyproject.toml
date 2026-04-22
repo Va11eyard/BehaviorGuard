@@ -6,6 +6,9 @@ authors = ["BehaviorGuard Team"]
 readme = "README.md"
 packages = [{include = "behaviorguard", from = "src"}]
 
+[tool.poetry.scripts]
+behaviorguard = "behaviorguard.cli:main"
+
 [tool.poetry.dependencies]
 python = "^3.10"
 pydantic = "^2.5.0"

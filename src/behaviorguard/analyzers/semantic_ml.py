@@ -122,10 +122,10 @@ class SemanticAnalyzerML:
 
     def _compute_profile_centroid(self, semantic_profile: SemanticProfile) -> np.ndarray:
         """
-        Compute semantic centroid from user's typical topics.
-        
-        In production, this would be pre-computed from user's full message history.
-        For now, we compute from typical topics as a proxy.
+        Compute semantic centroid from user's profile.
+
+        Uses pre-computed embedding_centroid when available (from ProfileManager EMA).
+        Otherwise falls back to encoding typical_topics.
         
         Args:
             semantic_profile: User's semantic profile
@@ -133,24 +133,20 @@ class SemanticAnalyzerML:
         Returns:
             Centroid embedding vector
         """
+        dim = self.model.get_sentence_embedding_dimension()
+        if semantic_profile.embedding_centroid is not None:
+            arr = np.array(semantic_profile.embedding_centroid, dtype=np.float64)
+            norm = np.linalg.norm(arr)
+            return arr / norm if norm > 0 else np.zeros(dim)
         if not semantic_profile.typical_topics:
-            # Return zero vector if no history
-            return np.zeros(self.model.get_sentence_embedding_dimension())
-        
-        # Compute embeddings for typical topics
+            return np.zeros(dim)
+        # Fallback: compute from typical topics
         topic_embeddings = [
             self._get_embedding(topic) for topic in semantic_profile.typical_topics
         ]
-        
-        # Compute centroid (mean of embeddings)
         centroid = np.mean(topic_embeddings, axis=0)
-        
-        # Normalize to unit vector
         norm = np.linalg.norm(centroid)
-        if norm > 0:
-            centroid = centroid / norm
-        
-        return centroid
+        return centroid / norm if norm > 0 else centroid
 
     def _cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
         """

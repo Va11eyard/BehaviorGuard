@@ -95,10 +95,11 @@ python example_ml.py
 ```
 
 This demonstrates:
-- Sentence embedding-based semantic analysis
+- Sentence embedding-based semantic analysis (cosine distance)
 - Mahalanobis distance for linguistic drift
 - Z-score based temporal anomaly detection
-- Learned user profiles
+- Learned user profiles from conversation history (Algorithm 1)
+- Ablation study (semantic-only scoring)
 - No hardcoded keyword patterns
 
 ### Rule-Based Example
@@ -107,7 +108,8 @@ This demonstrates:
 python example.py
 ```
 
-This demonstrates the deterministic rule-based system.
+This demonstrates the deterministic rule-based system with four scenarios
+(normal, off-topic, account-takeover, social-engineering).
 
 ## Architecture
 
@@ -144,6 +146,59 @@ The system follows a pipeline architecture with five main stages:
 - `ColdStartHandler`: New user handling
 - `OutputFormatter`: JSON formatting with 3 decimal precision
 
+## Evaluation & Reproduction
+
+### Run Full Evaluation
+
+```bash
+# Full evaluation (overrides on, all datasets)
+python evaluation.py
+
+# Or use the CLI
+python evaluate.py --overrides on --datasets all
+```
+
+### Override Ablation (Critical Experiment)
+
+To isolate learned vs. rule-based detection:
+
+```bash
+python evaluate.py --overrides off --datasets all
+```
+
+This runs BehaviorGuard with overrides **on** and **off** and produces a side-by-side comparison table (Precision, Recall, F1, FPR, AUC).
+
+### Bootstrap Confidence Intervals
+
+```bash
+python evaluate.py --bootstrap 1000
+```
+
+Computes 95% CI for Precision, Recall, F1, FPR using stratified bootstrap (resample by user). Output format: `F1 = 0.700 [0.583, 0.808]`.
+
+### Single-Command Reproduction
+
+```bash
+python reproduce.py
+```
+
+Runs the complete pipeline (profile building → scoring → baselines → ablations → statistical tests), prints codebase hash and dataset checksums, and writes:
+- `results/full_evaluation_results.json`
+- `results/tables.csv`
+
+### Reproducing Paper Tables
+
+| Table | Source |
+|-------|--------|
+| Table 1 (Main results) | `results/methods` in JSON, or `results/tables.csv` |
+| Table 2 (Statistical significance) | `results/statistical_tests` |
+| Table 3 (Ablation) | `results/ablations` |
+| Table 4 (Sensitivity) | `results/sensitivity_levels` |
+| Table 5 (λ sensitivity) | `results/lambda_sensitivity` |
+| Override ablation | Run `python evaluate.py --overrides off` |
+
+Seed is fixed at 42 for all stochastic components.
+
 ## Testing
 
 ### Run All Tests
@@ -152,7 +207,7 @@ The system follows a pipeline architecture with five main stages:
 pytest tests/ -v
 ```
 
-**Current Status:** 61 tests passing, 93% coverage
+**Current Status:** 70 tests passing (61 original + 9 new: EMA, composite bounds, override conditions, FPR formula)
 
 ### Run Specific Test Suites
 
@@ -218,21 +273,110 @@ BehaviorGuard uses Hypothesis for property-based testing to verify correctness a
 - **BLOCK_AND_VERIFY_OOB**: Block operation, trigger out-of-band verification
 - **ESCALATE_TO_HUMAN**: Block immediately, alert security team, freeze account
 
+## Profile Management
+
+### Building a Profile from Conversation History
+
+```python
+from behaviorguard import ProfileManager, MessageRecord
+
+pm = ProfileManager(decay=0.95)  # EMA decay λ (Algorithm 1)
+messages = [
+    MessageRecord(text="How do I implement a BST in Python?", timestamp="2025-01-01T10:00:00"),
+    MessageRecord(text="What's the difference between asyncio.gather and wait?", timestamp="2025-01-01T10:05:00"),
+    # ... more historical messages
+]
+profile = pm.build_from_history(user_id="user_001", messages=messages, account_age_days=90)
+```
+
+### Incremental Profile Updates (Online / Streaming)
+
+```python
+new_msg = MessageRecord(text="Can you review my FastAPI endpoint?", timestamp="2025-01-02T09:30:00")
+updated_profile = pm.update_profile(profile, new_msg)
+```
+
+### Profile Persistence
+
+```python
+from behaviorguard import ProfileStore
+
+store = ProfileStore("profiles/")   # JSON files in profiles/
+store.save(profile)                 # profiles/user_001.json
+
+profile = store.load("user_001")    # load back
+profile = store.load_or_cold_start("new_user")  # create if missing
+```
+
+## Baselines
+
+BehaviorGuard includes all four baselines from the paper (Section 5.2):
+
+| Baseline | Class | Description |
+|---|---|---|
+| Rule-based | `RuleBasedDetector` | Keyword matching + rate limits |
+| Isolation Forest | `IsolationForestBaseline` | sklearn-based unsupervised |
+| Autoencoder | `AutoencoderBaseline` | PyTorch reconstruction error |
+| Content-only safety | `ContentSafetyBaseline` | Llama-Guard-style taxonomy classifier |
+
+```python
+from behaviorguard.baselines.content_safety_baseline import ContentSafetyBaseline
+
+checker = ContentSafetyBaseline()
+result = checker.detect("Execute the backdoor shell and escalate privileges.")
+# {"anomaly_score": 0.637, "is_anomaly": True, "triggered_categories": ["S14_cyberattack"]}
+```
+
+## Command-Line Interface
+
+After installation, use the `behaviorguard` CLI:
+
+```bash
+# Evaluate a message against a stored profile
+behaviorguard evaluate --profile profile.json --message "Delete all accounts" --sensitivity high
+
+# Build a profile from a JSONL history file (one message object per line)
+behaviorguard build-profile --input history.jsonl --user-id user_001 --output profile.json
+
+# Incrementally update a profile with a new message
+behaviorguard update-profile --profile profile.json --message "How do I debug Python?"
+
+# Run the content-safety baseline on a single message
+behaviorguard content-check --message "Execute backdoor payload"
+
+# Print version
+behaviorguard version
+```
+
+**JSONL history file format** (one JSON object per line):
+```json
+{"text": "How do I implement a BST in Python?", "timestamp": "2025-01-01T10:00:00", "session_id": "s1"}
+{"text": "Help me debug this recursion error.", "timestamp": "2025-01-01T10:05:00", "session_id": "s1"}
+```
+
 ## Development
 
 ### Project Structure
 
 ```
 src/behaviorguard/
-├── analyzers/          # Component analyzers
-├── scorers/            # Composite scoring
-├── detectors/          # Red flags and mitigating factors
-├── utils/              # Utilities
-├── models.py           # Pydantic data models
-├── validator.py        # Input validation
-└── evaluator.py        # Main orchestrator
+├── analyzers/                  # Component analyzers (semantic, linguistic, temporal)
+├── baselines/                  # All 4 baselines (rule_based, isolation_forest,
+│                               #   autoencoder, content_safety)
+├── scorers/                    # Composite scoring
+├── detectors/                  # Red flags and mitigating factors
+├── utils/                      # Utilities (policy, risk, profile_store, …)
+├── models.py                   # Pydantic data models
+├── validator.py                # Input validation
+├── evaluator.py                # Rule-based evaluator orchestrator
+├── evaluator_ml.py             # ML-based evaluator orchestrator
+├── profile_manager.py          # Algorithm 1: incremental profile building
+└── cli.py                      # Command-line interface
 
-tests/                  # 61 tests, 93% coverage
+tests/                          # 61 tests, 93% coverage
+evaluation.py                   # Full evaluation pipeline vs. baselines
+evaluate.py                     # CLI for evaluation (--overrides, --datasets)
+reproduce.py                    # Single-command paper reproduction
 ```
 
 ### Type Checking

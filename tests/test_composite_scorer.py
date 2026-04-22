@@ -1,7 +1,7 @@
 """Tests for composite scorer."""
 
 import pytest
-from hypothesis import given, strategies as st
+from hypothesis import HealthCheck, given, settings, strategies as st
 
 from behaviorguard.models import (
     ComponentScores,
@@ -123,6 +123,7 @@ def build_current_message(
 
 
 # Feature: behaviorguard-anomaly-scoring, Property 2: Weighted score combination respects sensitivity configuration
+@settings(suppress_health_check=[HealthCheck.too_slow])
 @given(
     semantic=st.floats(min_value=0.0, max_value=0.85),  # Below override threshold
     linguistic=st.floats(min_value=0.0, max_value=1.0),
@@ -379,3 +380,47 @@ def test_multiple_overrides_priority():
 
     # HIGH_RISK should take priority
     assert result.anomaly_score == 1.0
+
+
+def test_normal_override_excludes_disabled_components():
+    """Fix B: _check_normal_overrides must mean over ENABLED components only.
+
+    With temporal disabled (zeroed), a message with semantic=0.4 and
+    linguistic=0.4 has enabled-mean=0.4, so the <0.15 normal_override must
+    NOT fire. Under the old mean-of-three the effective mean would be
+    (0.4+0.4+0)/3 ≈ 0.267 — still above 0.15 in this particular pick, but
+    the bug manifests for any (s, l) where mean-of-two > 0.15 while
+    mean-of-three < 0.15. Test both.
+    """
+    scorer = CompositeScorer()
+    profile = build_user_profile(has_sensitive_ops=True)  # avoid override_3
+    message = build_current_message(
+        text="Please fetch yesterday's summary report",  # neutral, no context-change phrases
+        risk_classification="low",
+        message_length=80,  # >=50 tokens to avoid brief-clarification override
+    )
+
+    # Case 1: non-zero components both > 0.15; mean-of-two = 0.4 but mean-of-three = 0.267.
+    # Both old and new logic agree here — sanity check that fix does not regress.
+    config_no_temp = SystemConfig(
+        sensitivity_level="medium",
+        deployment_context="consumer",
+        enable_semantic_scoring=True,
+        enable_linguistic_scoring=True,
+        enable_temporal_scoring=False,
+    )
+    cs1 = build_component_scores(semantic=0.4, linguistic=0.4, temporal=0.0)
+    r1 = scorer.compute_score(cs1, config_no_temp, message, profile)
+    assert r1.detection_mechanism != "normal_override", (
+        f"normal_override should not fire when enabled-mean=0.4; got {r1.detection_mechanism}"
+    )
+
+    # Case 2: non-zero components at 0.20 each (mean-of-two = 0.20, ABOVE 0.15 threshold)
+    # but mean-of-three = (0.20+0.20+0)/3 ≈ 0.133 < 0.15. Old code would FIRE normal_override;
+    # fixed code must NOT.
+    cs2 = build_component_scores(semantic=0.20, linguistic=0.20, temporal=0.0)
+    r2 = scorer.compute_score(cs2, config_no_temp, message, profile)
+    assert r2.detection_mechanism != "normal_override", (
+        "normal_override fired on disabled-component artifact: "
+        f"enabled-mean=0.20 but old mean-of-three=0.133. got={r2.detection_mechanism}"
+    )

@@ -36,7 +36,7 @@ class IsolationForestBaseline:
             max_samples=max_samples,
             contamination=contamination,
             random_state=random_state,
-            n_jobs=-1  # Use all CPU cores
+            n_jobs=-1  # parallel training; predict() is single-sample in evaluation
         )
         self.is_fitted = False
         self.feature_mean = None

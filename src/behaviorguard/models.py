@@ -40,6 +40,7 @@ class SemanticProfile(BaseModel):
     primary_domains: List[str]
     topic_diversity_score: float
     embedding_centroid_summary: str
+    embedding_centroid: Optional[List[float]] = None  # Pre-computed EMA centroid when available
 
 
 class LinguisticProfile(BaseModel):
@@ -159,6 +160,7 @@ class SystemConfig(BaseModel):
     enable_temporal_scoring: bool = True
     enable_linguistic_scoring: bool = True
     enable_semantic_scoring: bool = True
+    overrides_enabled: bool = True
 
 
 # Component Results
@@ -199,6 +201,10 @@ class CompositeScore(BaseModel):
 
     anomaly_score: float = Field(ge=0.0, le=1.0)
     applied_overrides: List[str]
+    detection_mechanism: Literal[
+        "override_1", "override_2", "override_3", "override_4",
+        "normal_override", "composite_score"
+    ] = "composite_score"
 
 
 class ConfidenceFactors(BaseModel):

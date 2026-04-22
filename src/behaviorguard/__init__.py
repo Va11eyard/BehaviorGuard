@@ -7,7 +7,7 @@ try:
     from behaviorguard.evaluator_ml import BehaviorGuardEvaluatorML
     ML_AVAILABLE = True
 except ImportError:
-    BehaviorGuardEvaluatorML = None
+    BehaviorGuardEvaluatorML = None  # type: ignore[assignment]
     ML_AVAILABLE = False
 
 from behaviorguard.models import (
@@ -22,6 +22,8 @@ from behaviorguard.models import (
     UserProfile,
 )
 from behaviorguard.validator import InputValidator
+from behaviorguard.profile_manager import ProfileManager, MessageRecord
+from behaviorguard.utils.profile_store import ProfileStore
 
 __version__ = "1.0.0"
 
@@ -30,6 +32,9 @@ __all__ = [
     "BehaviorGuardEvaluatorML",
     "ML_AVAILABLE",
     "InputValidator",
+    "ProfileManager",
+    "MessageRecord",
+    "ProfileStore",
     "EvaluationInput",
     "EvaluationResult",
     "UserProfile",

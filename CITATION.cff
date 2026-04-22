@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use BehaviorGuard in your research, please cite it as below."
+type: software
+title: "BehaviorGuard: Context-Aware Anomaly Detection in Conversational AI"
+abstract: >
+  BehaviorGuard is an LLM-native anomaly detection framework that detects
+  anomalous user requests by modeling per-user behavioral patterns across
+  semantic, linguistic, and temporal dimensions. It maintains privacy-preserving
+  user profiles from interaction histories and computes multi-dimensional anomaly
+  scores to drive tiered response policies.
+authors:
+  - family-names: "Mynzhassar"
+    given-names: "Dinmukhammed"
+version: "1.0.0"
+date-released: "2026-02-19"
+license: MIT
+repository-code: "https://github.com/Va11eyard/BehaviorGuard"
+keywords:
+  - anomaly detection
+  - conversational AI
+  - LLM safety
+  - behavioral security
+  - account takeover
+  - social engineering
+  - user modeling
+preferred-citation:
+  type: article
+  authors:
+    - family-names: "Mynzhassar"
+      given-names: "Dinmukhammed"
+  title: >
+    BehaviorGuard: Context-Aware Anomaly Detection in Conversational AI
+    via Behavioral User Profiling
+  year: 2026
+  url: "https://arxiv.org/abs/[arxiv-id]"
