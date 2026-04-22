@@ -22,7 +22,7 @@ The system evaluates user messages against established behavioral baselines to d
 - **Time-Series Analysis**: Z-scores and logistic functions for temporal anomalies
 - **Learned Profiles**: User-specific baselines from interaction history
 - **Ensemble Methods**: Weighted combination with adaptive thresholds
-- **No Hardcoded Rules**: Learns patterns from data, not keyword matching
+- **Hybrid Design**: learned per-user baselines plus personalized rule-based overrides
 
 ### System Capabilities
 - **Multi-dimensional Analysis**: Semantic, linguistic, and temporal anomaly detection
@@ -100,7 +100,7 @@ This demonstrates:
 - Z-score based temporal anomaly detection
 - Learned user profiles from conversation history (Algorithm 1)
 - Ablation study (semantic-only scoring)
-- No hardcoded keyword patterns
+- Documented rule-based overrides on top of learned scoring (see paper §3.3.5)
 
 ### Rule-Based Example
 
@@ -124,9 +124,9 @@ The system follows a pipeline architecture with five main stages:
 ### Components
 
 **Analyzers:**
-- `SemanticAnalyzer`: Topic and domain anomaly detection
-- `LinguisticAnalyzer`: Writing style anomaly detection
-- `TemporalAnalyzer`: Timing pattern anomaly detection
+- `SemanticAnalyzer` / `SemanticAnalyzerML`: Topic and domain anomaly detection
+- `LinguisticAnalyzer` / `LinguisticAnalyzerML`: Writing style anomaly detection
+- `TemporalAnalyzer` / `TemporalAnalyzerML`: Timing pattern anomaly detection
 
 **Scorers:**
 - `CompositeScorer`: Weighted combination with override conditions
@@ -207,7 +207,7 @@ Seed is fixed at 42 for all stochastic components.
 pytest tests/ -v
 ```
 
-**Current Status:** 70 tests passing (61 original + 9 new: EMA, composite bounds, override conditions, FPR formula)
+**Current Status:** 84 tests passing.
 
 ### Run Specific Test Suites
 
@@ -223,6 +223,8 @@ pytest tests/test_composite_scorer.py -v
 # Integration tests
 pytest tests/test_integration.py -v
 ```
+
+These files are illustrative; additional tests (e.g., EMA, overrides, operation risk, evaluation fixtures) are also present in the suite.
 
 ### Test Coverage
 
@@ -373,7 +375,7 @@ src/behaviorguard/
 ├── profile_manager.py          # Algorithm 1: incremental profile building
 └── cli.py                      # Command-line interface
 
-tests/                          # 61 tests, 93% coverage
+tests/                          # 84 tests
 evaluation.py                   # Full evaluation pipeline vs. baselines
 evaluate.py                     # CLI for evaluation (--overrides, --datasets)
 reproduce.py                    # Single-command paper reproduction
