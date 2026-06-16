@@ -64,7 +64,7 @@ class CompositeScorer:
             if normal_override:
                 applied_overrides.append(normal_override)
                 base_score = self._calculate_weighted_score(
-                    component_scores, system_config.sensitivity_level
+                    component_scores, system_config
                 )
                 return CompositeScore(
                     anomaly_score=min(0.15, base_score),
@@ -74,7 +74,7 @@ class CompositeScorer:
 
         # Calculate weighted composite score (or when overrides disabled)
         anomaly_score = self._calculate_weighted_score(
-            component_scores, system_config.sensitivity_level
+            component_scores, system_config
         )
 
         anomaly_score = max(0.0, min(1.0, anomaly_score))
@@ -86,18 +86,29 @@ class CompositeScorer:
         )
 
     def _calculate_weighted_score(
-        self, component_scores: ComponentScores, sensitivity_level: str
+        self, component_scores: ComponentScores, system_config: SystemConfig
     ) -> float:
         """Calculate weighted combination of component scores."""
-        weights = self.WEIGHTS[sensitivity_level]
+        weights = self.WEIGHTS[system_config.sensitivity_level].copy()
 
-        score = (
+        if not system_config.enable_semantic_scoring:
+            weights["semantic"] = 0.0
+        if not system_config.enable_linguistic_scoring:
+            weights["linguistic"] = 0.0
+        if not system_config.enable_temporal_scoring:
+            weights["temporal"] = 0.0
+
+        total_weight = sum(weights.values())
+        if total_weight > 0:
+            weights = {k: v / total_weight for k, v in weights.items()}
+        else:
+            return 0.0
+
+        return (
             weights["semantic"] * component_scores.semantic
             + weights["linguistic"] * component_scores.linguistic
             + weights["temporal"] * component_scores.temporal
         )
-
-        return score
 
     def _check_high_risk_overrides(
         self,

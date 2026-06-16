@@ -100,9 +100,9 @@ class BehaviorGuardEvaluatorML:
         )
 
         component_scores = ComponentScores(
-            semantic=semantic_result.score,
-            linguistic=linguistic_result.score,
-            temporal=temporal_result.score,
+            semantic=semantic_result.score if system_config.enable_semantic_scoring else 0.0,
+            linguistic=linguistic_result.score if system_config.enable_linguistic_scoring else 0.0,
+            temporal=temporal_result.score if system_config.enable_temporal_scoring else 0.0,
         )
 
         # Step 2: Composite Scoring (ensemble method)

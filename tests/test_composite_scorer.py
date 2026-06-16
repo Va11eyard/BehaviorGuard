@@ -424,3 +424,23 @@ def test_normal_override_excludes_disabled_components():
         "normal_override fired on disabled-component artifact: "
         f"enabled-mean=0.20 but old mean-of-three=0.133. got={r2.detection_mechanism}"
     )
+
+
+def test_ablation_renormalizes_weights_semantic_only():
+    """semantic_only ablation: disabled components must not suppress composite score."""
+    scorer = CompositeScorer()
+    config = SystemConfig(
+        sensitivity_level="medium",
+        deployment_context="enterprise",
+        enable_semantic_scoring=True,
+        enable_linguistic_scoring=False,
+        enable_temporal_scoring=False,
+    )
+    profile = build_user_profile(has_sensitive_ops=True)
+    message = build_current_message()
+    component_scores = build_component_scores(semantic=0.8, linguistic=0.0, temporal=0.0)
+
+    result = scorer.compute_score(component_scores, config, message, profile)
+
+    assert result.detection_mechanism == "composite_score"
+    assert abs(result.anomaly_score - 0.8) < 0.001

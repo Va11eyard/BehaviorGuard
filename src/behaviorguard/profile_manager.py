@@ -30,6 +30,7 @@ from behaviorguard.models import (
     TemporalProfile,
     UserProfile,
 )
+from behaviorguard.utils.torch_device import embedding_device
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -198,7 +199,10 @@ class ProfileManager:
         if self._model is None:
             try:
                 from sentence_transformers import SentenceTransformer  # type: ignore[import]
-                self._model = SentenceTransformer(self._embedding_model_name)
+                self._model = SentenceTransformer(
+                    self._embedding_model_name,
+                    device=embedding_device(),
+                )
             except ImportError as exc:
                 raise ImportError(
                     "sentence-transformers is required for ProfileManager text encoding.\n"

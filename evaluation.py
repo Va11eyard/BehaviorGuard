@@ -790,10 +790,12 @@ def run_evaluation(dataset_filter=None):
 
     # [6b/7] Lambda sensitivity (EMA decay) across all datasets
     print("\n[6b/7] Running λ sensitivity analysis (0.90, 0.95, 0.99)...")
+    lambda_decays = (0.90, 0.95, 0.99)
     results["lambda_sensitivity"] = {}
-    for decay_val in [0.90, 0.95, 0.99]:
+    for decay_val in lambda_decays:
+        decay_key = f"{decay_val:.2f}"
         builder = _build_profile_with_pm(decay_val)
-        print(f"\n  λ = {decay_val}")
+        print(f"\n  λ = {decay_key}")
         for dataset_name in run_datasets:
             metrics, _ = evaluate_method(
                 "behaviorguard",
@@ -801,18 +803,18 @@ def run_evaluation(dataset_filter=None):
                 datasets[dataset_name],
                 profile_builder=builder,
             )
-            if str(decay_val) not in results["lambda_sensitivity"]:
-                results["lambda_sensitivity"][str(decay_val)] = {}
-            results["lambda_sensitivity"][str(decay_val)][dataset_name] = {
+            if decay_key not in results["lambda_sensitivity"]:
+                results["lambda_sensitivity"][decay_key] = {}
+            results["lambda_sensitivity"][decay_key][dataset_name] = {
                 "metrics": metrics
             }
     print("\n  λ sensitivity table:")
-    for decay_val in ["0.90", "0.95", "0.99"]:
-        row = [decay_val]
+    for decay_key in (f"{d:.2f}" for d in lambda_decays):
+        row = [decay_key]
         for ds in run_datasets:
-            f1 = results["lambda_sensitivity"][decay_val][ds]["metrics"]["f1"]
+            f1 = results["lambda_sensitivity"][decay_key][ds]["metrics"]["f1"]
             row.append(f"{f1:.3f}")
-        print(f"    λ={decay_val}: " + " | ".join(f"{ds}={row[i+1]}" for i, ds in enumerate(run_datasets)))
+        print(f"    λ={decay_key}: " + " | ".join(f"{ds}={row[i+1]}" for i, ds in enumerate(run_datasets)))
 
     # [7/7] Statistical significance tests
     print("\n[7/7] Computing statistical significance tests...")

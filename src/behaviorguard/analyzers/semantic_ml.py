@@ -14,6 +14,7 @@ from behaviorguard.models import (
     SemanticAnalysisResult,
     SemanticProfile,
 )
+from behaviorguard.utils.torch_device import embedding_device
 
 
 class SemanticAnalyzerML:
@@ -37,7 +38,7 @@ class SemanticAnalyzerML:
                 "Install with: pip install sentence-transformers"
             )
         
-        self.model = SentenceTransformer(model_name)
+        self.model = SentenceTransformer(model_name, device=embedding_device())
         self._embedding_cache = {}
 
     def analyze(
