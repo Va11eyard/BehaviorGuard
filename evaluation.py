@@ -9,7 +9,9 @@ This script runs:
 5. Sensitivity level analysis
 """
 
+import csv
 import json
+import os
 import time
 import numpy as np
 from datetime import datetime
@@ -683,9 +685,127 @@ results = {
     },
     "methods": {},
     "ablations": {},
+    "override_ablations": {},
     "sensitivity_levels": {},
     "statistical_tests": {},
 }
+
+CSV_RESULT_COLUMNS = [
+    "dataset",
+    "experiment_type",
+    "precision",
+    "recall",
+    "f1",
+    "detection_mechanism_breakdown",
+]
+
+OVERRIDE_ABLATION_CONFIGS = {
+    "overrides_off_full": (True, True, True),
+    "overrides_off_no_semantic": (False, True, True),
+    "overrides_off_no_linguistic": (True, False, True),
+    "overrides_off_no_temporal": (True, True, False),
+    "overrides_off_semantic_only": (True, False, False),
+    "overrides_off_linguistic_only": (False, True, False),
+    "overrides_off_temporal_only": (False, False, True),
+}
+
+
+def _format_tp_attribution(metrics: Dict) -> str:
+    tp_attr = metrics.get("tp_attribution") or {}
+    if not tp_attr:
+        return "no_tp"
+    return "|".join(
+        f"{k}:{v['count']}({v['pct']:.1f}%)"
+        for k, v in sorted(tp_attr.items())
+    )
+
+
+def append_results_csv(
+    dataset: str,
+    experiment_type: str,
+    metrics: Dict,
+    csv_path: str = "evaluation_results.csv",
+) -> None:
+    """Append one experiment row to evaluation_results.csv (creates header if new)."""
+    row = [
+        dataset,
+        experiment_type,
+        metrics.get("precision", 0.0),
+        metrics.get("recall", 0.0),
+        metrics.get("f1", 0.0),
+        _format_tp_attribution(metrics),
+    ]
+    write_header = not os.path.isfile(csv_path)
+    with open(csv_path, "a", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        if write_header:
+            writer.writerow(CSV_RESULT_COLUMNS)
+        writer.writerow(row)
+
+
+def _print_override_ablation_summary(run_datasets: Dict) -> None:
+    """Print learned-composite-only metrics (overrides_off_full) per dataset."""
+    print("\n" + "=" * 80)
+    print("OVERRIDE ABLATION SUMMARY (overrides_off_full — learned composite only)")
+    print("=" * 80)
+    off_full = results.get("override_ablations", {}).get("overrides_off_full", {})
+    on_full = results.get("methods", {}).get("behaviorguard", {})
+    for ds_name in run_datasets:
+        m_off = off_full.get(ds_name, {}).get("metrics", {})
+        m_on = on_full.get(ds_name, {}).get("metrics", {})
+        print(f"\n  {ds_name}:")
+        print(
+            f"    overrides ON:  P={m_on.get('precision', 0):.3f} "
+            f"R={m_on.get('recall', 0):.3f} F1={m_on.get('f1', 0):.3f} "
+            f"TP attr: {_format_tp_attribution(m_on)}"
+        )
+        print(
+            f"    overrides OFF: P={m_off.get('precision', 0):.3f} "
+            f"R={m_off.get('recall', 0):.3f} F1={m_off.get('f1', 0):.3f} "
+            f"TP attr: {_format_tp_attribution(m_off)}"
+        )
+
+
+def run_override_ablation_experiment(run_datasets: Dict) -> None:
+    """PRIORITY 1: overrides disabled × component ablation matrix + CSV logging."""
+    print("\n[5b/7] Override ablation (overrides disabled, component matrix)...")
+    results["override_ablations"] = {}
+
+    for dataset_name in run_datasets:
+        bg = results.get("methods", {}).get("behaviorguard", {}).get(dataset_name)
+        if bg and "metrics" in bg:
+            append_results_csv(dataset_name, "overrides_on_full", bg["metrics"])
+        else:
+            metrics, preds = evaluate_method(
+                "behaviorguard", dataset_name, datasets[dataset_name],
+                overrides_enabled=True,
+            )
+            results.setdefault("methods", {}).setdefault("behaviorguard", {})[dataset_name] = {
+                "metrics": metrics,
+                "predictions": preds,
+            }
+            append_results_csv(dataset_name, "overrides_on_full", metrics)
+
+    for ablation_name, (sem, ling, temp) in OVERRIDE_ABLATION_CONFIGS.items():
+        print(f"\n  Override ablation: {ablation_name}")
+        for dataset_name in run_datasets:
+            metrics, preds = evaluate_method(
+                "behaviorguard",
+                dataset_name,
+                datasets[dataset_name],
+                enable_semantic=sem,
+                enable_linguistic=ling,
+                enable_temporal=temp,
+                overrides_enabled=False,
+            )
+            results["override_ablations"].setdefault(ablation_name, {})[dataset_name] = {
+                "metrics": metrics,
+                "config": {"semantic": sem, "linguistic": ling, "temporal": temp},
+                "predictions": preds,
+            }
+            append_results_csv(dataset_name, ablation_name, metrics)
+
+    _print_override_ablation_summary(run_datasets)
 
 
 def convert_to_json_serializable(obj):
@@ -762,6 +882,8 @@ def run_evaluation(dataset_filter=None):
                 "metrics": metrics,
                 "config": {"semantic": sem, "linguistic": ling, "temporal": temp}
             }
+
+    run_override_ablation_experiment(run_datasets)
 
     # [6/7] Sensitivity level analysis
     print("\n[6/7] Running sensitivity level analysis...")
@@ -858,9 +980,32 @@ def run_evaluation(dataset_filter=None):
     return results
 
 
+def run_evaluation_override_ablations_only(dataset_filter=None) -> Dict:
+    """Run [3/7] full BG + PRIORITY 1 override ablation matrix only (faster path)."""
+    global results
+    results["metadata"]["evaluation_timestamp"] = datetime.now().isoformat()
+    run_datasets = (
+        {k: v for k, v in datasets.items() if k in dataset_filter}
+        if dataset_filter
+        else datasets
+    )
+    print("\n[3/7] Evaluating BehaviorGuard (full system, overrides ON)...")
+    for dataset_name in run_datasets:
+        metrics, preds = evaluate_method("behaviorguard", dataset_name, datasets[dataset_name])
+        results.setdefault("methods", {}).setdefault("behaviorguard", {})[dataset_name] = {
+            "metrics": metrics,
+            "predictions": preds,
+        }
+    run_override_ablation_experiment(run_datasets)
+    return results
+
+
 # Run when executed directly
 if __name__ == "__main__":
-    run_evaluation()
+    if os.environ.get("BG_OVERRIDE_ABLATION_ONLY"):
+        run_evaluation_override_ablations_only()
+    else:
+        run_evaluation()
     output_file = "full_evaluation_results.json"
     results_serializable = convert_to_json_serializable(results)
     with open(output_file, "w") as f:
@@ -871,6 +1016,7 @@ if __name__ == "__main__":
     print(f"\nEnd time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"\nMethods evaluated: {len(results['methods'])}")
     print(f"Ablation studies: {len(results['ablations'])}")
+    print(f"Override ablations: {len(results.get('override_ablations', {}))}")
     print(f"Sensitivity levels: {len(results['sensitivity_levels'])}")
     print(f"Statistical tests: {len(results['statistical_tests'])}")
     print(f"\n[OK] Full results saved to {output_file}")
