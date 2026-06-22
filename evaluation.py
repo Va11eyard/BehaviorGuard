@@ -12,12 +12,21 @@ This script runs:
 import csv
 import json
 import os
+import sys
 import time
 import numpy as np
 from datetime import datetime
 from collections import defaultdict
 from typing import Any, Dict, List, Optional, Tuple
 from scipy import stats
+
+# Windows consoles default to a non-UTF-8 codepage (e.g. cp1251) which cannot
+# encode characters like the Greek lambda used in progress output; force UTF-8.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
 
 # Set seeds for reproducibility
 SEED = 42
@@ -709,6 +718,11 @@ OVERRIDE_ABLATION_CONFIGS = {
     "overrides_off_temporal_only": (False, False, True),
 }
 
+# Canonical EMA decay used for the override-ablation table so its overrides_off_full
+# row lands exactly on the F1-vs-λ surface (plateau optimum for BST/HH, near-optimum
+# for PersonaChat). Keeps the ablation table and the λ sweep on one profile builder.
+CANONICAL_LAMBDA = 0.50
+
 
 def _format_tp_attribution(metrics: Dict) -> str:
     tp_attr = metrics.get("tp_attribution") or {}
@@ -749,7 +763,7 @@ def _print_override_ablation_summary(run_datasets: Dict) -> None:
     print("OVERRIDE ABLATION SUMMARY (overrides_off_full — learned composite only)")
     print("=" * 80)
     off_full = results.get("override_ablations", {}).get("overrides_off_full", {})
-    on_full = results.get("methods", {}).get("behaviorguard", {})
+    on_full = results.get("override_ablations", {}).get("overrides_on_full", {})
     for ds_name in run_datasets:
         m_off = off_full.get(ds_name, {}).get("metrics", {})
         m_on = on_full.get(ds_name, {}).get("metrics", {})
@@ -767,24 +781,28 @@ def _print_override_ablation_summary(run_datasets: Dict) -> None:
 
 
 def run_override_ablation_experiment(run_datasets: Dict) -> None:
-    """PRIORITY 1: overrides disabled × component ablation matrix + CSV logging."""
-    print("\n[5b/7] Override ablation (overrides disabled, component matrix)...")
+    """PRIORITY 1: overrides disabled × component ablation matrix + CSV logging.
+
+    Uses the EMA ProfileManager builder at CANONICAL_LAMBDA so this table shares one
+    profile builder with the λ sensitivity sweep; overrides_off_full therefore lands
+    on the F1-vs-λ surface at λ=CANONICAL_LAMBDA.
+    """
+    print(f"\n[5b/7] Override ablation (overrides disabled, component matrix, "
+          f"EMA λ={CANONICAL_LAMBDA})...")
     results["override_ablations"] = {}
+    pm_builder = _build_profile_with_pm(CANONICAL_LAMBDA)
 
     for dataset_name in run_datasets:
-        bg = results.get("methods", {}).get("behaviorguard", {}).get(dataset_name)
-        if bg and "metrics" in bg:
-            append_results_csv(dataset_name, "overrides_on_full", bg["metrics"])
-        else:
-            metrics, preds = evaluate_method(
-                "behaviorguard", dataset_name, datasets[dataset_name],
-                overrides_enabled=True,
-            )
-            results.setdefault("methods", {}).setdefault("behaviorguard", {})[dataset_name] = {
-                "metrics": metrics,
-                "predictions": preds,
-            }
-            append_results_csv(dataset_name, "overrides_on_full", metrics)
+        metrics, preds = evaluate_method(
+            "behaviorguard", dataset_name, datasets[dataset_name],
+            overrides_enabled=True,
+            profile_builder=pm_builder,
+        )
+        results["override_ablations"].setdefault("overrides_on_full", {})[dataset_name] = {
+            "metrics": metrics,
+            "predictions": preds,
+        }
+        append_results_csv(dataset_name, "overrides_on_full", metrics)
 
     for ablation_name, (sem, ling, temp) in OVERRIDE_ABLATION_CONFIGS.items():
         print(f"\n  Override ablation: {ablation_name}")
@@ -797,6 +815,7 @@ def run_override_ablation_experiment(run_datasets: Dict) -> None:
                 enable_linguistic=ling,
                 enable_temporal=temp,
                 overrides_enabled=False,
+                profile_builder=pm_builder,
             )
             results["override_ablations"].setdefault(ablation_name, {})[dataset_name] = {
                 "metrics": metrics,
@@ -806,6 +825,92 @@ def run_override_ablation_experiment(run_datasets: Dict) -> None:
             append_results_csv(dataset_name, ablation_name, metrics)
 
     _print_override_ablation_summary(run_datasets)
+
+
+def _plot_lambda_sensitivity(sweep: Dict, run_datasets: Dict, out_path: str) -> Optional[str]:
+    """Plot F1 vs λ per dataset. Returns saved path or None if matplotlib missing."""
+    try:
+        import matplotlib
+        matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print("    [plot] matplotlib not installed; skipping figure (CSV/JSON still written).")
+        return None
+
+    decay_keys = sorted(sweep.keys(), key=float)
+    xs = [float(k) for k in decay_keys]
+    fig, ax = plt.subplots(figsize=(6.0, 4.0))
+    for ds in run_datasets:
+        ys = [sweep[k][ds]["metrics"]["f1"] for k in decay_keys]
+        ax.plot(xs, ys, marker="o", label=ds)
+    ax.set_xlabel("EMA decay λ")
+    ax.set_ylabel("F1 (overrides disabled)")
+    ax.set_title("Learned-composite F1 vs EMA decay λ")
+    ax.set_ylim(0.0, 1.0)
+    ax.grid(True, alpha=0.3)
+    ax.legend()
+    fig.tight_layout()
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    fig.savefig(out_path, dpi=150)
+    plt.close(fig)
+    return out_path
+
+
+def run_lambda_sensitivity_sweep(
+    run_datasets: Dict,
+    lambda_decays: Optional[Tuple[float, ...]] = None,
+    overrides_enabled: bool = False,
+) -> None:
+    """PRIORITY 4: sweep EMA decay λ from 0.0 to 1.0 (step 0.1) per dataset.
+
+    Overrides are disabled by default so that λ's effect on the learned EMA
+    semantic centroid is observable; with overrides enabled, override_3
+    (λ-independent) dominates TP attribution and masks the λ response.
+    """
+    if lambda_decays is None:
+        lambda_decays = tuple(round(v, 2) for v in np.arange(0.0, 1.0001, 0.1))
+    mode = "overrides OFF" if not overrides_enabled else "overrides ON"
+    print(f"\n[6b/7] Running λ sensitivity sweep ({mode}, λ=0.0..1.0 step 0.1)...")
+    results["lambda_sensitivity"] = {}
+
+    for decay_val in lambda_decays:
+        decay_key = f"{decay_val:.2f}"
+        builder = _build_profile_with_pm(decay_val)
+        print(f"\n  λ = {decay_key}")
+        for dataset_name in run_datasets:
+            metrics, _ = evaluate_method(
+                "behaviorguard",
+                dataset_name,
+                datasets[dataset_name],
+                profile_builder=builder,
+                overrides_enabled=overrides_enabled,
+            )
+            results["lambda_sensitivity"].setdefault(decay_key, {})[dataset_name] = {
+                "metrics": metrics
+            }
+            append_results_csv(dataset_name, f"lambda_{decay_key}_{'off' if not overrides_enabled else 'on'}", metrics)
+
+    print("\n  λ sensitivity table (F1):")
+    decay_keys = sorted(results["lambda_sensitivity"].keys(), key=float)
+    for decay_key in decay_keys:
+        cells = " | ".join(
+            f"{ds}={results['lambda_sensitivity'][decay_key][ds]['metrics']['f1']:.3f}"
+            for ds in run_datasets
+        )
+        print(f"    λ={decay_key}: {cells}")
+
+    # Report per-dataset argmax λ to show optimum is interior / stable
+    print("\n  Optimal λ per dataset (max F1):")
+    for ds in run_datasets:
+        best_key = max(decay_keys, key=lambda k: results["lambda_sensitivity"][k][ds]["metrics"]["f1"])
+        best_f1 = results["lambda_sensitivity"][best_key][ds]["metrics"]["f1"]
+        print(f"    {ds}: λ*={best_key} (F1={best_f1:.3f})")
+
+    fig_path = _plot_lambda_sensitivity(
+        results["lambda_sensitivity"], run_datasets, os.path.join("paper", "figures", "lambda_sensitivity.png")
+    )
+    if fig_path:
+        print(f"    [plot] F1-vs-λ figure saved to {fig_path}")
 
 
 def convert_to_json_serializable(obj):
@@ -911,32 +1016,7 @@ def run_evaluation(dataset_filter=None):
             }
 
     # [6b/7] Lambda sensitivity (EMA decay) across all datasets
-    print("\n[6b/7] Running λ sensitivity analysis (0.90, 0.95, 0.99)...")
-    lambda_decays = (0.90, 0.95, 0.99)
-    results["lambda_sensitivity"] = {}
-    for decay_val in lambda_decays:
-        decay_key = f"{decay_val:.2f}"
-        builder = _build_profile_with_pm(decay_val)
-        print(f"\n  λ = {decay_key}")
-        for dataset_name in run_datasets:
-            metrics, _ = evaluate_method(
-                "behaviorguard",
-                dataset_name,
-                datasets[dataset_name],
-                profile_builder=builder,
-            )
-            if decay_key not in results["lambda_sensitivity"]:
-                results["lambda_sensitivity"][decay_key] = {}
-            results["lambda_sensitivity"][decay_key][dataset_name] = {
-                "metrics": metrics
-            }
-    print("\n  λ sensitivity table:")
-    for decay_key in (f"{d:.2f}" for d in lambda_decays):
-        row = [decay_key]
-        for ds in run_datasets:
-            f1 = results["lambda_sensitivity"][decay_key][ds]["metrics"]["f1"]
-            row.append(f"{f1:.3f}")
-        print(f"    λ={decay_key}: " + " | ".join(f"{ds}={row[i+1]}" for i, ds in enumerate(run_datasets)))
+    run_lambda_sensitivity_sweep(run_datasets)
 
     # [7/7] Statistical significance tests
     print("\n[7/7] Computing statistical significance tests...")
@@ -981,7 +1061,11 @@ def run_evaluation(dataset_filter=None):
 
 
 def run_evaluation_override_ablations_only(dataset_filter=None) -> Dict:
-    """Run [3/7] full BG + PRIORITY 1 override ablation matrix only (faster path)."""
+    """Run only the PRIORITY 1 override ablation matrix (EMA builder, faster path).
+
+    overrides_on_full is computed inside the ablation with the canonical EMA builder,
+    so the redundant non-EMA [3/7] BehaviorGuard run is intentionally skipped here.
+    """
     global results
     results["metadata"]["evaluation_timestamp"] = datetime.now().isoformat()
     run_datasets = (
@@ -989,14 +1073,20 @@ def run_evaluation_override_ablations_only(dataset_filter=None) -> Dict:
         if dataset_filter
         else datasets
     )
-    print("\n[3/7] Evaluating BehaviorGuard (full system, overrides ON)...")
-    for dataset_name in run_datasets:
-        metrics, preds = evaluate_method("behaviorguard", dataset_name, datasets[dataset_name])
-        results.setdefault("methods", {}).setdefault("behaviorguard", {})[dataset_name] = {
-            "metrics": metrics,
-            "predictions": preds,
-        }
     run_override_ablation_experiment(run_datasets)
+    return results
+
+
+def run_evaluation_lambda_sweep_only(dataset_filter=None) -> Dict:
+    """Run only the PRIORITY 4 λ sensitivity sweep (faster path)."""
+    global results
+    results["metadata"]["evaluation_timestamp"] = datetime.now().isoformat()
+    run_datasets = (
+        {k: v for k, v in datasets.items() if k in dataset_filter}
+        if dataset_filter
+        else datasets
+    )
+    run_lambda_sensitivity_sweep(run_datasets)
     return results
 
 
@@ -1004,6 +1094,8 @@ def run_evaluation_override_ablations_only(dataset_filter=None) -> Dict:
 if __name__ == "__main__":
     if os.environ.get("BG_OVERRIDE_ABLATION_ONLY"):
         run_evaluation_override_ablations_only()
+    elif os.environ.get("BG_LAMBDA_SWEEP_ONLY"):
+        run_evaluation_lambda_sweep_only()
     else:
         run_evaluation()
     output_file = "full_evaluation_results.json"

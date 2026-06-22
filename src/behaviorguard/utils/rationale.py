@@ -88,6 +88,14 @@ class RationaleGenerator:
         if red_flags:
             factors.append(red_flags[0])
 
+        # Guarantee at least one factor: when every (enabled) component scores <= 0.3
+        # and there are no red flags, fall back to the top-scoring component so the
+        # Rationale model's min-length constraint is satisfied. Explanation-only;
+        # this does not feed back into scoring or detection.
+        if not factors:
+            top_name, top_score = scores[0]
+            factors.append(f"{top_name} (score: {top_score:.2f})")
+
         # Limit to 3 factors
         return factors[:3]
 
