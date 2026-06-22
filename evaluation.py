@@ -10,6 +10,7 @@ This script runs:
 """
 
 import csv
+import importlib
 import json
 import os
 import sys
@@ -830,9 +831,9 @@ def run_override_ablation_experiment(run_datasets: Dict) -> None:
 def _plot_lambda_sensitivity(sweep: Dict, run_datasets: Dict, out_path: str) -> Optional[str]:
     """Plot F1 vs λ per dataset. Returns saved path or None if matplotlib missing."""
     try:
-        import matplotlib
+        matplotlib = importlib.import_module("matplotlib")
         matplotlib.use("Agg")
-        import matplotlib.pyplot as plt
+        plt = importlib.import_module("matplotlib.pyplot")
     except ImportError:
         print("    [plot] matplotlib not installed; skipping figure (CSV/JSON still written).")
         return None
