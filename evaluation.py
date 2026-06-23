@@ -334,6 +334,43 @@ def compute_bootstrap_ci(
     }
 
 
+def get_bootstrap_metrics(
+    y_true: np.ndarray,
+    y_scores: np.ndarray,
+    threshold: float = 0.60,
+    n: int = 1000,
+    seed: int = 42,
+) -> dict:
+    """Message-level bootstrap CIs for ROC-AUC, F1, precision, and recall."""
+    from sklearn.metrics import roc_auc_score
+
+    rng = np.random.default_rng(seed)
+    aucs, f1s, precs, recs = [], [], [], []
+    y_true = np.asarray(y_true)
+    y_scores = np.asarray(y_scores)
+    for _ in range(n):
+        idx = rng.choice(len(y_true), len(y_true), replace=True)
+        yt, ys = y_true[idx], y_scores[idx]
+        if len(np.unique(yt)) < 2:
+            continue
+        aucs.append(roc_auc_score(yt, ys))
+        yp = (ys >= threshold).astype(int)
+        tp = ((yp == 1) & (yt == 1)).sum()
+        fp = ((yp == 1) & (yt == 0)).sum()
+        fn = ((yp == 0) & (yt == 1)).sum()
+        p = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        r = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+        f1s.append(2 * p * r / (p + r) if (p + r) > 0 else 0.0)
+        precs.append(p)
+        recs.append(r)
+
+    def ci(arr):
+        a = np.array(arr)
+        return float(np.mean(a)), float(np.percentile(a, 2.5)), float(np.percentile(a, 97.5))
+
+    return {"auc": ci(aucs), "f1": ci(f1s), "prec": ci(precs), "rec": ci(recs)}
+
+
 def compute_metrics(y_true: List[bool], y_pred: List[bool], y_scores: List[float]) -> Dict:
     """Compute comprehensive metrics."""
     from sklearn.metrics import (
@@ -466,6 +503,7 @@ def evaluate_method(
     enable_temporal: bool = True,
     overrides_enabled: bool = True,
     profile_builder=None,
+    canonical_metrics: bool = False,
 ) -> Dict:
     """Evaluate a single method on a dataset."""
     print(f"\n  Evaluating {method_name} on {dataset_name}...")
@@ -502,15 +540,18 @@ def evaluate_method(
         user_msgs = test_messages_by_user[user["user_id"]]
         split_idx = int(len(user_msgs) * 0.8)
         train_msgs = user_msgs[:split_idx]
-        
-        if len(train_msgs) < 10:
+        n_train = len(train_msgs)
+        maturity_bin = "cold_start" if n_train < 10 else "stable"
+
+        if n_train < 10:
             cold_start_count += 1
         builder = profile_builder if profile_builder else build_user_profile
         profile = builder(user, train_msgs)
         if profile:
             test_user_profiles[user["user_id"]] = {
                 "profile": profile,
-                "test_messages": user_msgs[split_idx:]
+                "test_messages": user_msgs[split_idx:],
+                "maturity_bin": maturity_bin,
             }
     
     # Collect predictions
@@ -553,7 +594,8 @@ def evaluate_method(
     for user_id, user_data in test_user_profiles.items():
         profile = user_data["profile"]
         test_msgs = user_data["test_messages"]
-        
+        maturity_bin = user_data.get("maturity_bin", "stable")
+
         for i, msg in enumerate(test_msgs):
             start = time.perf_counter()
             detection_mechanism = "n/a"
@@ -614,6 +656,7 @@ def evaluate_method(
                 "anomaly_type": msg.get("anomaly_type"),
                 "detection_mechanism": detection_mechanism if method_name == "behaviorguard" else "n/a",
                 "user_id": user_id,
+                "maturity_bin": maturity_bin,
             })
             aligned_test_msgs.append(msg)
             latencies.append(latency)
@@ -635,6 +678,23 @@ def evaluate_method(
     )
     metrics["cold_start_count"] = cold_start_count
     metrics["n_test_users"] = n_test_users
+
+    if canonical_metrics:
+        boot = get_bootstrap_metrics(np.asarray(y_true), np.asarray(y_scores))
+        metrics["bootstrap"] = boot
+        metrics["auc_mean"] = boot["auc"][0]
+        metrics["auc_ci_low"] = boot["auc"][1]
+        metrics["auc_ci_high"] = boot["auc"][2]
+        metrics["f1_ci_low"] = boot["f1"][1]
+        metrics["f1_ci_high"] = boot["f1"][2]
+        metrics["prec_ci_low"] = boot["prec"][1]
+        metrics["prec_ci_high"] = boot["prec"][2]
+        metrics["rec_ci_low"] = boot["rec"][1]
+        metrics["rec_ci_high"] = boot["rec"][2]
+        metrics["maturity_breakdown"] = {
+            "cold_start": _aggregate_maturity_predictions(predictions, "cold_start"),
+            "stable": _aggregate_maturity_predictions(predictions, "stable"),
+        }
 
     # FPR verification: FPR = FP / (FP + TN), per-dataset breakdown
     fp, tn = metrics["false_positives"], metrics["true_negatives"]
@@ -669,11 +729,17 @@ def evaluate_method(
                 "composite_score": "Composite score only",
             }
             print(f"    [Attribution] Detection mechanism breakdown ({total_tp} TPs):")
+            printed = set()
             for k in ["override_1", "override_2", "override_3", "override_4", "composite_score"]:
                 v = mechanism_counts.get(k, 0)
                 if v > 0:
                     label = override_labels.get(k, k)
                     print(f"      {label}: {v} ({100.0*v/total_tp:.1f}%)")
+                    printed.add(k)
+            for k, v in sorted(mechanism_counts.items()):
+                if k in printed:
+                    continue
+                print(f"      {k}: {v} ({100.0*v/total_tp:.1f}%)")
         else:
             metrics["tp_attribution"] = {}
 
@@ -707,7 +773,66 @@ CSV_RESULT_COLUMNS = [
     "recall",
     "f1",
     "detection_mechanism_breakdown",
+    "auc_mean",
+    "auc_ci_low",
+    "auc_ci_high",
+    "f1_ci_low",
+    "f1_ci_high",
+    "prec_ci_low",
+    "prec_ci_high",
+    "rec_ci_low",
+    "rec_ci_high",
 ]
+
+MATURITY_DISPLAY_NAMES = {
+    "personachat": "PersonaChat",
+    "blended_skill_talk": "BST",
+    "anthropic_hh": "HH",
+}
+
+
+def _empty_maturity_bin() -> Dict[str, float]:
+    return {
+        "n_users": 0,
+        "n_messages": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "fpr": 0.0,
+    }
+
+
+def _aggregate_maturity_predictions(predictions: List[Dict], bin_name: str) -> Dict:
+    bin_preds = [p for p in predictions if p.get("maturity_bin") == bin_name]
+    if not bin_preds:
+        return _empty_maturity_bin()
+    y_true = [p["true_label"] for p in bin_preds]
+    y_pred = [p["predicted_label"] for p in bin_preds]
+    y_scores = [p["predicted_score"] for p in bin_preds]
+    m = compute_metrics(y_true, y_pred, y_scores)
+    return {
+        "n_users": len({p["user_id"] for p in bin_preds}),
+        "n_messages": len(bin_preds),
+        "precision": m["precision"],
+        "recall": m["recall"],
+        "f1": m["f1"],
+        "fpr": m["fpr"],
+    }
+
+
+def _rewrite_csv_if_needed(csv_path: str) -> None:
+    """Upgrade an existing CSV header when bootstrap columns are added."""
+    if not os.path.isfile(csv_path):
+        return
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        rows = list(csv.reader(f))
+    if not rows or rows[0] == CSV_RESULT_COLUMNS:
+        return
+    upgraded = [CSV_RESULT_COLUMNS]
+    for row in rows[1:]:
+        upgraded.append(row + [""] * (len(CSV_RESULT_COLUMNS) - len(row)))
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        csv.writer(f).writerows(upgraded)
 
 OVERRIDE_ABLATION_CONFIGS = {
     "overrides_off_full": (True, True, True),
@@ -742,6 +867,7 @@ def append_results_csv(
     csv_path: str = "evaluation_results.csv",
 ) -> None:
     """Append one experiment row to evaluation_results.csv (creates header if new)."""
+    _rewrite_csv_if_needed(csv_path)
     row = [
         dataset,
         experiment_type,
@@ -749,6 +875,15 @@ def append_results_csv(
         metrics.get("recall", 0.0),
         metrics.get("f1", 0.0),
         _format_tp_attribution(metrics),
+        metrics.get("auc_mean", ""),
+        metrics.get("auc_ci_low", ""),
+        metrics.get("auc_ci_high", ""),
+        metrics.get("f1_ci_low", ""),
+        metrics.get("f1_ci_high", ""),
+        metrics.get("prec_ci_low", ""),
+        metrics.get("prec_ci_high", ""),
+        metrics.get("rec_ci_low", ""),
+        metrics.get("rec_ci_high", ""),
     ]
     write_header = not os.path.isfile(csv_path)
     with open(csv_path, "a", newline="", encoding="utf-8") as f:
@@ -817,6 +952,7 @@ def run_override_ablation_experiment(run_datasets: Dict) -> None:
                 enable_temporal=temp,
                 overrides_enabled=False,
                 profile_builder=pm_builder,
+                canonical_metrics=(ablation_name == "overrides_off_full"),
             )
             results["override_ablations"].setdefault(ablation_name, {})[dataset_name] = {
                 "metrics": metrics,
@@ -824,6 +960,23 @@ def run_override_ablation_experiment(run_datasets: Dict) -> None:
                 "predictions": preds,
             }
             append_results_csv(dataset_name, ablation_name, metrics)
+
+    maturity_output: Dict[str, Dict] = {}
+    for dataset_name in run_datasets:
+        display_name = MATURITY_DISPLAY_NAMES.get(dataset_name, dataset_name)
+        off_metrics = (
+            results["override_ablations"]
+            .get("overrides_off_full", {})
+            .get(dataset_name, {})
+            .get("metrics", {})
+        )
+        maturity_output[display_name] = off_metrics.get(
+            "maturity_breakdown",
+            {"cold_start": _empty_maturity_bin(), "stable": _empty_maturity_bin()},
+        )
+    with open("maturity_analysis.json", "w", encoding="utf-8") as f:
+        json.dump(maturity_output, f, indent=2)
+    print("    [OK] maturity_analysis.json written")
 
     _print_override_ablation_summary(run_datasets)
 

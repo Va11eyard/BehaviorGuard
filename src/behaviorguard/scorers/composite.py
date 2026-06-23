@@ -1,6 +1,8 @@
 """Composite scorer for combining component scores with weights and overrides."""
 
-from typing import List
+from typing import List, Optional
+
+import numpy as np
 
 from behaviorguard.models import (
     ComponentScores,
@@ -13,6 +15,9 @@ from behaviorguard.models import (
 
 class CompositeScorer:
     """Combines component scores using configured weights and applies override conditions."""
+
+    def __init__(self, template_provider=None):
+        self.template_provider = template_provider
 
     # Weight configurations by sensitivity level
     WEIGHTS = {
@@ -28,6 +33,7 @@ class CompositeScorer:
         system_config: SystemConfig,
         current_message: CurrentMessage,
         user_profile: UserProfile,
+        message_embedding: Optional[np.ndarray] = None,
     ) -> CompositeScore:
         """
         Combine component scores with weights and apply override conditions.
@@ -43,11 +49,31 @@ class CompositeScorer:
         """
         applied_overrides = []
         overrides_enabled = getattr(system_config, "overrides_enabled", True)
+        override_4_template = getattr(system_config, "override_4_enabled", False)
+        use_template_override = (
+            override_4_template
+            and self.template_provider is not None
+            and message_embedding is not None
+        )
+
+        if overrides_enabled and use_template_override:
+            o4_sim, o4_category = self.template_provider.check_override(message_embedding)
+            if o4_category is not None:
+                return CompositeScore(
+                    anomaly_score=1.0,
+                    applied_overrides=[
+                        f"Template match: {o4_category} (sim={o4_sim:.3f})"
+                    ],
+                    detection_mechanism=f"override_4_template_match:{o4_category}",
+                )
 
         if overrides_enabled:
             # Check for instant HIGH_RISK overrides first
             override_id, override_reason = self._check_high_risk_overrides(
-                component_scores, current_message, user_profile
+                component_scores,
+                current_message,
+                user_profile,
+                skip_keyword_override_4=use_template_override,
             )
             if override_id:
                 applied_overrides.append(override_reason)
@@ -115,6 +141,7 @@ class CompositeScorer:
         component_scores: ComponentScores,
         current_message: CurrentMessage,
         user_profile: UserProfile,
+        skip_keyword_override_4: bool = False,
     ) -> tuple:
         """
         Check for conditions that trigger instant HIGH_RISK override.
@@ -142,7 +169,7 @@ class CompositeScorer:
             return ("override_3", "Critical operation without precedent")
 
         # Override 4: Message contains explicit ATO indicators (check message text)
-        if self._contains_ato_indicators(current_message.text):
+        if not skip_keyword_override_4 and self._contains_ato_indicators(current_message.text):
             return ("override_4", "Explicit account takeover indicators detected")
 
         return ("", "")

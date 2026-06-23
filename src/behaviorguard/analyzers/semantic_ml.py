@@ -103,6 +103,14 @@ class SemanticAnalyzerML:
             contributing_factors=contributing_factors,
         )
 
+    def encode_message(self, text: str) -> np.ndarray:
+        """Return L2-normalized sentence embedding for template override matching."""
+        embedding = self._get_embedding(text)
+        norm = np.linalg.norm(embedding)
+        if norm > 0:
+            return embedding / norm
+        return embedding
+
     def _get_embedding(self, text: str) -> np.ndarray:
         """
         Get sentence embedding for text.

@@ -65,6 +65,8 @@ class BehaviorGuardEvaluatorML:
         # Utilities
         self.cold_start_handler = ColdStartHandler()
         self.output_formatter = OutputFormatter()
+        self._template_provider = None
+        self._template_provider_path: str | None = None
 
     def evaluate(self, evaluation_input: EvaluationInput) -> EvaluationResult:
         """
@@ -105,9 +107,21 @@ class BehaviorGuardEvaluatorML:
             temporal=temporal_result.score if system_config.enable_temporal_scoring else 0.0,
         )
 
+        message_embedding = None
+        if getattr(system_config, "override_4_enabled", False):
+            message_embedding = self.semantic_analyzer.encode_message(current_message.text)
+            template_provider = self._get_template_provider(system_config)
+            self.composite_scorer.template_provider = template_provider
+        else:
+            self.composite_scorer.template_provider = None
+
         # Step 2: Composite Scoring (ensemble method)
         composite_result = self.composite_scorer.compute_score(
-            component_scores, system_config, current_message, user_profile
+            component_scores,
+            system_config,
+            current_message,
+            user_profile,
+            message_embedding=message_embedding,
         )
         anomaly_score = composite_result.anomaly_score
         metadata["detection_mechanism"] = composite_result.detection_mechanism
@@ -184,3 +198,15 @@ class BehaviorGuardEvaluatorML:
         )
 
         return evaluation_result
+
+    def _get_template_provider(self, system_config):
+        """Lazy-load template override provider when Override 4 is enabled."""
+        from behaviorguard.overrides.template_override import TemplateOverrideProvider
+
+        path = getattr(system_config, "template_path", None)
+        if not path:
+            return None
+        if self._template_provider is None or self._template_provider_path != path:
+            self._template_provider = TemplateOverrideProvider(path)
+            self._template_provider_path = path
+        return self._template_provider

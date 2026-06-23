@@ -161,6 +161,8 @@ class SystemConfig(BaseModel):
     enable_linguistic_scoring: bool = True
     enable_semantic_scoring: bool = True
     overrides_enabled: bool = True
+    override_4_enabled: bool = False
+    template_path: Optional[str] = None
 
 
 # Component Results
@@ -201,10 +203,7 @@ class CompositeScore(BaseModel):
 
     anomaly_score: float = Field(ge=0.0, le=1.0)
     applied_overrides: List[str]
-    detection_mechanism: Literal[
-        "override_1", "override_2", "override_3", "override_4",
-        "normal_override", "composite_score"
-    ] = "composite_score"
+    detection_mechanism: str = "composite_score"
 
 
 class ConfidenceFactors(BaseModel):
