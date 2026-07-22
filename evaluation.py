@@ -91,8 +91,19 @@ def build_user_profile(user_data: Dict, user_messages: List[Dict]) -> UserProfil
     texts = [m["message_text"] for m in normal_msgs[:50]]
     embeddings = semantic_analyzer.model.encode(texts, convert_to_numpy=True)
     
-    # Linguistic profile
+    # Linguistic profile — same proxies as ProfileManager.build_from_history so
+    # profile statistics match the message features from message_to_current_message
     lengths = [len(m["message_text"].split()) for m in normal_msgs]
+    formality_vals = [min(1.0, n / 50.0) for n in lengths]
+    politeness_vals = [
+        float(
+            any(
+                w in m["message_text"].lower()
+                for w in ("please", "thank", "sorry", "could you", "would you")
+            )
+        )
+        for m in normal_msgs
+    ]
     
     # Temporal profile
     from datetime import datetime as dt
@@ -118,12 +129,13 @@ def build_user_profile(user_data: Dict, user_messages: List[Dict]) -> UserProfil
         linguistic_profile=LinguisticProfile(
             avg_message_length_tokens=float(np.mean(lengths)),
             avg_message_length_chars=float(np.mean([len(m["message_text"]) for m in normal_msgs])),
+            avg_message_length_tokens_std=max(float(np.std(lengths)), 1.0),
             lexical_diversity_mean=0.7,
             lexical_diversity_std=0.1,
-            formality_score_mean=0.5,
-            formality_score_std=0.1,
-            politeness_score_mean=0.6,
-            politeness_score_std=0.1,
+            formality_score_mean=float(np.mean(formality_vals)),
+            formality_score_std=max(float(np.std(formality_vals)), 0.01),
+            politeness_score_mean=float(np.mean(politeness_vals)),
+            politeness_score_std=max(float(np.std(politeness_vals)), 0.01),
             question_ratio_mean=0.3,
             uses_technical_vocabulary=True,
             uses_code_blocks=False,
@@ -214,8 +226,17 @@ def message_to_current_message(
         lexical_diversity = float(msg["lexical_diversity"])
     else:
         lexical_diversity = len(set(text.split())) / max(len(text.split()), 1)
-    formality_score = float(msg["formality_score"]) if "formality_score" in msg else 0.5
-    politeness_score = float(msg["politeness_score"]) if "politeness_score" in msg else 0.6
+    lower = text.lower()
+    if "formality_score" in msg:
+        formality_score = float(msg["formality_score"])
+    else:
+        formality_score = min(1.0, n_tokens / 50.0)
+    if "politeness_score" in msg:
+        politeness_score = float(msg["politeness_score"])
+    else:
+        politeness_score = float(
+            any(w in lower for w in ("please", "thank", "sorry", "could you", "would you"))
+        )
 
     return CurrentMessage(
         text=text,
