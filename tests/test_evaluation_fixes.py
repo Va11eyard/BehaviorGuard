@@ -131,3 +131,40 @@ def test_compute_per_class_metrics_minimal_fixture() -> None:
     ap = out["attack_phase"]
     assert set(ap.keys()) == {"benign"}
     assert ap["benign"]["support"] == 4
+
+
+# ---------- CSV upsert ----------
+
+@patch("sentence_transformers.SentenceTransformer", _fake_sentence_transformer)
+@patch("builtins.open", _open_dataset_stub)
+def test_append_results_csv_upserts_by_dataset_and_experiment(tmp_path) -> None:
+    """append_results_csv replaces an existing (dataset, experiment_type) row instead of duplicating."""
+    evaluation = _import_evaluation()
+    csv_path = str(tmp_path / "evaluation_results.csv")
+    metrics_v1 = {
+        "precision": 0.5,
+        "recall": 1.0,
+        "f1": 0.693,
+        "tp_attribution": {"composite_score": {"count": 26, "pct": 100.0}},
+    }
+    metrics_v2 = {
+        **metrics_v1,
+        "auc_mean": 0.891,
+        "f1_ci_low": 0.5,
+        "f1_ci_high": 0.8,
+    }
+
+    evaluation.append_results_csv("personachat", "overrides_off_full", metrics_v1, csv_path=csv_path)
+    evaluation.append_results_csv("personachat", "overrides_off_full", metrics_v2, csv_path=csv_path)
+    evaluation.append_results_csv("blended_skill_talk", "overrides_off_full", metrics_v1, csv_path=csv_path)
+
+    import csv
+
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        rows = list(csv.DictReader(f))
+
+    assert len(rows) == 2
+    pc = next(r for r in rows if r["dataset"] == "personachat")
+    assert float(pc["f1"]) == 0.693
+    assert pc["auc_mean"] == "0.891"
+    assert pc["f1_ci_low"] == "0.5"

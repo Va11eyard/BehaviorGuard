@@ -881,15 +881,14 @@ def _format_tp_attribution(metrics: Dict) -> str:
     )
 
 
-def append_results_csv(
-    dataset: str,
-    experiment_type: str,
-    metrics: Dict,
-    csv_path: str = "evaluation_results.csv",
-) -> None:
-    """Append one experiment row to evaluation_results.csv (creates header if new)."""
-    _rewrite_csv_if_needed(csv_path)
-    row = [
+def _row_ci_completeness(row: List) -> int:
+    """Count populated bootstrap / AUC columns (indices 6 onward)."""
+    padded = row + [""] * max(0, len(CSV_RESULT_COLUMNS) - len(row))
+    return sum(1 for value in padded[6 : len(CSV_RESULT_COLUMNS)] if str(value).strip() != "")
+
+
+def _metrics_to_csv_row(dataset: str, experiment_type: str, metrics: Dict) -> List:
+    return [
         dataset,
         experiment_type,
         metrics.get("precision", 0.0),
@@ -906,12 +905,50 @@ def append_results_csv(
         metrics.get("rec_ci_low", ""),
         metrics.get("rec_ci_high", ""),
     ]
-    write_header = not os.path.isfile(csv_path)
-    with open(csv_path, "a", newline="", encoding="utf-8") as f:
+
+
+def _load_results_csv_rows(csv_path: str) -> Dict[Tuple[str, str], List]:
+    """Read evaluation_results.csv into a dict keyed by (dataset, experiment_type)."""
+    _rewrite_csv_if_needed(csv_path)
+    if not os.path.isfile(csv_path):
+        return {}
+    with open(csv_path, newline="", encoding="utf-8") as f:
+        raw_rows = list(csv.reader(f))
+    if len(raw_rows) < 2:
+        return {}
+    keyed: Dict[Tuple[str, str], List] = {}
+    for row in raw_rows[1:]:
+        if len(row) < 2:
+            continue
+        key = (row[0], row[1])
+        padded = (row + [""] * (len(CSV_RESULT_COLUMNS) - len(row)))[: len(CSV_RESULT_COLUMNS)]
+        existing = keyed.get(key)
+        if existing is None or _row_ci_completeness(padded) >= _row_ci_completeness(existing):
+            keyed[key] = padded
+    return keyed
+
+
+def _write_results_csv(csv_path: str, keyed_rows: Dict[Tuple[str, str], List]) -> None:
+    ordered = sorted(keyed_rows.values(), key=lambda r: (r[0], r[1]))
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        if write_header:
-            writer.writerow(CSV_RESULT_COLUMNS)
-        writer.writerow(row)
+        writer.writerow(CSV_RESULT_COLUMNS)
+        writer.writerows(ordered)
+
+
+def append_results_csv(
+    dataset: str,
+    experiment_type: str,
+    metrics: Dict,
+    csv_path: str = "evaluation_results.csv",
+) -> None:
+    """Upsert one experiment row in evaluation_results.csv keyed on (dataset, experiment_type).
+
+    Re-running the same experiment replaces the prior row instead of appending a duplicate.
+    """
+    keyed = _load_results_csv_rows(csv_path)
+    keyed[(dataset, experiment_type)] = _metrics_to_csv_row(dataset, experiment_type, metrics)
+    _write_results_csv(csv_path, keyed)
 
 
 def _print_override_ablation_summary(run_datasets: Dict) -> None:
