@@ -1,0 +1,628 @@
+{
+  "protocol": {
+    "dataset": "personachat_ato_episodes.json",
+    "seed": 42,
+    "cusum_kappa": 0.5,
+    "window_w": 5,
+    "lambda_decay": 0.5,
+    "n_streams": 5000,
+    "n_episodes": 300,
+    "verifier_negatives_ratio": 5,
+    "fa_definition": "alarm on a benign stream or before episode start; rate per 1000 benign messages",
+    "delay_definition": "1-based index of first alarm within the episode window"
+  },
+  "detectors": {
+    "cusum_stylo": {
+      "episode_auc": 0.8043,
+      "episode_auc_ci95": [
+        0.782,
+        0.8258
+      ],
+      "n_benign_messages": 10140,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 1132.495,
+          "actual_fa_per_1000": 0.592,
+          "n_false_alarms": 6,
+          "detection_rate": 0.0767,
+          "detection_rate_ci95": [
+            0.05,
+            0.1067
+          ],
+          "n_detected": 23,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.87
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 1123.0533,
+          "actual_fa_per_1000": 1.085,
+          "n_false_alarms": 11,
+          "detection_rate": 0.08,
+          "detection_rate_ci95": [
+            0.0533,
+            0.1133
+          ],
+          "n_detected": 24,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 4.5,
+          "mean_delay_msgs": 4.71
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 1053.847,
+          "actual_fa_per_1000": 2.071,
+          "n_false_alarms": 21,
+          "detection_rate": 0.1,
+          "detection_rate_ci95": [
+            0.0667,
+            0.1333
+          ],
+          "n_detected": 30,
+          "n_pre_episode_alarms": 2,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.53
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 1017.6944,
+          "actual_fa_per_1000": 5.03,
+          "n_false_alarms": 51,
+          "detection_rate": 0.0933,
+          "detection_rate_ci95": [
+            0.0633,
+            0.1267
+          ],
+          "n_detected": 28,
+          "n_pre_episode_alarms": 5,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.61
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 991.5306,
+          "actual_fa_per_1000": 10.059,
+          "n_false_alarms": 102,
+          "detection_rate": 0.1033,
+          "detection_rate_ci95": [
+            0.07,
+            0.1367
+          ],
+          "n_detected": 31,
+          "n_pre_episode_alarms": 6,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.23
+        }
+      ]
+    },
+    "cusum_embed": {
+      "episode_auc": 0.9736,
+      "episode_auc_ci95": [
+        0.9628,
+        0.9829
+      ],
+      "n_benign_messages": 10140,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 5.9334,
+          "actual_fa_per_1000": 0.592,
+          "n_false_alarms": 6,
+          "detection_rate": 0.5767,
+          "detection_rate_ci95": [
+            0.52,
+            0.63
+          ],
+          "n_detected": 173,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.82
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 5.5342,
+          "actual_fa_per_1000": 1.085,
+          "n_false_alarms": 11,
+          "detection_rate": 0.63,
+          "detection_rate_ci95": [
+            0.5767,
+            0.6833
+          ],
+          "n_detected": 189,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.62
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 5.1391,
+          "actual_fa_per_1000": 2.071,
+          "n_false_alarms": 21,
+          "detection_rate": 0.6633,
+          "detection_rate_ci95": [
+            0.61,
+            0.7167
+          ],
+          "n_detected": 199,
+          "n_pre_episode_alarms": 2,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.45
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 4.5418,
+          "actual_fa_per_1000": 5.03,
+          "n_false_alarms": 51,
+          "detection_rate": 0.7367,
+          "detection_rate_ci95": [
+            0.6867,
+            0.7867
+          ],
+          "n_detected": 221,
+          "n_pre_episode_alarms": 6,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.21
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 3.8793,
+          "actual_fa_per_1000": 10.059,
+          "n_false_alarms": 102,
+          "detection_rate": 0.8133,
+          "detection_rate_ci95": [
+            0.7667,
+            0.8567
+          ],
+          "n_detected": 244,
+          "n_pre_episode_alarms": 6,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 3.82
+        }
+      ]
+    },
+    "cusum_combined": {
+      "episode_auc": 0.8184,
+      "episode_auc_ci95": [
+        0.798,
+        0.8381
+      ],
+      "n_benign_messages": 10140,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 567.361,
+          "actual_fa_per_1000": 0.592,
+          "n_false_alarms": 6,
+          "detection_rate": 0.08,
+          "detection_rate_ci95": [
+            0.0533,
+            0.1133
+          ],
+          "n_detected": 24,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.83
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 562.2792,
+          "actual_fa_per_1000": 1.085,
+          "n_false_alarms": 11,
+          "detection_rate": 0.0833,
+          "detection_rate_ci95": [
+            0.0533,
+            0.1167
+          ],
+          "n_detected": 25,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.72
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 528.0571,
+          "actual_fa_per_1000": 2.071,
+          "n_false_alarms": 21,
+          "detection_rate": 0.1033,
+          "detection_rate_ci95": [
+            0.07,
+            0.1367
+          ],
+          "n_detected": 31,
+          "n_pre_episode_alarms": 2,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.55
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 510.2244,
+          "actual_fa_per_1000": 5.03,
+          "n_false_alarms": 51,
+          "detection_rate": 0.1,
+          "detection_rate_ci95": [
+            0.0667,
+            0.1333
+          ],
+          "n_detected": 30,
+          "n_pre_episode_alarms": 5,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.67
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 496.5681,
+          "actual_fa_per_1000": 10.059,
+          "n_false_alarms": 102,
+          "detection_rate": 0.1033,
+          "detection_rate_ci95": [
+            0.07,
+            0.1367
+          ],
+          "n_detected": 31,
+          "n_pre_episode_alarms": 6,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.13
+        }
+      ]
+    },
+    "permsg_combined": {
+      "episode_auc": 0.7717,
+      "episode_auc_ci95": [
+        0.7494,
+        0.7937
+      ],
+      "n_benign_messages": 10140,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 539.7281,
+          "actual_fa_per_1000": 0.592,
+          "n_false_alarms": 6,
+          "detection_rate": 0.0033,
+          "detection_rate_ci95": [
+            0.0,
+            0.01
+          ],
+          "n_detected": 1,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.0
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 515.9431,
+          "actual_fa_per_1000": 1.085,
+          "n_false_alarms": 11,
+          "detection_rate": 0.0033,
+          "detection_rate_ci95": [
+            0.0,
+            0.01
+          ],
+          "n_detected": 1,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.0
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 510.5655,
+          "actual_fa_per_1000": 2.071,
+          "n_false_alarms": 21,
+          "detection_rate": 0.01,
+          "detection_rate_ci95": [
+            0.0,
+            0.0233
+          ],
+          "n_detected": 3,
+          "n_pre_episode_alarms": 3,
+          "median_delay_msgs": 2.0,
+          "mean_delay_msgs": 2.33
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 507.9104,
+          "actual_fa_per_1000": 5.03,
+          "n_false_alarms": 51,
+          "detection_rate": 0.0133,
+          "detection_rate_ci95": [
+            0.0033,
+            0.0267
+          ],
+          "n_detected": 4,
+          "n_pre_episode_alarms": 4,
+          "median_delay_msgs": 3.0,
+          "mean_delay_msgs": 3.5
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 489.5719,
+          "actual_fa_per_1000": 10.059,
+          "n_false_alarms": 102,
+          "detection_rate": 0.0333,
+          "detection_rate_ci95": [
+            0.0133,
+            0.0533
+          ],
+          "n_detected": 10,
+          "n_pre_episode_alarms": 6,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 3.7
+        }
+      ]
+    },
+    "permsg_bg": {
+      "episode_auc": 0.7564,
+      "episode_auc_ci95": [
+        0.7337,
+        0.7783
+      ],
+      "n_benign_messages": 10140,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 0.5999,
+          "actual_fa_per_1000": 0.592,
+          "n_false_alarms": 6,
+          "detection_rate": 0.0,
+          "detection_rate_ci95": [
+            0.0,
+            0.0
+          ],
+          "n_detected": 0,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": null,
+          "mean_delay_msgs": null
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 0.597,
+          "actual_fa_per_1000": 0.986,
+          "n_false_alarms": 10,
+          "detection_rate": 0.0,
+          "detection_rate_ci95": [
+            0.0,
+            0.0
+          ],
+          "n_detected": 0,
+          "n_pre_episode_alarms": 2,
+          "median_delay_msgs": null,
+          "mean_delay_msgs": null
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 0.593,
+          "actual_fa_per_1000": 1.972,
+          "n_false_alarms": 20,
+          "detection_rate": 0.0,
+          "detection_rate_ci95": [
+            0.0,
+            0.0
+          ],
+          "n_detected": 0,
+          "n_pre_episode_alarms": 3,
+          "median_delay_msgs": null,
+          "mean_delay_msgs": null
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 0.5853,
+          "actual_fa_per_1000": 5.03,
+          "n_false_alarms": 51,
+          "detection_rate": 0.0133,
+          "detection_rate_ci95": [
+            0.0033,
+            0.0267
+          ],
+          "n_detected": 4,
+          "n_pre_episode_alarms": 4,
+          "median_delay_msgs": 4.5,
+          "mean_delay_msgs": 5.0
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 0.579,
+          "actual_fa_per_1000": 9.961,
+          "n_false_alarms": 101,
+          "detection_rate": 0.0267,
+          "detection_rate_ci95": [
+            0.01,
+            0.0433
+          ],
+          "n_detected": 8,
+          "n_pre_episode_alarms": 5,
+          "median_delay_msgs": 4.5,
+          "mean_delay_msgs": 5.62
+        }
+      ]
+    },
+    "window_embed": {
+      "episode_auc": 0.9175,
+      "episode_auc_ci95": [
+        0.907,
+        0.927
+      ],
+      "n_benign_messages": 10140,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 11.9592,
+          "actual_fa_per_1000": 0.592,
+          "n_false_alarms": 6,
+          "detection_rate": 0.01,
+          "detection_rate_ci95": [
+            0.0,
+            0.0233
+          ],
+          "n_detected": 3,
+          "n_pre_episode_alarms": 0,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 5.67
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 11.1397,
+          "actual_fa_per_1000": 1.085,
+          "n_false_alarms": 11,
+          "detection_rate": 0.02,
+          "detection_rate_ci95": [
+            0.0067,
+            0.0367
+          ],
+          "n_detected": 6,
+          "n_pre_episode_alarms": 0,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.83
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 10.2879,
+          "actual_fa_per_1000": 2.071,
+          "n_false_alarms": 21,
+          "detection_rate": 0.03,
+          "detection_rate_ci95": [
+            0.0133,
+            0.05
+          ],
+          "n_detected": 9,
+          "n_pre_episode_alarms": 0,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.89
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 7.8282,
+          "actual_fa_per_1000": 5.03,
+          "n_false_alarms": 51,
+          "detection_rate": 0.1,
+          "detection_rate_ci95": [
+            0.0667,
+            0.1333
+          ],
+          "n_detected": 30,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.53
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 6.4243,
+          "actual_fa_per_1000": 10.059,
+          "n_false_alarms": 102,
+          "detection_rate": 0.18,
+          "detection_rate_ci95": [
+            0.14,
+            0.2234
+          ],
+          "n_detected": 54,
+          "n_pre_episode_alarms": 5,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.35
+        }
+      ]
+    },
+    "verifier_lr": {
+      "episode_auc": 0.87,
+      "episode_auc_ci95": [
+        0.8551,
+        0.8846
+      ],
+      "n_benign_messages": 10140,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 0.9999,
+          "actual_fa_per_1000": 0.592,
+          "n_false_alarms": 6,
+          "detection_rate": 0.0,
+          "detection_rate_ci95": [
+            0.0,
+            0.0
+          ],
+          "n_detected": 0,
+          "n_pre_episode_alarms": 0,
+          "median_delay_msgs": null,
+          "mean_delay_msgs": null
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 0.9998,
+          "actual_fa_per_1000": 1.085,
+          "n_false_alarms": 11,
+          "detection_rate": 0.01,
+          "detection_rate_ci95": [
+            0.0,
+            0.0233
+          ],
+          "n_detected": 3,
+          "n_pre_episode_alarms": 0,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.33
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 0.9994,
+          "actual_fa_per_1000": 2.071,
+          "n_false_alarms": 21,
+          "detection_rate": 0.0233,
+          "detection_rate_ci95": [
+            0.0067,
+            0.04
+          ],
+          "n_detected": 7,
+          "n_pre_episode_alarms": 1,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 5.0
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 0.9988,
+          "actual_fa_per_1000": 5.03,
+          "n_false_alarms": 51,
+          "detection_rate": 0.05,
+          "detection_rate_ci95": [
+            0.0267,
+            0.0767
+          ],
+          "n_detected": 15,
+          "n_pre_episode_alarms": 4,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 5.0
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 0.9974,
+          "actual_fa_per_1000": 10.059,
+          "n_false_alarms": 102,
+          "detection_rate": 0.1233,
+          "detection_rate_ci95": [
+            0.0867,
+            0.1633
+          ],
+          "n_detected": 37,
+          "n_pre_episode_alarms": 6,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.24
+        }
+      ]
+    }
+  },
+  "null_control_cusum_embed": {
+    "method": "per-episode CUSUM continuation from true pre-episode state with k residuals bootstrap-sampled from the user's own standardized train residuals (n_sim=500, seed=42)",
+    "null_detection_rate_at_fa": {
+      "0.5": 0.004,
+      "1.0": 0.0072,
+      "2.0": 0.0115,
+      "5.0": 0.0215,
+      "10.0": 0.0403
+    },
+    "observed_detection_rate_at_fa": {
+      "0.5": 0.5767,
+      "1.0": 0.63,
+      "2.0": 0.6633,
+      "5.0": 0.7367,
+      "10.0": 0.8133
+    }
+  }
+}
