@@ -1,0 +1,19 @@
+{
+  "dataset": "personachat_mimicry",
+  "donor_mode": "nearest_centroid",
+  "cusum_embed_kappa_0.5": {
+    "auc": 0.8704,
+    "auc_ci95": [
+      0.8457,
+      0.8941
+    ],
+    "det_rate_fa1": 0.35,
+    "det_rate_fa1_ci95": [
+      0.2967,
+      0.4033
+    ],
+    "median_delay": 4.0
+  },
+  "comparison_random_donors_fa1": 0.63,
+  "delta_detection_points": -28.0
+}

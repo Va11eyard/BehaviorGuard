@@ -1,0 +1,40 @@
+{
+  "statistics": {
+    "organic_mean": 0.385948500394633,
+    "organic_std": 0.23526112776134692,
+    "anomalous_mean": 0.27527586206896554,
+    "anomalous_std": 0.08910623537253726,
+    "mean_diff": 0.11067263832566748,
+    "pooled_std": 0.23504595330781816,
+    "correlation_with_label": -0.025115033681020884
+  },
+  "metrics_with_sling": {
+    "auc": 0.6551315896905533,
+    "f1": 0.0036068530207394047,
+    "precision": 0.001851851851851852,
+    "recall": 0.06896551724137931
+  },
+  "metrics_without_sling": {
+    "auc": 0.9171951119941213,
+    "f1": 0.3137254901960784,
+    "precision": 0.36363636363636365,
+    "recall": 0.27586206896551724
+  },
+  "auc_difference": -0.262063522303568,
+  "f1_difference": -0.310118637175339,
+  "bootstrap_ci": {
+    "low": -0.3055432686561616,
+    "high": -0.21382770831066045,
+    "width": 0.09171556034550116
+  },
+  "bootstrap_requested": 1000,
+  "bootstrap_skipped_single_class": 0,
+  "bootstrap_skipped_auc_error": 0,
+  "bootstrap_effective_n": 1000,
+  "ci_contains_zero": false,
+  "decision": "FIX_IT",
+  "decision_explanation": "AUC is meaningfully HIGHER with s_ling EXCLUDED. s_ling degrades composite separability. Worth implementing exclusion (set weight 0, renormalize).",
+  "n_messages": 10165,
+  "n_organic": 10136,
+  "n_anomalous": 29
+}

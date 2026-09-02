@@ -1,0 +1,64 @@
+{
+  "methods": {
+    "f1": "bootstrap message-level resampling (n=5000, seed=42)",
+    "recall_precision": "scipy.stats.binomtest(...).proportion_ci(method='exact')"
+  },
+  "confidence_level": 0.95,
+  "evaluation_context": {
+    "dataset": "personachat_processed_corrected.json",
+    "split": "80/20 per-user index",
+    "n_test_messages": 10165,
+    "n_test_positives": 29,
+    "n_test_negatives": 10136,
+    "threshold": 0.6,
+    "score_sources": {
+      "with_sling": "component composite 0.40/0.35/0.25 from sling_audit_component_scores.npz",
+      "without_sling": "evaluate() composite from mahalanobis_comparison_scores.npz (cosine, linguistic excluded)"
+    }
+  },
+  "metrics": {
+    "f1_without_sling": {
+      "metric": "f1_without_sling",
+      "point_estimate": 0.3137254901960784,
+      "ci_low": 0.14285714285714285,
+      "ci_high": 0.47368421052631576,
+      "ci_method": "bootstrap_message_level_95",
+      "bootstrap_requested": 5000,
+      "bootstrap_skipped_single_class": 0,
+      "bootstrap_effective_n": 5000,
+      "bootstrap_seed": 42,
+      "note": "linguistic component excluded"
+    },
+    "f1_with_sling": {
+      "metric": "f1_with_sling",
+      "point_estimate": 0.0036068530207394047,
+      "ci_low": 0.0,
+      "ci_high": 0.009191387859191512,
+      "ci_method": "bootstrap_message_level_95",
+      "bootstrap_requested": 5000,
+      "bootstrap_skipped_single_class": 0,
+      "bootstrap_effective_n": 5000,
+      "bootstrap_seed": 42,
+      "note": "default composite with linguistic weight 0.35"
+    },
+    "recall_without_sling": {
+      "metric": "recall_without_sling",
+      "point_estimate": 0.27586206896551724,
+      "ci_low": 0.12734011410223017,
+      "ci_high": 0.4723844824300741,
+      "ci_method": "clopper_pearson_exact_95",
+      "tp": 8,
+      "n_positives": 29
+    },
+    "precision_without_sling": {
+      "metric": "precision_without_sling",
+      "point_estimate": 0.38095238095238093,
+      "ci_low": 0.18107162554017325,
+      "ci_high": 0.6156456096213523,
+      "ci_method": "clopper_pearson_exact_95",
+      "tp": 8,
+      "n_predicted_positive": 21
+    }
+  },
+  "reporting_standard": "F1: bootstrap 95% CI via message-level resampling. Recall/precision: exact 95% Clopper-Pearson. n=29 test positives is underpowered for generalization claims."
+}

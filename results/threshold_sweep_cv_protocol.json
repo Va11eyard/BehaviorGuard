@@ -1,0 +1,430 @@
+{
+  "protocol": {
+    "method": "5_fold_user_level_cv",
+    "reason": "single_split validation positives (11) < 12",
+    "n_folds": 5,
+    "positive_cv_seed": 42,
+    "tau_sweep": "[0.01,0.99] step 0.01",
+    "lambda_decay": 0.5,
+    "profile_split": "80/20 chronological per user (unchanged)",
+    "eval_config": {
+      "sensitivity_level": "medium",
+      "deployment_context": "enterprise",
+      "overrides_enabled": false,
+      "enable_linguistic_scoring": false,
+      "linguistic_component_enabled": false,
+      "enable_semantic_scoring": true,
+      "enable_temporal_scoring": true
+    }
+  },
+  "fold_plan_audit": {
+    "n_folds": 5,
+    "positive_cv_seed": 42,
+    "n_holdout_positive_users": 25,
+    "positive_users_per_fold": [
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "organic_users_per_bucket": [
+      953,
+      997,
+      1024,
+      1016,
+      985
+    ],
+    "validation_positive_counts_per_fold": [
+      23,
+      23,
+      24,
+      23,
+      23
+    ],
+    "test_positive_counts_per_fold": [
+      6,
+      6,
+      5,
+      6,
+      6
+    ],
+    "use_cv_primary": true,
+    "single_split_validation_positives": 11,
+    "cv_trigger_threshold": 12,
+    "cv_selected_because": "validation_half positives (11) < 12; 5-fold user CV is primary",
+    "positive_user_folds": [
+      [
+        "pc_user_08492",
+        "pc_user_08583",
+        "pc_user_10625",
+        "pc_user_12365",
+        "pc_user_06591"
+      ],
+      [
+        "pc_user_05951",
+        "pc_user_09168",
+        "pc_user_16496",
+        "pc_user_04150",
+        "pc_user_06697"
+      ],
+      [
+        "pc_user_01884",
+        "pc_user_00738",
+        "pc_user_13112",
+        "pc_user_10319",
+        "pc_user_06949"
+      ],
+      [
+        "pc_user_03840",
+        "pc_user_06855",
+        "pc_user_07996",
+        "pc_user_14392",
+        "pc_user_01705"
+      ],
+      [
+        "pc_user_03095",
+        "pc_user_13124",
+        "pc_user_01192",
+        "pc_user_07354",
+        "pc_user_06331"
+      ]
+    ]
+  },
+  "cosine": {
+    "semantic_mode": "cosine",
+    "fold_results": [
+      {
+        "fold": 0,
+        "tau_star": 0.61,
+        "validation": {
+          "n_users": 4042,
+          "n_messages": 8222,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.3784
+        },
+        "test": {
+          "n_users": 958,
+          "n_messages": 1943,
+          "n_positives": 6,
+          "precision": 1.0,
+          "recall": 0.1667,
+          "f1": 0.2857,
+          "fpr": 0.0,
+          "tp": 1,
+          "fp": 0,
+          "fn": 5,
+          "tn": 1937
+        }
+      },
+      {
+        "fold": 1,
+        "tau_star": 0.61,
+        "validation": {
+          "n_users": 3998,
+          "n_messages": 8126,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.2941
+        },
+        "test": {
+          "n_users": 1002,
+          "n_messages": 2039,
+          "n_positives": 6,
+          "precision": 0.75,
+          "recall": 0.5,
+          "f1": 0.6,
+          "fpr": 0.0005,
+          "tp": 3,
+          "fp": 1,
+          "fn": 3,
+          "tn": 2032
+        }
+      },
+      {
+        "fold": 2,
+        "tau_star": 0.61,
+        "validation": {
+          "n_users": 3971,
+          "n_messages": 8080,
+          "n_positives": 24,
+          "f1_at_tau_star": 0.3429
+        },
+        "test": {
+          "n_users": 1029,
+          "n_messages": 2085,
+          "n_positives": 5,
+          "precision": 0.5,
+          "recall": 0.4,
+          "f1": 0.4444,
+          "fpr": 0.001,
+          "tp": 2,
+          "fp": 2,
+          "fn": 3,
+          "tn": 2078
+        }
+      },
+      {
+        "fold": 3,
+        "tau_star": 0.61,
+        "validation": {
+          "n_users": 3979,
+          "n_messages": 8080,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.4324
+        },
+        "test": {
+          "n_users": 1021,
+          "n_messages": 2085,
+          "n_positives": 6,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0005,
+          "tp": 0,
+          "fp": 1,
+          "fn": 6,
+          "tn": 2078
+        }
+      },
+      {
+        "fold": 4,
+        "tau_star": 0.61,
+        "validation": {
+          "n_users": 4010,
+          "n_messages": 8152,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.3636
+        },
+        "test": {
+          "n_users": 990,
+          "n_messages": 2013,
+          "n_positives": 6,
+          "precision": 0.4,
+          "recall": 0.3333,
+          "f1": 0.3636,
+          "fpr": 0.0015,
+          "tp": 2,
+          "fp": 3,
+          "fn": 4,
+          "tn": 2004
+        }
+      }
+    ],
+    "tau_star_per_fold": [
+      0.61,
+      0.61,
+      0.61,
+      0.61,
+      0.61
+    ],
+    "tau_star_mean": 0.61,
+    "tau_star_std": 0.0,
+    "tau_star_min": 0.61,
+    "tau_star_max": 0.61,
+    "test_f1_per_fold": [
+      0.2857,
+      0.6,
+      0.4444,
+      0.0,
+      0.3636
+    ],
+    "test_f1_mean": 0.3387,
+    "test_f1_std": 0.1988,
+    "pooled_test": {
+      "tp": 8,
+      "fp": 7,
+      "fn": 21,
+      "tn": 10129,
+      "precision": 0.5333,
+      "recall": 0.2759,
+      "f1": 0.3636,
+      "fpr": 0.0007,
+      "f1_bootstrap_ci": {
+        "point_estimate": 0.3636,
+        "ci_low": 0.1702127659574468,
+        "ci_high": 0.5357360627177697,
+        "ci_method": "bootstrap_message_level_pooled_test_at_fold_tau_star",
+        "bootstrap_requested": 5000,
+        "bootstrap_skipped_single_class": 0,
+        "bootstrap_effective_n": 5000,
+        "bootstrap_seed": 42
+      }
+    }
+  },
+  "mahalanobis": {
+    "semantic_mode": "mahalanobis",
+    "fold_results": [
+      {
+        "fold": 0,
+        "tau_star": 0.36,
+        "validation": {
+          "n_users": 4042,
+          "n_messages": 8222,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.1765
+        },
+        "test": {
+          "n_users": 958,
+          "n_messages": 1943,
+          "n_positives": 6,
+          "precision": 0.75,
+          "recall": 0.5,
+          "f1": 0.6,
+          "fpr": 0.0005,
+          "tp": 3,
+          "fp": 1,
+          "fn": 3,
+          "tn": 1936
+        }
+      },
+      {
+        "fold": 1,
+        "tau_star": 0.36,
+        "validation": {
+          "n_users": 3998,
+          "n_messages": 8126,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.3125
+        },
+        "test": {
+          "n_users": 1002,
+          "n_messages": 2039,
+          "n_positives": 6,
+          "precision": 0.1667,
+          "recall": 0.1667,
+          "f1": 0.1667,
+          "fpr": 0.0025,
+          "tp": 1,
+          "fp": 5,
+          "fn": 5,
+          "tn": 2028
+        }
+      },
+      {
+        "fold": 2,
+        "tau_star": 0.36,
+        "validation": {
+          "n_users": 3971,
+          "n_messages": 8080,
+          "n_positives": 24,
+          "f1_at_tau_star": 0.3158
+        },
+        "test": {
+          "n_users": 1029,
+          "n_messages": 2085,
+          "n_positives": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "fpr": 0.0005,
+          "tp": 0,
+          "fp": 1,
+          "fn": 5,
+          "tn": 2079
+        }
+      },
+      {
+        "fold": 3,
+        "tau_star": 0.36,
+        "validation": {
+          "n_users": 3979,
+          "n_messages": 8080,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.2778
+        },
+        "test": {
+          "n_users": 1021,
+          "n_messages": 2085,
+          "n_positives": 6,
+          "precision": 0.5,
+          "recall": 0.1667,
+          "f1": 0.25,
+          "fpr": 0.0005,
+          "tp": 1,
+          "fp": 1,
+          "fn": 5,
+          "tn": 2078
+        }
+      },
+      {
+        "fold": 4,
+        "tau_star": 0.36,
+        "validation": {
+          "n_users": 4010,
+          "n_messages": 8152,
+          "n_positives": 23,
+          "f1_at_tau_star": 0.2778
+        },
+        "test": {
+          "n_users": 990,
+          "n_messages": 2013,
+          "n_positives": 6,
+          "precision": 0.5,
+          "recall": 0.1667,
+          "f1": 0.25,
+          "fpr": 0.0005,
+          "tp": 1,
+          "fp": 1,
+          "fn": 5,
+          "tn": 2006
+        }
+      }
+    ],
+    "tau_star_per_fold": [
+      0.36,
+      0.36,
+      0.36,
+      0.36,
+      0.36
+    ],
+    "tau_star_mean": 0.36,
+    "tau_star_std": 0.0,
+    "tau_star_min": 0.36,
+    "tau_star_max": 0.36,
+    "test_f1_per_fold": [
+      0.6,
+      0.1667,
+      0.0,
+      0.25,
+      0.25
+    ],
+    "test_f1_mean": 0.2533,
+    "test_f1_std": 0.1959,
+    "pooled_test": {
+      "tp": 6,
+      "fp": 9,
+      "fn": 23,
+      "tn": 10127,
+      "precision": 0.4,
+      "recall": 0.2069,
+      "f1": 0.2727,
+      "fpr": 0.0009,
+      "f1_bootstrap_ci": {
+        "point_estimate": 0.2727,
+        "ci_low": 0.09523809523809523,
+        "ci_high": 0.4444444444444444,
+        "ci_method": "bootstrap_message_level_pooled_test_at_fold_tau_star",
+        "bootstrap_requested": 5000,
+        "bootstrap_skipped_single_class": 0,
+        "bootstrap_effective_n": 5000,
+        "bootstrap_seed": 42
+      }
+    }
+  },
+  "comparison": {
+    "mean_test_f1_mahalanobis_minus_cosine": -0.0854,
+    "pooled_test_f1_mahalanobis_minus_cosine": -0.0909,
+    "mahalanobis_f1_advantage_holds_mean_across_folds": false,
+    "mahalanobis_f1_advantage_holds_pooled": false,
+    "tau_stability": {
+      "cosine_range": [
+        0.61,
+        0.61
+      ],
+      "mahalanobis_range": [
+        0.36,
+        0.36
+      ]
+    }
+  }
+}

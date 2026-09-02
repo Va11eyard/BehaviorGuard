@@ -1,0 +1,583 @@
+{
+  "protocol": {
+    "seed": 42,
+    "tune_fraction": 0.4,
+    "val_fraction": 0.2,
+    "test_fraction": 0.4,
+    "k_fold": 5,
+    "k_fold_if_anomaly_users_lt": 50,
+    "bg_tune": "λ grid 0..1 step 0.1 + weight simplex step 0.1, F1-max on tune",
+    "threshold_selection": "F1-max on val split only (BG, IF, AE)",
+    "within_user_split": "80% profile / 20% scored window (unchanged)"
+  },
+  "leaked_insample_upper_bound": {
+    "label": "hyperparameter search upper bound, not a generalization estimate",
+    "personachat": {
+      "behaviorguard_t4_best_combined": {
+        "selected_config": "lambda_best_weights_default_f1max",
+        "lambda": 0.9,
+        "alpha": 0.4,
+        "beta": 0.35,
+        "gamma": 0.25,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "fpr": 0.0,
+        "auc": 0.8646,
+        "threshold": 0.74,
+        "alternatives": {
+          "lambda_best_weight_best_f1max": {
+            "precision": 0.3333,
+            "recall": 0.5,
+            "f1": 0.4,
+            "fpr": 0.125,
+            "auc": 0.7743,
+            "threshold": 0.89
+          },
+          "lambda_0.50_default_f1max": {
+            "precision": 0.6667,
+            "recall": 0.3333,
+            "f1": 0.4444,
+            "fpr": 0.0208,
+            "auc": 0.8021,
+            "threshold": 0.72
+          }
+        }
+      },
+      "behaviorguard_f1max_lambda_0.50": {
+        "precision": 0.6667,
+        "recall": 0.3333,
+        "f1": 0.4444,
+        "fpr": 0.0208,
+        "auc": 0.8021,
+        "threshold": 0.72
+      },
+      "behaviorguard_insample_f1max": {
+        "precision": 0.1154,
+        "recall": 1.0,
+        "f1": 0.2069,
+        "fpr": 0.9583,
+        "auc": 0.8038,
+        "threshold": 0.6
+      },
+      "isolation_forest_insample_f1max": {
+        "precision": 0.3333,
+        "recall": 0.6667,
+        "f1": 0.4444,
+        "fpr": 0.1667,
+        "auc": 0.8194,
+        "threshold": 0.84
+      },
+      "autoencoder_insample_f1max": {
+        "precision": 0.6,
+        "recall": 1.0,
+        "f1": 0.75,
+        "fpr": 0.0833,
+        "auc": 0.9549,
+        "threshold": 3.53
+      }
+    },
+    "blended_skill_talk": {
+      "behaviorguard_t4_best_combined": {
+        "selected_config": "lambda_best_weights_default_f1max",
+        "lambda": 0.8,
+        "alpha": 0.4,
+        "beta": 0.35,
+        "gamma": 0.25,
+        "precision": 0.6,
+        "recall": 0.4737,
+        "f1": 0.5294,
+        "fpr": 0.0682,
+        "auc": 0.7374,
+        "threshold": 0.7,
+        "alternatives": {
+          "lambda_best_weight_best_f1max": {
+            "precision": 0.4167,
+            "recall": 0.5263,
+            "f1": 0.4651,
+            "fpr": 0.1591,
+            "auc": 0.7664,
+            "threshold": 0.65
+          },
+          "lambda_0.50_default_f1max": {
+            "precision": 0.4348,
+            "recall": 0.5263,
+            "f1": 0.4762,
+            "fpr": 0.1477,
+            "auc": 0.7195,
+            "threshold": 0.7
+          }
+        }
+      },
+      "behaviorguard_f1max_lambda_0.50": {
+        "precision": 0.4348,
+        "recall": 0.5263,
+        "f1": 0.4762,
+        "fpr": 0.1477,
+        "auc": 0.7195,
+        "threshold": 0.7
+      },
+      "behaviorguard_insample_f1max": {
+        "precision": 0.2297,
+        "recall": 0.8947,
+        "f1": 0.3656,
+        "fpr": 0.6477,
+        "auc": 0.7201,
+        "threshold": 0.6
+      },
+      "isolation_forest_insample_f1max": {
+        "precision": 0.3,
+        "recall": 0.4737,
+        "f1": 0.3673,
+        "fpr": 0.2386,
+        "auc": 0.6083,
+        "threshold": 0.72
+      },
+      "autoencoder_insample_f1max": {
+        "precision": 0.7143,
+        "recall": 0.5263,
+        "f1": 0.6061,
+        "fpr": 0.0455,
+        "auc": 0.8002,
+        "threshold": 3.06
+      }
+    },
+    "anthropic_hh": {
+      "behaviorguard_t4_best_combined": {
+        "selected_config": "lambda_best_weight_best_f1max",
+        "lambda": 1.0,
+        "alpha": 0.7,
+        "beta": 0.1,
+        "gamma": 0.2,
+        "precision": 0.8889,
+        "recall": 0.5333,
+        "f1": 0.6667,
+        "fpr": 0.0094,
+        "auc": 0.8,
+        "threshold": 0.65,
+        "alternatives": {
+          "lambda_best_weight_best_f1max": {
+            "precision": 0.8889,
+            "recall": 0.5333,
+            "f1": 0.6667,
+            "fpr": 0.0094,
+            "auc": 0.8,
+            "threshold": 0.65
+          },
+          "lambda_0.50_default_f1max": {
+            "precision": 0.8,
+            "recall": 0.2667,
+            "f1": 0.4,
+            "fpr": 0.0094,
+            "auc": 0.6767,
+            "threshold": 0.76
+          }
+        }
+      },
+      "behaviorguard_f1max_lambda_0.50": {
+        "precision": 0.8,
+        "recall": 0.2667,
+        "f1": 0.4,
+        "fpr": 0.0094,
+        "auc": 0.6767,
+        "threshold": 0.76
+      },
+      "behaviorguard_insample_f1max": {
+        "precision": 0.1531,
+        "recall": 1.0,
+        "f1": 0.2655,
+        "fpr": 0.783,
+        "auc": 0.6761,
+        "threshold": 0.6
+      },
+      "isolation_forest_insample_f1max": {
+        "precision": 0.3636,
+        "recall": 0.2667,
+        "f1": 0.3077,
+        "fpr": 0.066,
+        "auc": 0.4799,
+        "threshold": 0.84
+      },
+      "autoencoder_insample_f1max": {
+        "precision": 0.1944,
+        "recall": 0.4667,
+        "f1": 0.2745,
+        "fpr": 0.2736,
+        "auc": 0.5459,
+        "threshold": 3.0
+      }
+    }
+  },
+  "datasets": {
+    "personachat": {
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "n_anomaly_users": 35,
+      "n_benign_users": 35,
+      "eval_scope": "all_users",
+      "strategy": "k_fold",
+      "proper_generalization": {
+        "n_folds": 5,
+        "folds": [
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 0.8,
+              "alpha": 0.8,
+              "beta": 0.1,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.6875
+            },
+            "bg_val_threshold": 0.52,
+            "behaviorguard": {
+              "precision": 0.4444,
+              "recall": 0.8,
+              "f1": 0.5714,
+              "fpr": 0.1429,
+              "auc": 0.9429,
+              "threshold": 0.52
+            },
+            "isolation_forest": {
+              "precision": 0.2667,
+              "recall": 0.8,
+              "f1": 0.4,
+              "fpr": 0.3143,
+              "auc": 0.9029,
+              "threshold": 0.71
+            },
+            "autoencoder": {
+              "precision": 0.4444,
+              "recall": 0.8,
+              "f1": 0.5714,
+              "fpr": 0.1429,
+              "auc": 0.9429,
+              "threshold": 1.05
+            }
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 0.8,
+              "alpha": 0.5,
+              "beta": 0.2,
+              "gamma": 0.3,
+              "tune_f1_insample": 0.6667
+            },
+            "bg_val_threshold": 0.63,
+            "behaviorguard": {
+              "precision": 0.4286,
+              "recall": 0.6,
+              "f1": 0.5,
+              "fpr": 0.1143,
+              "auc": 0.8686,
+              "threshold": 0.63
+            },
+            "isolation_forest": {
+              "precision": 0.3333,
+              "recall": 0.6,
+              "f1": 0.4286,
+              "fpr": 0.1714,
+              "auc": 0.88,
+              "threshold": 0.72
+            },
+            "autoencoder": {
+              "precision": 0.8,
+              "recall": 0.8,
+              "f1": 0.8,
+              "fpr": 0.0286,
+              "auc": 0.9657,
+              "threshold": 0.94
+            }
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 1.0,
+              "alpha": 0.2,
+              "beta": 0.7,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.625
+            },
+            "bg_val_threshold": 0.88,
+            "behaviorguard": {
+              "precision": 0.3333,
+              "recall": 0.125,
+              "f1": 0.1818,
+              "fpr": 0.05,
+              "auc": 0.3625,
+              "threshold": 0.88
+            },
+            "isolation_forest": {
+              "precision": 0.2188,
+              "recall": 0.875,
+              "f1": 0.35,
+              "fpr": 0.625,
+              "auc": 0.5719,
+              "threshold": 0.61
+            },
+            "autoencoder": {
+              "precision": 0.6154,
+              "recall": 1.0,
+              "f1": 0.7619,
+              "fpr": 0.125,
+              "auc": 0.9281,
+              "threshold": 1.09
+            }
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 1.0,
+              "alpha": 0.2,
+              "beta": 0.7,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.625
+            },
+            "bg_val_threshold": 0.01,
+            "behaviorguard": {
+              "precision": 0.1795,
+              "recall": 1.0,
+              "f1": 0.3043,
+              "fpr": 1.0,
+              "auc": 0.8214,
+              "threshold": 0.01
+            },
+            "isolation_forest": {
+              "precision": 0.2,
+              "recall": 0.8571,
+              "f1": 0.3243,
+              "fpr": 0.75,
+              "auc": 0.567,
+              "threshold": 0.62
+            },
+            "autoencoder": {
+              "precision": 0.75,
+              "recall": 0.8571,
+              "f1": 0.8,
+              "fpr": 0.0625,
+              "auc": 0.875,
+              "threshold": 1.1
+            }
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 1.0,
+              "alpha": 0.2,
+              "beta": 0.7,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.625
+            },
+            "bg_val_threshold": 0.01,
+            "behaviorguard": {
+              "precision": 0.1026,
+              "recall": 1.0,
+              "f1": 0.186,
+              "fpr": 1.0,
+              "auc": 0.7929,
+              "threshold": 0.01
+            },
+            "isolation_forest": {
+              "precision": 0.2105,
+              "recall": 1.0,
+              "f1": 0.3478,
+              "fpr": 0.4286,
+              "auc": 0.7857,
+              "threshold": 0.62
+            },
+            "autoencoder": {
+              "precision": 0.8,
+              "recall": 1.0,
+              "f1": 0.8889,
+              "fpr": 0.0286,
+              "auc": 0.9786,
+              "threshold": 1.1
+            }
+          }
+        ],
+        "behaviorguard_test_aggregate": {
+          "precision": {
+            "mean": 0.2977,
+            "std": 0.1356
+          },
+          "recall": {
+            "mean": 0.705,
+            "std": 0.3257
+          },
+          "f1": {
+            "mean": 0.3487,
+            "std": 0.1605
+          },
+          "fpr": {
+            "mean": 0.4614,
+            "std": 0.4408
+          },
+          "auc": {
+            "mean": 0.7577,
+            "std": 0.204
+          }
+        },
+        "isolation_forest_test_aggregate": {
+          "precision": {
+            "mean": 0.2459,
+            "std": 0.0493
+          },
+          "recall": {
+            "mean": 0.8264,
+            "std": 0.1307
+          },
+          "f1": {
+            "mean": 0.3701,
+            "std": 0.0382
+          },
+          "fpr": {
+            "mean": 0.4579,
+            "std": 0.2082
+          },
+          "auc": {
+            "mean": 0.7415,
+            "std": 0.1459
+          }
+        },
+        "autoencoder_test_aggregate": {
+          "precision": {
+            "mean": 0.682,
+            "std": 0.1366
+          },
+          "recall": {
+            "mean": 0.8914,
+            "std": 0.0911
+          },
+          "f1": {
+            "mean": 0.7644,
+            "std": 0.1052
+          },
+          "fpr": {
+            "mean": 0.0775,
+            "std": 0.048
+          },
+          "auc": {
+            "mean": 0.9381,
+            "std": 0.0361
+          }
+        }
+      }
+    },
+    "blended_skill_talk": {
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "n_anomaly_users": 127,
+      "n_benign_users": 127,
+      "eval_scope": "test_split_only",
+      "strategy": "holdout_40_20_40",
+      "proper_generalization": {
+        "strategy": "holdout_40_20_40",
+        "split_sizes": {
+          "tune": 102,
+          "val": 51,
+          "test": 101
+        },
+        "result": {
+          "n_tune_users": 102,
+          "n_val_users": 51,
+          "n_test_users": 101,
+          "bg_hyperparams": {
+            "lambda": 0.7,
+            "alpha": 0.6,
+            "beta": 0.1,
+            "gamma": 0.3,
+            "tune_f1_insample": 0.566
+          },
+          "bg_val_threshold": 0.61,
+          "behaviorguard": {
+            "precision": 0.4545,
+            "recall": 0.4839,
+            "f1": 0.4688,
+            "fpr": 0.0395,
+            "auc": 0.9118,
+            "threshold": 0.61
+          },
+          "isolation_forest": {
+            "precision": 0.1458,
+            "recall": 0.2258,
+            "f1": 0.1772,
+            "fpr": 0.0899,
+            "auc": 0.6889,
+            "threshold": 0.83
+          },
+          "autoencoder": {
+            "precision": 0.3295,
+            "recall": 0.9355,
+            "f1": 0.4874,
+            "fpr": 0.1294,
+            "auc": 0.9262,
+            "threshold": 0.34
+          }
+        }
+      }
+    },
+    "anthropic_hh": {
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "n_anomaly_users": 245,
+      "n_benign_users": 245,
+      "eval_scope": "test_split_only",
+      "strategy": "holdout_40_20_40",
+      "proper_generalization": {
+        "strategy": "holdout_40_20_40",
+        "split_sizes": {
+          "tune": 196,
+          "val": 98,
+          "test": 196
+        },
+        "result": {
+          "n_tune_users": 196,
+          "n_val_users": 98,
+          "n_test_users": 196,
+          "bg_hyperparams": {
+            "lambda": 0.9,
+            "alpha": 0.8,
+            "beta": 0.1,
+            "gamma": 0.1,
+            "tune_f1_insample": 0.4554
+          },
+          "bg_val_threshold": 0.61,
+          "behaviorguard": {
+            "precision": 0.4286,
+            "recall": 0.2951,
+            "f1": 0.3495,
+            "fpr": 0.0235,
+            "auc": 0.722,
+            "threshold": 0.61
+          },
+          "isolation_forest": {
+            "precision": 0.055,
+            "recall": 0.7705,
+            "f1": 0.1027,
+            "fpr": 0.7904,
+            "auc": 0.4872,
+            "threshold": 0.31
+          },
+          "autoencoder": {
+            "precision": 0.0977,
+            "recall": 0.8361,
+            "f1": 0.175,
+            "fpr": 0.4613,
+            "auc": 0.7104,
+            "threshold": 0.22
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+﻿BehaviorGuard interface discovery
+repo_root=E:\PyCharm 2025.2.1.1\BehaviorGuard
+========================================================================
+
+[SemanticAnalyzerML] module=behaviorguard.analyzers.semantic_ml
+  class: behaviorguard.analyzers.semantic_ml.SemanticAnalyzerML
+  __init__(self, model_name: 'str' = 'all-MiniLM-L6-v2')
+  analyze(self, current_message: 'CurrentMessage', semantic_profile: 'SemanticProfile', system_config: 'SystemConfig | None' = None, total_interactions: 'int' = 0) -> 'SemanticAnalysisResult'
+  encode_message(self, text: 'str') -> 'np.ndarray'
+  learn_profile_from_history(self, message_history: 'list[str]') -> 'np.ndarray'
+
+[LinguisticAnalyzerML] module=behaviorguard.analyzers.linguistic_ml
+  class: behaviorguard.analyzers.linguistic_ml.LinguisticAnalyzerML
+  __init__(self, /, *args, **kwargs)
+  analyze(self, current_message: behaviorguard.models.CurrentMessage, linguistic_profile: behaviorguard.models.LinguisticProfile) -> behaviorguard.models.LinguisticAnalysisResult
+  learn_profile_from_history(self, message_features: List[dict]) -> Tuple[numpy.ndarray, numpy.ndarray]
+
+[TemporalAnalyzerML] module=behaviorguard.analyzers.temporal_ml
+  class: behaviorguard.analyzers.temporal_ml.TemporalAnalyzerML
+  __init__(self, /, *args, **kwargs)
+  analyze(self, current_message: behaviorguard.models.CurrentMessage, temporal_profile: behaviorguard.models.TemporalProfile) -> behaviorguard.models.TemporalAnalysisResult
+  learn_profile_from_history(self, temporal_data: List[dict]) -> Tuple[float, float, List[int], float]
+
+[BehaviorGuardEvaluatorML] module=behaviorguard.evaluator_ml
+  class: behaviorguard.evaluator_ml.BehaviorGuardEvaluatorML
+  __init__(self, embedding_model: str = 'all-MiniLM-L6-v2')
+  evaluate(self, evaluation_input: behaviorguard.models.EvaluationInput) -> behaviorguard.models.EvaluationResult
+
+[ProfileManager] module=behaviorguard.profile_manager
+  class: behaviorguard.profile_manager.ProfileManager
+  __init__(self, decay: 'float' = 0.95, embedding_model: 'str' = 'all-MiniLM-L6-v2')
+  build_from_history(self, user_id: 'str', messages: 'List[MessageRecord]', account_age_days: 'int' = 0) -> 'UserProfile'
+  cold_start_profile(self, user_id: 'str', account_age_days: 'int' = 0) -> 'UserProfile'
+  update_profile(self, profile: 'UserProfile', message: 'MessageRecord') -> 'UserProfile'
+
+[CurrentMessage] module=behaviorguard.models
+  class: behaviorguard.models.CurrentMessage
+  __init__(self, /, **data: 'Any') -> 'None'
+  copy(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'
+  dict(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'
+  json(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'
+  model_copy(self, *, update: 'dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'
+  model_dump(self, *, mode: "Literal['json', 'python'] | str" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: "bool | Literal['none', 'warn', 'error']" = True, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'
+  model_dump_json(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: "bool | Literal['none', 'warn', 'error']" = True, serialize_as_any: 'bool' = False) -> 'str'
+  model_post_init(self, _BaseModel__context: 'Any') -> 'None'
+
+[SystemConfig] module=behaviorguard.models
+  class: behaviorguard.models.SystemConfig
+  __init__(self, /, **data: 'Any') -> 'None'
+  copy(self, *, include: 'AbstractSetIntStr | MappingIntStrAny | None' = None, exclude: 'AbstractSetIntStr | MappingIntStrAny | None' = None, update: 'Dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'
+  dict(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False) -> 'Dict[str, Any]'
+  json(self, *, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, encoder: 'Callable[[Any], Any] | None' = PydanticUndefined, models_as_dict: 'bool' = PydanticUndefined, **dumps_kwargs: 'Any') -> 'str'
+  model_copy(self, *, update: 'dict[str, Any] | None' = None, deep: 'bool' = False) -> 'Self'
+  model_dump(self, *, mode: "Literal['json', 'python'] | str" = 'python', include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: "bool | Literal['none', 'warn', 'error']" = True, serialize_as_any: 'bool' = False) -> 'dict[str, Any]'
+  model_dump_json(self, *, indent: 'int | None' = None, include: 'IncEx | None' = None, exclude: 'IncEx | None' = None, context: 'Any | None' = None, by_alias: 'bool' = False, exclude_unset: 'bool' = False, exclude_defaults: 'bool' = False, exclude_none: 'bool' = False, round_trip: 'bool' = False, warnings: "bool | Literal['none', 'warn', 'error']" = True, serialize_as_any: 'bool' = False) -> 'str'
+  model_post_init(self, _BaseModel__context: 'Any') -> 'None'

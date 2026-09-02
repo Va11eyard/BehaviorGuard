@@ -1,0 +1,82 @@
+{
+  "dataset": "E:\\PyCharm 2025.2.1.1\\BehaviorGuard\\datasets\\personachat_processed_corrected.json",
+  "lambda_decay": 0.5,
+  "threshold": 0.6,
+  "with_linguistic_scoring": {
+    "enable_linguistic_scoring": true,
+    "n_messages": 10165,
+    "n_anomalous": 29,
+    "threshold": 0.6,
+    "precision": 0.0018552875695732839,
+    "recall": 0.06896551724137931,
+    "f1": 0.0036133694670280035,
+    "auc": 0.6550227254170862,
+    "fpr": 0.10615627466456196
+  },
+  "without_linguistic_scoring": {
+    "enable_linguistic_scoring": false,
+    "n_messages": 10165,
+    "n_anomalous": 29,
+    "threshold": 0.6,
+    "precision": 0.38095238095238093,
+    "recall": 0.27586206896551724,
+    "f1": 0.32,
+    "auc": 0.917070938682198,
+    "fpr": 0.001282557221783741
+  },
+  "audit_comparison": [
+    {
+      "label": "with_sling",
+      "actual": {
+        "enable_linguistic_scoring": true,
+        "n_messages": 10165,
+        "n_anomalous": 29,
+        "threshold": 0.6,
+        "precision": 0.0018552875695732839,
+        "recall": 0.06896551724137931,
+        "f1": 0.0036133694670280035,
+        "auc": 0.6550227254170862,
+        "fpr": 0.10615627466456196
+      },
+      "audit_prediction": {
+        "auc": 0.6551315896905533,
+        "f1": 0.0036068530207394047,
+        "precision": 0.001851851851851852,
+        "recall": 0.06896551724137931
+      },
+      "delta_actual_minus_audit": {
+        "auc": -0.00010886427346712413,
+        "f1": 6.516446288598772e-06,
+        "precision": 3.435717721431966e-06,
+        "recall": 0.0
+      }
+    },
+    {
+      "label": "without_sling",
+      "actual": {
+        "enable_linguistic_scoring": false,
+        "n_messages": 10165,
+        "n_anomalous": 29,
+        "threshold": 0.6,
+        "precision": 0.38095238095238093,
+        "recall": 0.27586206896551724,
+        "f1": 0.32,
+        "auc": 0.917070938682198,
+        "fpr": 0.001282557221783741
+      },
+      "audit_prediction": {
+        "auc": 0.9171951119941213,
+        "f1": 0.3137254901960784,
+        "precision": 0.36363636363636365,
+        "recall": 0.27586206896551724
+      },
+      "delta_actual_minus_audit": {
+        "auc": -0.0001241733119232702,
+        "f1": 0.00627450980392158,
+        "precision": 0.017316017316017285,
+        "recall": 0.0
+      }
+    }
+  ],
+  "next_priority": "Even with s_ling excluded, recall remains low (~28% at tau=0.60). Mahalanobis semantic scoring is the next priority \u2014 not resolved by s_ling removal."
+}

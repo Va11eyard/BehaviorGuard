@@ -1,0 +1,51 @@
+{
+  "dataset": "personachat",
+  "seed": 42,
+  "detectors": {
+    "cusum_embed_frozen": {
+      "auc": 0.988,
+      "auc_ci95": [
+        0.9791,
+        0.9944
+      ],
+      "det_rate_fa1": 0.7167,
+      "det_rate_fa1_ci95": [
+        0.6633,
+        0.7667
+      ],
+      "median_delay": 4.0
+    },
+    "cusum_embed_online": {
+      "auc": 0.9656,
+      "auc_ci95": [
+        0.9518,
+        0.9775
+      ],
+      "det_rate_fa1": 0.6367,
+      "det_rate_fa1_ci95": [
+        0.5833,
+        0.69
+      ],
+      "median_delay": 4.0
+    },
+    "cusum_dual_lambda": {
+      "auc": 0.5471,
+      "auc_ci95": [
+        0.5303,
+        0.5645
+      ],
+      "det_rate_fa1": 0.0367,
+      "det_rate_fa1_ci95": [
+        0.0167,
+        0.0567
+      ],
+      "median_delay": 5.0
+    }
+  },
+  "online_detection_loss_points": 8.0,
+  "notes": {
+    "frozen": "canonical study protocol (profile frozen after train)",
+    "online": "EMA absorbs each stream message after scoring (production realism / poisoning)",
+    "dual_lambda": "CUSUM on |d_fast - d_slow| with lambdas 0.5/0.99"
+  }
+}

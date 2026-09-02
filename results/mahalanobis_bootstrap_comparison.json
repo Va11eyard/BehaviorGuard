@@ -1,0 +1,87 @@
+{
+  "reporting_standard": "Mahalanobis vs cosine: directional unless bootstrap 95% CI on AUC difference excludes zero. F1/recall/precision use exact Clopper-Pearson CIs.",
+  "config": {
+    "sensitivity_level": "medium",
+    "deployment_context": "enterprise",
+    "enable_semantic_scoring": true,
+    "enable_linguistic_scoring": true,
+    "linguistic_component_enabled": false,
+    "enable_temporal_scoring": true,
+    "overrides_enabled": false,
+    "semantic_scoring_mode_compared": [
+      "cosine",
+      "mahalanobis"
+    ],
+    "lambda_decay": 0.5,
+    "threshold": 0.6
+  },
+  "linguistic_component_enabled_flag_check": {
+    "linguistic_component_enabled_false_score": 0.6461538461538462,
+    "enable_linguistic_scoring_false_score": 0.6461538461538462,
+    "default_score": 0.735,
+    "expected_renormalized": 0.6461538461538462,
+    "expected_default_with_linguistic": 0.735,
+    "exclusion_paths_match": true,
+    "exclusion_matches_expected": true,
+    "default_preserves_linguistic_weight": true,
+    "default_linguistic_component_enabled": true
+  },
+  "cosine": {
+    "tp": 8,
+    "fp": 14,
+    "fn": 21,
+    "tn": 10122,
+    "auc": 0.917070938682198,
+    "f1": {
+      "point": 0.3137254901960784,
+      "ci_low": 0.19110397147757935,
+      "ci_high": 0.4588729026206081
+    },
+    "recall": {
+      "point": 0.27586206896551724,
+      "ci_low": 0.12734011410223017,
+      "ci_high": 0.4723844824300741
+    },
+    "precision": {
+      "point": 0.36363636363636365,
+      "ci_low": 0.17197943764627893,
+      "ci_high": 0.5934233311743534
+    },
+    "f1_sklearn": 0.3137254901960784
+  },
+  "mahalanobis": {
+    "tp": 0,
+    "fp": 0,
+    "fn": 29,
+    "tn": 10136,
+    "auc": 0.9356901314536102,
+    "f1": {
+      "point": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.11944486906972114
+    },
+    "recall": {
+      "point": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.11944486906972114
+    },
+    "precision": {
+      "point": 0.0,
+      "ci_low": 0.0,
+      "ci_high": 0.0
+    },
+    "f1_sklearn": 0.0
+  },
+  "bootstrap_auc_mahalanobis_minus_cosine": {
+    "auc_difference_point": 0.01861919277141222,
+    "ci_low": -0.06200559315400985,
+    "ci_high": 0.08693217283544552,
+    "ci_width": 0.14893776598945538,
+    "ci_contains_zero": true,
+    "bootstrap_requested": 5000,
+    "bootstrap_skipped_single_class": 0,
+    "bootstrap_skipped_auc_error": 0,
+    "bootstrap_effective_n": 5000,
+    "interpretation": "directional_only"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "1000": {
+    "bootstrap_requested": 1000,
+    "bootstrap_skipped_single_class": 0,
+    "bootstrap_skipped_auc_error": 0,
+    "bootstrap_effective_n": 1000,
+    "ci_low": -0.3055432686561616,
+    "ci_high": -0.21382770831066045,
+    "ci_width": 0.09171556034550116
+  },
+  "5000": {
+    "bootstrap_requested": 5000,
+    "bootstrap_skipped_single_class": 0,
+    "bootstrap_skipped_auc_error": 0,
+    "bootstrap_effective_n": 5000,
+    "ci_low": -0.3071455330383734,
+    "ci_high": -0.2152772460849597,
+    "ci_width": 0.09186828695341367
+  }
+}

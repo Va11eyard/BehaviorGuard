@@ -219,11 +219,21 @@ sentence_transformers/
 # Home-dir HF cache: ~ is not expanded in .gitignore; also ignore
 # in your user global gitignore (e.g. ~/.cache/huggingface/).
 
-# Evaluation outputs
-# Exception (force-added, tracked despite this rule): results/sequential_ato_study*.json
-# and results/sequential_ato_scores*.npz — canonical sequential-ATO study artifacts
-# committed in 9d02121 for reproducibility of the paper's headline finding.
+# Evaluation outputs (default-ignore). Tracked buckets are un-ignored below.
 results/
+!results/*.json
+!results/*.csv
+!results/*.md
+!results/*.txt
+!results/*.tex
+!results/sequential_ato_scores.npz
+!results/sequential_ato_scores_bst.npz
+!results/primary/
+!results/primary/**
+!results/archived-per-message-study/
+!results/archived-per-message-study/**
+!results/methodology-diagnostics/
+!results/methodology-diagnostics/**
 outputs/
 *.json.out
 evaluation_results/
@@ -266,5 +276,9 @@ TurnShift_Execution_Plan.md
 *.pdf
 
 
-# ── Paper ───────────────────────────────────────────────────────────────
-paper/
+# Paper: track TeX, README, and figure sources; keep PDFs ignored via *.pdf
+paper/*
+!paper/README.md
+!paper/*.tex
+!paper/figures/
+!paper/figures/**

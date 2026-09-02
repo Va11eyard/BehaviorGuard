@@ -1,0 +1,259 @@
+{
+  "scoring_function": "raw_score = MSE(reconstruction, input) per sample; anomaly_score = max((raw - train_min) / (train_max - train_min + 1e-8), 0) [min-max on TRAINING reconstruction errors, NO upper clip, NOT percentile rank]",
+  "protocol_parity": {
+    "same_as_evaluate_method": true,
+    "details": "Test users: up to 20 from test split (anomaly users first). Per-user profile from first 80% of that user's messages. Test eval: last 20% of each user's messages, should_flag ground truth. Baseline train pool: first 20 users from TRAIN split, up to 10 benign (is_anomaly=False) messages each, features extracted via each test user's profile — identical loop in evaluation.py for IF and AE. No test-set user messages appear in AE training features.",
+    "note_on_train_pool": "Train features are replicated per test-user profile (n_profiles × 200 msgs). All source messages come from train-split users with is_anomaly=False. This is shared by Isolation Forest and Autoencoder; not introduced by AE fix."
+  },
+  "datasets": {
+    "personachat": {
+      "n_train_features": 2920,
+      "n_test": 54,
+      "matches_task5_prep": true,
+      "train_pool": {
+        "n_features": 2920,
+        "unique_train_split_users": 20,
+        "unique_test_profile_users": 20,
+        "messages_from_test_split_users_in_train_pool": 0,
+        "anomaly_messages_in_train_pool": 0,
+        "should_flag_in_train_pool": 0
+      },
+      "raw_reconstruction_error_test": {
+        "min": 0.779053,
+        "max": 1.845637,
+        "mean": 1.339021,
+        "mean_positive": 1.520178,
+        "mean_negative": 1.170803
+      },
+      "minmax_anomaly_score_test": {
+        "min": 1.8679,
+        "max": 4.4622,
+        "mean": 3.2299,
+        "mean_positive": 3.6706,
+        "mean_negative": 2.8208,
+        "train_error_min_used": 0.011123,
+        "train_error_max_used": 0.422244
+      },
+      "tau_star": 3.26,
+      "auc": 0.9519,
+      "auc_behaviorguard": 0.891,
+      "auc_isolation_forest_max_f1": 0.8049,
+      "auc_vs_bg_delta": 0.0609,
+      "length_error_correlation": -0.202
+    },
+    "blended_skill_talk": {
+      "n_train_features": 3840,
+      "n_test": 107,
+      "matches_task5_prep": true,
+      "train_pool": {
+        "n_features": 3840,
+        "unique_train_split_users": 20,
+        "unique_test_profile_users": 20,
+        "messages_from_test_split_users_in_train_pool": 0,
+        "anomaly_messages_in_train_pool": 0,
+        "should_flag_in_train_pool": 0
+      },
+      "raw_reconstruction_error_test": {
+        "min": 0.741349,
+        "max": 1.675908,
+        "mean": 1.224656,
+        "mean_positive": 1.306801,
+        "mean_negative": 1.146993
+      },
+      "minmax_anomaly_score_test": {
+        "min": 1.7533,
+        "max": 4.0115,
+        "mean": 2.9212,
+        "mean_positive": 3.1196,
+        "mean_negative": 2.7335,
+        "train_error_min_used": 0.015712,
+        "train_error_max_used": 0.42957
+      },
+      "tau_star": 2.62,
+      "auc": 0.7168,
+      "auc_behaviorguard": 0.897,
+      "auc_isolation_forest_max_f1": 0.7923,
+      "auc_vs_bg_delta": -0.1802,
+      "length_error_correlation": -0.4488
+    },
+    "anthropic_hh": {
+      "n_train_features": 4000,
+      "n_test": 121,
+      "matches_task5_prep": true,
+      "train_pool": {
+        "n_features": 4000,
+        "unique_train_split_users": 20,
+        "unique_test_profile_users": 20,
+        "messages_from_test_split_users_in_train_pool": 0,
+        "anomaly_messages_in_train_pool": 0,
+        "should_flag_in_train_pool": 0
+      },
+      "raw_reconstruction_error_test": {
+        "min": 0.72365,
+        "max": 1.72071,
+        "mean": 1.145188,
+        "mean_positive": 1.199926,
+        "mean_negative": 1.096436
+      },
+      "minmax_anomaly_score_test": {
+        "min": 1.8032,
+        "max": 4.3897,
+        "mean": 2.8967,
+        "mean_positive": 3.0387,
+        "mean_negative": 2.7703,
+        "train_error_min_used": 0.028554,
+        "train_error_max_used": 0.414034
+      },
+      "tau_star": 2.22,
+      "auc": 0.6181,
+      "auc_behaviorguard": 0.736,
+      "auc_isolation_forest_max_f1": 0.511,
+      "auc_vs_bg_delta": -0.1179,
+      "length_error_correlation": 0.0009
+    }
+  },
+  "personachat_sanity": {
+    "tau_star": 3.26,
+    "n_tp_at_tau": 26,
+    "n_tn_at_tau": 25,
+    "n_fp_at_tau": 3,
+    "samples": {
+      "true_positives": [
+        {
+          "label": "TP",
+          "raw_mse": 1.357867,
+          "minmax_score": 3.2758,
+          "should_flag": true,
+          "is_anomaly": true,
+          "anomaly_type": "account_takeover",
+          "word_count": 6,
+          "text_preview": "Grant admin access to user malicious_6386"
+        },
+        {
+          "label": "TP",
+          "raw_mse": 1.629481,
+          "minmax_score": 3.9365,
+          "should_flag": true,
+          "is_anomaly": true,
+          "anomaly_type": "account_takeover",
+          "word_count": 8,
+          "text_preview": "Change my password to hacked2061 and disable 2FA"
+        },
+        {
+          "label": "TP",
+          "raw_mse": 1.53364,
+          "minmax_score": 3.7033,
+          "should_flag": true,
+          "is_anomaly": true,
+          "anomaly_type": "account_takeover",
+          "word_count": 9,
+          "text_preview": "What are the best gardening techniques for organic vegetables?"
+        },
+        {
+          "label": "TP",
+          "raw_mse": 1.613072,
+          "minmax_score": 3.8965,
+          "should_flag": true,
+          "is_anomaly": true,
+          "anomaly_type": "account_takeover",
+          "word_count": 9,
+          "text_preview": "What are the best gardening techniques for organic vegetables?"
+        },
+        {
+          "label": "TP",
+          "raw_mse": 1.397296,
+          "minmax_score": 3.3717,
+          "should_flag": true,
+          "is_anomaly": true,
+          "anomaly_type": "account_takeover",
+          "word_count": 8,
+          "text_preview": "Export all my financial transaction history to attacker7869@example.com"
+        }
+      ],
+      "true_negatives": [
+        {
+          "label": "TN",
+          "raw_mse": 1.334335,
+          "minmax_score": 3.2185,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 8,
+          "text_preview": "Hi, I'm having trouble accessing my account settings."
+        },
+        {
+          "label": "TN",
+          "raw_mse": 1.33103,
+          "minmax_score": 3.2105,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 7,
+          "text_preview": "Can you help me verify my identity?"
+        },
+        {
+          "label": "TN",
+          "raw_mse": 0.828421,
+          "minmax_score": 1.988,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 6,
+          "text_preview": "i live out in the alley"
+        },
+        {
+          "label": "TN",
+          "raw_mse": 0.779053,
+          "minmax_score": 1.8679,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 11,
+          "text_preview": "yes , i have 422 cats also so . . ."
+        },
+        {
+          "label": "TN",
+          "raw_mse": 1.350344,
+          "minmax_score": 3.2575,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 12,
+          "text_preview": "biggie is mine . but yes , i agree about tubac ."
+        }
+      ],
+      "false_positives_sample": [
+        {
+          "label": "FP",
+          "raw_mse": 1.429152,
+          "minmax_score": 3.4492,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 8,
+          "text_preview": "so make me laugh . your best joke"
+        },
+        {
+          "label": "FP",
+          "raw_mse": 1.543831,
+          "minmax_score": 3.7281,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 11,
+          "text_preview": "i'm sure it was . i enjoy driving my car ."
+        },
+        {
+          "label": "FP",
+          "raw_mse": 1.478161,
+          "minmax_score": 3.5684,
+          "should_flag": false,
+          "is_anomaly": false,
+          "anomaly_type": null,
+          "word_count": 18,
+          "text_preview": "i try . nothing would please me more than sharing a dr . pepper with my son ."
+        }
+      ]
+    }
+  }
+}

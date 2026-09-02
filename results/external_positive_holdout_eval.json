@@ -1,0 +1,67 @@
+{
+  "protocol": "full_holdout_80_20_external_vs_corrected",
+  "results": {
+    "personachat_corrected": {
+      "dataset": "personachat_processed_corrected.json",
+      "n_users_scored": 5000,
+      "n_test_messages": 10165,
+      "n_positives": 29,
+      "prevalence": 0.002853,
+      "threshold": 0.6,
+      "config": "linguistic_off_overrides_off_cosine_lambda0.5",
+      "precision": 0.3636,
+      "recall": 0.2759,
+      "f1": 0.3137,
+      "f1_ci95_percentile": [
+        0.1428,
+        0.4681
+      ],
+      "auc_roc": 0.9171,
+      "auc_roc_ci95_percentile": [
+        0.8832,
+        0.945
+      ],
+      "auc_pr": 0.2277,
+      "tp": 8,
+      "fp": 14,
+      "fn": 21,
+      "tn": 10122,
+      "fpr": 0.0014,
+      "bootstrap_method": "percentile",
+      "n_bootstrap": 2000,
+      "seed": 42,
+      "elapsed_s": 553.1
+    },
+    "personachat_external": {
+      "dataset": "personachat_processed_external.json",
+      "n_users_scored": 5000,
+      "n_test_messages": 10165,
+      "n_positives": 29,
+      "prevalence": 0.002853,
+      "threshold": 0.6,
+      "config": "linguistic_off_overrides_off_cosine_lambda0.5",
+      "precision": 0.3846,
+      "recall": 0.3448,
+      "f1": 0.3636,
+      "f1_ci95_percentile": [
+        0.1851,
+        0.5205
+      ],
+      "auc_roc": 0.8868,
+      "auc_roc_ci95_percentile": [
+        0.8344,
+        0.9355
+      ],
+      "auc_pr": 0.2928,
+      "tp": 10,
+      "fp": 16,
+      "fn": 19,
+      "tn": 10120,
+      "fpr": 0.0016,
+      "bootstrap_method": "percentile",
+      "n_bootstrap": 2000,
+      "seed": 42,
+      "elapsed_s": 114.9
+    }
+  }
+}

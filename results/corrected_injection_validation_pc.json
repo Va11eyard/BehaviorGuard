@@ -1,0 +1,382 @@
+[
+  {
+    "dataset": "personachat",
+    "n_messages": 37552,
+    "n_anomalies": 126,
+    "n_anomaly_users": 35,
+    "anomaly_index_min": 0,
+    "anomaly_index_max": 23,
+    "anomaly_index_mean": 9.12,
+    "orig_anomaly_index_mean": 15.9,
+    "users_100pct_injected_test_window": 0,
+    "users_with_train_injections": 33,
+    "test_window_pct_organic_mean": 79.19,
+    "test_window_pct_injected_mean": 20.81,
+    "test_window_pct_organic_min": 50.0,
+    "leakage": {
+      "ato_session_suffix_count": 0,
+      "se_session_suffix_count": 0,
+      "pi_session_suffix_count": 0,
+      "operation_risk_anomaly": {
+        "null": 126
+      },
+      "operation_risk_organic": {
+        "null": 37426
+      },
+      "missing_time_since_last_message": 0
+    },
+    "unique_anomaly_texts": 97,
+    "per_user_test_composition": [
+      {
+        "user_id": "pc_user_00738",
+        "n_total": 17,
+        "n_train": 13,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_01192",
+        "n_total": 21,
+        "n_train": 16,
+        "n_test": 5,
+        "test_injected": 1,
+        "test_organic": 4,
+        "pct_test_injected": 20.0,
+        "pct_test_organic": 80.0
+      },
+      {
+        "user_id": "pc_user_01540",
+        "n_total": 13,
+        "n_train": 10,
+        "n_test": 3,
+        "test_injected": 0,
+        "test_organic": 3,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_01592",
+        "n_total": 18,
+        "n_train": 14,
+        "n_test": 4,
+        "test_injected": 0,
+        "test_organic": 4,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_01705",
+        "n_total": 19,
+        "n_train": 15,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_01884",
+        "n_total": 17,
+        "n_train": 13,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_02500",
+        "n_total": 18,
+        "n_train": 14,
+        "n_test": 4,
+        "test_injected": 0,
+        "test_organic": 4,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_02756",
+        "n_total": 15,
+        "n_train": 12,
+        "n_test": 3,
+        "test_injected": 0,
+        "test_organic": 3,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_03095",
+        "n_total": 19,
+        "n_train": 15,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_03840",
+        "n_total": 16,
+        "n_train": 12,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_04150",
+        "n_total": 13,
+        "n_train": 10,
+        "n_test": 3,
+        "test_injected": 1,
+        "test_organic": 2,
+        "pct_test_injected": 33.3,
+        "pct_test_organic": 66.7
+      },
+      {
+        "user_id": "pc_user_04328",
+        "n_total": 17,
+        "n_train": 13,
+        "n_test": 4,
+        "test_injected": 0,
+        "test_organic": 4,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_05097",
+        "n_total": 20,
+        "n_train": 16,
+        "n_test": 4,
+        "test_injected": 0,
+        "test_organic": 4,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_05951",
+        "n_total": 21,
+        "n_train": 16,
+        "n_test": 5,
+        "test_injected": 1,
+        "test_organic": 4,
+        "pct_test_injected": 20.0,
+        "pct_test_organic": 80.0
+      },
+      {
+        "user_id": "pc_user_06331",
+        "n_total": 19,
+        "n_train": 15,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_06591",
+        "n_total": 20,
+        "n_train": 16,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_06697",
+        "n_total": 24,
+        "n_train": 19,
+        "n_test": 5,
+        "test_injected": 2,
+        "test_organic": 3,
+        "pct_test_injected": 40.0,
+        "pct_test_organic": 60.0
+      },
+      {
+        "user_id": "pc_user_06855",
+        "n_total": 18,
+        "n_train": 14,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_06949",
+        "n_total": 13,
+        "n_train": 10,
+        "n_test": 3,
+        "test_injected": 1,
+        "test_organic": 2,
+        "pct_test_injected": 33.3,
+        "pct_test_organic": 66.7
+      },
+      {
+        "user_id": "pc_user_07354",
+        "n_total": 18,
+        "n_train": 14,
+        "n_test": 4,
+        "test_injected": 2,
+        "test_organic": 2,
+        "pct_test_injected": 50.0,
+        "pct_test_organic": 50.0
+      },
+      {
+        "user_id": "pc_user_07996",
+        "n_total": 19,
+        "n_train": 15,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_08492",
+        "n_total": 20,
+        "n_train": 16,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_08583",
+        "n_total": 18,
+        "n_train": 14,
+        "n_test": 4,
+        "test_injected": 2,
+        "test_organic": 2,
+        "pct_test_injected": 50.0,
+        "pct_test_organic": 50.0
+      },
+      {
+        "user_id": "pc_user_09168",
+        "n_total": 20,
+        "n_train": 16,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_09240",
+        "n_total": 18,
+        "n_train": 14,
+        "n_test": 4,
+        "test_injected": 0,
+        "test_organic": 4,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_09907",
+        "n_total": 19,
+        "n_train": 15,
+        "n_test": 4,
+        "test_injected": 0,
+        "test_organic": 4,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_10319",
+        "n_total": 19,
+        "n_train": 15,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_10625",
+        "n_total": 18,
+        "n_train": 14,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_10708",
+        "n_total": 15,
+        "n_train": 12,
+        "n_test": 3,
+        "test_injected": 0,
+        "test_organic": 3,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_12143",
+        "n_total": 15,
+        "n_train": 12,
+        "n_test": 3,
+        "test_injected": 0,
+        "test_organic": 3,
+        "pct_test_injected": 0.0,
+        "pct_test_organic": 100.0
+      },
+      {
+        "user_id": "pc_user_12365",
+        "n_total": 15,
+        "n_train": 12,
+        "n_test": 3,
+        "test_injected": 1,
+        "test_organic": 2,
+        "pct_test_injected": 33.3,
+        "pct_test_organic": 66.7
+      },
+      {
+        "user_id": "pc_user_13112",
+        "n_total": 16,
+        "n_train": 12,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_13124",
+        "n_total": 20,
+        "n_train": 16,
+        "n_test": 4,
+        "test_injected": 1,
+        "test_organic": 3,
+        "pct_test_injected": 25.0,
+        "pct_test_organic": 75.0
+      },
+      {
+        "user_id": "pc_user_14392",
+        "n_total": 24,
+        "n_train": 19,
+        "n_test": 5,
+        "test_injected": 2,
+        "test_organic": 3,
+        "pct_test_injected": 40.0,
+        "pct_test_organic": 60.0
+      },
+      {
+        "user_id": "pc_user_16496",
+        "n_total": 15,
+        "n_train": 12,
+        "n_test": 3,
+        "test_injected": 1,
+        "test_organic": 2,
+        "pct_test_injected": 33.3,
+        "pct_test_organic": 66.7
+      }
+    ]
+  }
+]

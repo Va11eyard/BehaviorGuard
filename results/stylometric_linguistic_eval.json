@@ -1,0 +1,40 @@
+{
+  "seed": 42,
+  "configs": [
+    {
+      "label": "linguistic_off",
+      "ling_mode": "off",
+      "n": 10165,
+      "n_pos": 29,
+      "auc_pr": 0.22765358795971724,
+      "auc_roc": 0.917070938682198
+    },
+    {
+      "label": "legacy_4feature",
+      "ling_mode": "legacy4",
+      "n": 10165,
+      "n_pos": 29,
+      "auc_pr": 0.004013309440948372,
+      "auc_roc": 0.6550227254170862
+    },
+    {
+      "label": "stylometric_10feature",
+      "ling_mode": "stylometric",
+      "n": 10165,
+      "n_pos": 29,
+      "auc_pr": 0.009438055189849468,
+      "auc_roc": 0.6558290014424516
+    }
+  ],
+  "best_by_auc_pr": {
+    "label": "linguistic_off",
+    "ling_mode": "off",
+    "n": 10165,
+    "n_pos": 29,
+    "auc_pr": 0.22765358795971724,
+    "auc_roc": 0.917070938682198
+  },
+  "recommended_linguistic_component_enabled": false,
+  "recommended_mode": "off",
+  "decision_rule": "enable linguistic iff best mode beats linguistic-off AUC-PR by >0.01"
+}

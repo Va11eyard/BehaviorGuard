@@ -1,0 +1,79 @@
+{
+  "config": {
+    "method": "behaviorguard",
+    "lambda": 0.5,
+    "overrides_enabled": false,
+    "threshold": 0.6,
+    "seed": 42
+  },
+  "paper_table_iii": {
+    "personachat": {
+      "precision": 0.531,
+      "recall": 1.0,
+      "f1": 0.693,
+      "fpr": 0.821,
+      "auc": 0.891
+    },
+    "blended_skill_talk": {
+      "precision": 0.658,
+      "recall": 1.0,
+      "f1": 0.794,
+      "fpr": 0.491,
+      "auc": 0.897
+    },
+    "anthropic_hh": {
+      "precision": 0.491,
+      "recall": 0.93,
+      "f1": 0.642,
+      "fpr": 0.859,
+      "auc": 0.736
+    }
+  },
+  "results": [
+    {
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "precision": 0.8,
+      "recall": 0.15384615384615385,
+      "f1": 0.25806451612903225,
+      "fpr": 0.03571428571428571,
+      "auc": 0.9141483516483517,
+      "paper_f1": 0.693,
+      "paper_recall": 1.0,
+      "paper_auc": 0.891,
+      "f1_status": "MISMATCH",
+      "recall_status": "MISMATCH",
+      "auc_status": "MISMATCH"
+    },
+    {
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "precision": 1.0,
+      "recall": 0.057692307692307696,
+      "f1": 0.10909090909090909,
+      "fpr": 0.0,
+      "auc": 0.8704545454545455,
+      "paper_f1": 0.794,
+      "paper_recall": 1.0,
+      "paper_auc": 0.897,
+      "f1_status": "MISMATCH",
+      "recall_status": "MISMATCH",
+      "auc_status": "MISMATCH"
+    },
+    {
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "precision": 0.3333333333333333,
+      "recall": 0.03508771929824561,
+      "f1": 0.06349206349206349,
+      "fpr": 0.0625,
+      "auc": 0.7051809210526316,
+      "paper_f1": 0.642,
+      "paper_recall": 0.93,
+      "paper_auc": 0.736,
+      "f1_status": "MISMATCH",
+      "recall_status": "MISMATCH",
+      "auc_status": "MISMATCH"
+    }
+  ]
+}

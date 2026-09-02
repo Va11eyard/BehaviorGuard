@@ -1,0 +1,682 @@
+{
+  "protocol": {
+    "max_users": 20,
+    "default_weights": [
+      0.4,
+      0.35,
+      0.25
+    ],
+    "bg_threshold_sweep": "[0.01,0.99] step 0.01",
+    "lambda_sweep": "0.0..1.0 step 0.1, F1-max tau each",
+    "weight_grid": "simplex step 0.1, max F1 at FPR=0",
+    "overrides_enabled": false
+  },
+  "datasets": {
+    "personachat": {
+      "fixed_tau_0.60_default_lambda_weights": {
+        "precision": 0.1154,
+        "recall": 1.0,
+        "f1": 0.2069,
+        "fpr": 0.9583,
+        "auc": 0.8021,
+        "threshold": 0.6
+      },
+      "task1_f1max_lambda_0.50": {
+        "precision": 0.6667,
+        "recall": 0.3333,
+        "f1": 0.4444,
+        "fpr": 0.0208,
+        "auc": 0.8021,
+        "threshold": 0.72
+      },
+      "task2_lambda_sweep": {
+        "per_lambda": {
+          "0.0": {
+            "precision": 0.6667,
+            "recall": 0.3333,
+            "f1": 0.4444,
+            "fpr": 0.0208,
+            "auc": 0.7188,
+            "threshold": 0.77,
+            "lambda": 0.0
+          },
+          "0.1": {
+            "precision": 0.6667,
+            "recall": 0.3333,
+            "f1": 0.4444,
+            "fpr": 0.0208,
+            "auc": 0.7188,
+            "threshold": 0.74,
+            "lambda": 0.1
+          },
+          "0.2": {
+            "precision": 0.6667,
+            "recall": 0.3333,
+            "f1": 0.4444,
+            "fpr": 0.0208,
+            "auc": 0.7292,
+            "threshold": 0.73,
+            "lambda": 0.2
+          },
+          "0.3": {
+            "precision": 0.2,
+            "recall": 1.0,
+            "f1": 0.3333,
+            "fpr": 0.5,
+            "auc": 0.7431,
+            "threshold": 0.68,
+            "lambda": 0.3
+          },
+          "0.4": {
+            "precision": 0.2069,
+            "recall": 1.0,
+            "f1": 0.3429,
+            "fpr": 0.4792,
+            "auc": 0.7708,
+            "threshold": 0.68,
+            "lambda": 0.4
+          },
+          "0.5": {
+            "precision": 0.6667,
+            "recall": 0.3333,
+            "f1": 0.4444,
+            "fpr": 0.0208,
+            "auc": 0.8021,
+            "threshold": 0.72,
+            "lambda": 0.5
+          },
+          "0.6": {
+            "precision": 0.2857,
+            "recall": 1.0,
+            "f1": 0.4444,
+            "fpr": 0.3125,
+            "auc": 0.8455,
+            "threshold": 0.69,
+            "lambda": 0.6
+          },
+          "0.7": {
+            "precision": 0.2857,
+            "recall": 1.0,
+            "f1": 0.4444,
+            "fpr": 0.3125,
+            "auc": 0.8785,
+            "threshold": 0.69,
+            "lambda": 0.7
+          },
+          "0.8": {
+            "precision": 0.3158,
+            "recall": 1.0,
+            "f1": 0.48,
+            "fpr": 0.2708,
+            "auc": 0.8924,
+            "threshold": 0.69,
+            "lambda": 0.8
+          },
+          "0.9": {
+            "precision": 1.0,
+            "recall": 0.5,
+            "f1": 0.6667,
+            "fpr": 0.0,
+            "auc": 0.8646,
+            "threshold": 0.74,
+            "lambda": 0.9
+          },
+          "1.0": {
+            "precision": 0.6,
+            "recall": 0.5,
+            "f1": 0.5455,
+            "fpr": 0.0417,
+            "auc": 0.7708,
+            "threshold": 0.76,
+            "lambda": 1.0
+          }
+        },
+        "best_lambda": 0.9,
+        "best_at_f1max": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6667,
+          "fpr": 0.0,
+          "auc": 0.8646,
+          "threshold": 0.74,
+          "lambda": 0.9
+        },
+        "canonical_lambda_0.50_f1max": {
+          "precision": 0.6667,
+          "recall": 0.3333,
+          "f1": 0.4444,
+          "fpr": 0.0208,
+          "auc": 0.8021,
+          "threshold": 0.72,
+          "lambda": 0.5
+        }
+      },
+      "task3_weight_grid": {
+        "objective": "max F1 at FPR=0 (tau = max(benign_score) + epsilon)",
+        "default_weights_f1_at_fpr0": null,
+        "best_weights": {
+          "alpha": 0.1,
+          "beta": 0.7,
+          "gamma": 0.2
+        },
+        "best_at_fpr0": {
+          "alpha": 0.1,
+          "beta": 0.7,
+          "gamma": 0.2,
+          "precision": 1.0,
+          "recall": 0.1667,
+          "f1": 0.2857,
+          "fpr": 0.0,
+          "auc": 0.6806,
+          "threshold": 0.8921
+        }
+      },
+      "task4_best_combined_f1max": {
+        "selected_config": "lambda_best_weights_default_f1max",
+        "lambda": 0.9,
+        "alpha": 0.4,
+        "beta": 0.35,
+        "gamma": 0.25,
+        "precision": 1.0,
+        "recall": 0.5,
+        "f1": 0.6667,
+        "fpr": 0.0,
+        "auc": 0.8646,
+        "threshold": 0.74,
+        "alternatives": {
+          "lambda_best_weight_best_f1max": {
+            "precision": 0.3333,
+            "recall": 0.5,
+            "f1": 0.4,
+            "fpr": 0.125,
+            "auc": 0.7743,
+            "threshold": 0.89
+          },
+          "lambda_0.50_default_f1max": {
+            "precision": 0.6667,
+            "recall": 0.3333,
+            "f1": 0.4444,
+            "fpr": 0.0208,
+            "auc": 0.8021,
+            "threshold": 0.72
+          }
+        }
+      },
+      "baselines_f1max": {
+        "isolation_forest": {
+          "precision": 0.3333,
+          "recall": 0.6667,
+          "f1": 0.4444,
+          "fpr": 0.1667,
+          "auc": 0.8194,
+          "threshold": 0.84
+        },
+        "autoencoder": {
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.75,
+          "fpr": 0.0833,
+          "auc": 0.9549,
+          "threshold": 3.53
+        }
+      },
+      "auc_by_lambda_default_weights": {
+        "0.0": 0.7188,
+        "0.1": 0.7188,
+        "0.2": 0.7292,
+        "0.3": 0.7431,
+        "0.4": 0.7708,
+        "0.5": 0.8021,
+        "0.6": 0.8455,
+        "0.7": 0.8785,
+        "0.8": 0.8924,
+        "0.9": 0.8646,
+        "1.0": 0.7708
+      }
+    },
+    "blended_skill_talk": {
+      "fixed_tau_0.60_default_lambda_weights": {
+        "precision": 0.2267,
+        "recall": 0.8947,
+        "f1": 0.3617,
+        "fpr": 0.6591,
+        "auc": 0.7195,
+        "threshold": 0.6
+      },
+      "task1_f1max_lambda_0.50": {
+        "precision": 0.4348,
+        "recall": 0.5263,
+        "f1": 0.4762,
+        "fpr": 0.1477,
+        "auc": 0.7195,
+        "threshold": 0.7
+      },
+      "task2_lambda_sweep": {
+        "per_lambda": {
+          "0.0": {
+            "precision": 0.7778,
+            "recall": 0.3684,
+            "f1": 0.5,
+            "fpr": 0.0227,
+            "auc": 0.7171,
+            "threshold": 0.76,
+            "lambda": 0.0
+          },
+          "0.1": {
+            "precision": 0.75,
+            "recall": 0.3158,
+            "f1": 0.4444,
+            "fpr": 0.0227,
+            "auc": 0.7135,
+            "threshold": 0.76,
+            "lambda": 0.1
+          },
+          "0.2": {
+            "precision": 0.3667,
+            "recall": 0.5789,
+            "f1": 0.449,
+            "fpr": 0.2159,
+            "auc": 0.7171,
+            "threshold": 0.69,
+            "lambda": 0.2
+          },
+          "0.3": {
+            "precision": 0.4167,
+            "recall": 0.5263,
+            "f1": 0.4651,
+            "fpr": 0.1591,
+            "auc": 0.7243,
+            "threshold": 0.7,
+            "lambda": 0.3
+          },
+          "0.4": {
+            "precision": 0.4348,
+            "recall": 0.5263,
+            "f1": 0.4762,
+            "fpr": 0.1477,
+            "auc": 0.7285,
+            "threshold": 0.7,
+            "lambda": 0.4
+          },
+          "0.5": {
+            "precision": 0.4348,
+            "recall": 0.5263,
+            "f1": 0.4762,
+            "fpr": 0.1477,
+            "auc": 0.7195,
+            "threshold": 0.7,
+            "lambda": 0.5
+          },
+          "0.6": {
+            "precision": 0.4762,
+            "recall": 0.5263,
+            "f1": 0.5,
+            "fpr": 0.125,
+            "auc": 0.7171,
+            "threshold": 0.7,
+            "lambda": 0.6
+          },
+          "0.7": {
+            "precision": 0.5263,
+            "recall": 0.5263,
+            "f1": 0.5263,
+            "fpr": 0.1023,
+            "auc": 0.7279,
+            "threshold": 0.7,
+            "lambda": 0.7
+          },
+          "0.8": {
+            "precision": 0.6,
+            "recall": 0.4737,
+            "f1": 0.5294,
+            "fpr": 0.0682,
+            "auc": 0.7374,
+            "threshold": 0.7,
+            "lambda": 0.8
+          },
+          "0.9": {
+            "precision": 0.4545,
+            "recall": 0.5263,
+            "f1": 0.4878,
+            "fpr": 0.1364,
+            "auc": 0.733,
+            "threshold": 0.68,
+            "lambda": 0.9
+          },
+          "1.0": {
+            "precision": 0.5385,
+            "recall": 0.3684,
+            "f1": 0.4375,
+            "fpr": 0.0682,
+            "auc": 0.6432,
+            "threshold": 0.73,
+            "lambda": 1.0
+          }
+        },
+        "best_lambda": 0.8,
+        "best_at_f1max": {
+          "precision": 0.6,
+          "recall": 0.4737,
+          "f1": 0.5294,
+          "fpr": 0.0682,
+          "auc": 0.7374,
+          "threshold": 0.7,
+          "lambda": 0.8
+        },
+        "canonical_lambda_0.50_f1max": {
+          "precision": 0.4348,
+          "recall": 0.5263,
+          "f1": 0.4762,
+          "fpr": 0.1477,
+          "auc": 0.7195,
+          "threshold": 0.7,
+          "lambda": 0.5
+        }
+      },
+      "task3_weight_grid": {
+        "objective": "max F1 at FPR=0 (tau = max(benign_score) + epsilon)",
+        "default_weights_f1_at_fpr0": null,
+        "best_weights": {
+          "alpha": 0.3,
+          "beta": 0.1,
+          "gamma": 0.6
+        },
+        "best_at_fpr0": {
+          "alpha": 0.3,
+          "beta": 0.1,
+          "gamma": 0.6,
+          "precision": 1.0,
+          "recall": 0.2632,
+          "f1": 0.4167,
+          "fpr": 0.0,
+          "auc": 0.7491,
+          "threshold": 0.7135
+        }
+      },
+      "task4_best_combined_f1max": {
+        "selected_config": "lambda_best_weights_default_f1max",
+        "lambda": 0.8,
+        "alpha": 0.4,
+        "beta": 0.35,
+        "gamma": 0.25,
+        "precision": 0.6,
+        "recall": 0.4737,
+        "f1": 0.5294,
+        "fpr": 0.0682,
+        "auc": 0.7374,
+        "threshold": 0.7,
+        "alternatives": {
+          "lambda_best_weight_best_f1max": {
+            "precision": 0.4167,
+            "recall": 0.5263,
+            "f1": 0.4651,
+            "fpr": 0.1591,
+            "auc": 0.7664,
+            "threshold": 0.65
+          },
+          "lambda_0.50_default_f1max": {
+            "precision": 0.4348,
+            "recall": 0.5263,
+            "f1": 0.4762,
+            "fpr": 0.1477,
+            "auc": 0.7195,
+            "threshold": 0.7
+          }
+        }
+      },
+      "baselines_f1max": {
+        "isolation_forest": {
+          "precision": 0.3,
+          "recall": 0.4737,
+          "f1": 0.3673,
+          "fpr": 0.2386,
+          "auc": 0.6083,
+          "threshold": 0.72
+        },
+        "autoencoder": {
+          "precision": 0.7143,
+          "recall": 0.5263,
+          "f1": 0.6061,
+          "fpr": 0.0455,
+          "auc": 0.8002,
+          "threshold": 3.06
+        }
+      },
+      "auc_by_lambda_default_weights": {
+        "0.0": 0.7171,
+        "0.1": 0.7135,
+        "0.2": 0.7171,
+        "0.3": 0.7243,
+        "0.4": 0.7285,
+        "0.5": 0.7195,
+        "0.6": 0.7171,
+        "0.7": 0.7279,
+        "0.8": 0.7374,
+        "0.9": 0.733,
+        "1.0": 0.6432
+      }
+    },
+    "anthropic_hh": {
+      "fixed_tau_0.60_default_lambda_weights": {
+        "precision": 0.1531,
+        "recall": 1.0,
+        "f1": 0.2655,
+        "fpr": 0.783,
+        "auc": 0.6767,
+        "threshold": 0.6
+      },
+      "task1_f1max_lambda_0.50": {
+        "precision": 0.8,
+        "recall": 0.2667,
+        "f1": 0.4,
+        "fpr": 0.0094,
+        "auc": 0.6767,
+        "threshold": 0.76
+      },
+      "task2_lambda_sweep": {
+        "per_lambda": {
+          "0.0": {
+            "precision": 0.5556,
+            "recall": 0.3333,
+            "f1": 0.4167,
+            "fpr": 0.0377,
+            "auc": 0.695,
+            "threshold": 0.76,
+            "lambda": 0.0
+          },
+          "0.1": {
+            "precision": 0.625,
+            "recall": 0.3333,
+            "f1": 0.4348,
+            "fpr": 0.0283,
+            "auc": 0.6824,
+            "threshold": 0.76,
+            "lambda": 0.1
+          },
+          "0.2": {
+            "precision": 0.625,
+            "recall": 0.3333,
+            "f1": 0.4348,
+            "fpr": 0.0283,
+            "auc": 0.6818,
+            "threshold": 0.76,
+            "lambda": 0.2
+          },
+          "0.3": {
+            "precision": 0.625,
+            "recall": 0.3333,
+            "f1": 0.4348,
+            "fpr": 0.0283,
+            "auc": 0.6752,
+            "threshold": 0.76,
+            "lambda": 0.3
+          },
+          "0.4": {
+            "precision": 0.7143,
+            "recall": 0.3333,
+            "f1": 0.4545,
+            "fpr": 0.0189,
+            "auc": 0.6742,
+            "threshold": 0.76,
+            "lambda": 0.4
+          },
+          "0.5": {
+            "precision": 0.8,
+            "recall": 0.2667,
+            "f1": 0.4,
+            "fpr": 0.0094,
+            "auc": 0.6767,
+            "threshold": 0.76,
+            "lambda": 0.5
+          },
+          "0.6": {
+            "precision": 0.5556,
+            "recall": 0.3333,
+            "f1": 0.4167,
+            "fpr": 0.0377,
+            "auc": 0.6906,
+            "threshold": 0.75,
+            "lambda": 0.6
+          },
+          "0.7": {
+            "precision": 0.5556,
+            "recall": 0.3333,
+            "f1": 0.4167,
+            "fpr": 0.0377,
+            "auc": 0.7101,
+            "threshold": 0.75,
+            "lambda": 0.7
+          },
+          "0.8": {
+            "precision": 0.4615,
+            "recall": 0.4,
+            "f1": 0.4286,
+            "fpr": 0.066,
+            "auc": 0.7208,
+            "threshold": 0.73,
+            "lambda": 0.8
+          },
+          "0.9": {
+            "precision": 0.4286,
+            "recall": 0.4,
+            "f1": 0.4138,
+            "fpr": 0.0755,
+            "auc": 0.7365,
+            "threshold": 0.73,
+            "lambda": 0.9
+          },
+          "1.0": {
+            "precision": 0.8571,
+            "recall": 0.4,
+            "f1": 0.5455,
+            "fpr": 0.0094,
+            "auc": 0.7138,
+            "threshold": 0.75,
+            "lambda": 1.0
+          }
+        },
+        "best_lambda": 1.0,
+        "best_at_f1max": {
+          "precision": 0.8571,
+          "recall": 0.4,
+          "f1": 0.5455,
+          "fpr": 0.0094,
+          "auc": 0.7138,
+          "threshold": 0.75,
+          "lambda": 1.0
+        },
+        "canonical_lambda_0.50_f1max": {
+          "precision": 0.8,
+          "recall": 0.2667,
+          "f1": 0.4,
+          "fpr": 0.0094,
+          "auc": 0.6767,
+          "threshold": 0.76,
+          "lambda": 0.5
+        }
+      },
+      "task3_weight_grid": {
+        "objective": "max F1 at FPR=0 (tau = max(benign_score) + epsilon)",
+        "default_weights_f1_at_fpr0": null,
+        "best_weights": {
+          "alpha": 0.7,
+          "beta": 0.1,
+          "gamma": 0.2
+        },
+        "best_at_fpr0": {
+          "alpha": 0.7,
+          "beta": 0.1,
+          "gamma": 0.2,
+          "precision": 1.0,
+          "recall": 0.2667,
+          "f1": 0.4211,
+          "fpr": 0.0,
+          "auc": 0.7767,
+          "threshold": 0.676
+        }
+      },
+      "task4_best_combined_f1max": {
+        "selected_config": "lambda_best_weight_best_f1max",
+        "lambda": 1.0,
+        "alpha": 0.7,
+        "beta": 0.1,
+        "gamma": 0.2,
+        "precision": 0.8889,
+        "recall": 0.5333,
+        "f1": 0.6667,
+        "fpr": 0.0094,
+        "auc": 0.8,
+        "threshold": 0.65,
+        "alternatives": {
+          "lambda_best_weight_best_f1max": {
+            "precision": 0.8889,
+            "recall": 0.5333,
+            "f1": 0.6667,
+            "fpr": 0.0094,
+            "auc": 0.8,
+            "threshold": 0.65
+          },
+          "lambda_0.50_default_f1max": {
+            "precision": 0.8,
+            "recall": 0.2667,
+            "f1": 0.4,
+            "fpr": 0.0094,
+            "auc": 0.6767,
+            "threshold": 0.76
+          }
+        }
+      },
+      "baselines_f1max": {
+        "isolation_forest": {
+          "precision": 0.3636,
+          "recall": 0.2667,
+          "f1": 0.3077,
+          "fpr": 0.066,
+          "auc": 0.4799,
+          "threshold": 0.84
+        },
+        "autoencoder": {
+          "precision": 0.1944,
+          "recall": 0.4667,
+          "f1": 0.2745,
+          "fpr": 0.2736,
+          "auc": 0.5459,
+          "threshold": 3.0
+        }
+      },
+      "auc_by_lambda_default_weights": {
+        "0.0": 0.695,
+        "0.1": 0.6824,
+        "0.2": 0.6818,
+        "0.3": 0.6752,
+        "0.4": 0.6742,
+        "0.5": 0.6767,
+        "0.6": 0.6906,
+        "0.7": 0.7101,
+        "0.8": 0.7208,
+        "0.9": 0.7365,
+        "1.0": 0.7138
+      }
+    }
+  }
+}

@@ -1,0 +1,102 @@
+{
+  "n_messages": 10165,
+  "n_positives": 29,
+  "cosine": {
+    "operating_point": {
+      "tau": 0.61,
+      "precision": 0.5333,
+      "recall": 0.2759,
+      "f1": 0.3636,
+      "tp": 8,
+      "fp": 7,
+      "fn": 21
+    },
+    "curve_points": 299
+  },
+  "mahalanobis": {
+    "operating_point": {
+      "tau": 0.36,
+      "precision": 0.4,
+      "recall": 0.2069,
+      "f1": 0.2727,
+      "tp": 6,
+      "fp": 9,
+      "fn": 23
+    },
+    "curve_points": 162
+  },
+  "roc_inset": {
+    "fpr_max": 0.05,
+    "mean_delta_tpr_maha_minus_cosine": 0.282,
+    "max_delta_tpr_maha_minus_cosine": 0.483,
+    "auc_cosine": 0.9171,
+    "auc_mahalanobis": 0.9361,
+    "auc_delta": 0.019
+  },
+  "figure_caption": "Precision--recall (main panel) and low-FPR ROC inset for cosine vs.\\ Mahalanobis semantic scoring on PersonaChat 5-fold CV pooled test (linguistic excluded; $N{=}10{,}165$ messages, 29 positives). Inset shows the low-FPR region of the ROC curve, where Mahalanobis's ranking advantage concentrates (mean $\\Delta$TPR $+0.282$ at FPR $\\leq 0.05$); this does not translate to better precision--recall performance at deployable operating points (main panel).",
+  "outputs": {
+    "png": "E:\\PyCharm 2025.2.1.1\\BehaviorGuard\\paper\\figures\\cv_semantic_pr_curve.png",
+    "pdf": "E:\\PyCharm 2025.2.1.1\\BehaviorGuard\\paper\\figures\\cv_semantic_pr_curve.pdf",
+    "caption_tex": "E:\\PyCharm 2025.2.1.1\\BehaviorGuard\\paper\\figures\\cv_semantic_pr_curve.caption.tex"
+  },
+  "protocol": "5-fold user CV pooled test (threshold_sweep_cv_protocol)",
+  "score_source": "E:\\PyCharm 2025.2.1.1\\BehaviorGuard\\results\\threshold_sweep_cv_scores.npz",
+  "tau_star_per_fold": {
+    "cosine": [
+      0.61,
+      0.61,
+      0.61,
+      0.61,
+      0.61
+    ],
+    "mahalanobis": [
+      0.36,
+      0.36,
+      0.36,
+      0.36,
+      0.36
+    ]
+  },
+  "pooled_test_table": {
+    "cosine": {
+      "tp": 8,
+      "fp": 7,
+      "fn": 21,
+      "tn": 10129,
+      "precision": 0.5333,
+      "recall": 0.2759,
+      "f1": 0.3636,
+      "fpr": 0.0007,
+      "f1_bootstrap_ci": {
+        "point_estimate": 0.3636,
+        "ci_low": 0.1702127659574468,
+        "ci_high": 0.5357360627177697,
+        "ci_method": "bootstrap_message_level_pooled_test_at_fold_tau_star",
+        "bootstrap_requested": 5000,
+        "bootstrap_skipped_single_class": 0,
+        "bootstrap_effective_n": 5000,
+        "bootstrap_seed": 42
+      }
+    },
+    "mahalanobis": {
+      "tp": 6,
+      "fp": 9,
+      "fn": 23,
+      "tn": 10127,
+      "precision": 0.4,
+      "recall": 0.2069,
+      "f1": 0.2727,
+      "fpr": 0.0009,
+      "f1_bootstrap_ci": {
+        "point_estimate": 0.2727,
+        "ci_low": 0.09523809523809523,
+        "ci_high": 0.4444444444444444,
+        "ci_method": "bootstrap_message_level_pooled_test_at_fold_tau_star",
+        "bootstrap_requested": 5000,
+        "bootstrap_skipped_single_class": 0,
+        "bootstrap_effective_n": 5000,
+        "bootstrap_seed": 42
+      }
+    }
+  }
+}

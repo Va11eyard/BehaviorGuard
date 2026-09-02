@@ -1,0 +1,568 @@
+{
+  "pipeline": "corrected_v1",
+  "max_users": 20,
+  "methods": [
+    "behaviorguard",
+    "isolation_forest",
+    "autoencoder"
+  ],
+  "corrected_results": [
+    {
+      "method": "behaviorguard",
+      "threshold": 0.6,
+      "precision": 0.1154,
+      "recall": 1.0,
+      "f1": 0.2069,
+      "fpr": 0.9583,
+      "auc": 0.8038,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 4,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 2,
+          "recall": 1.0
+        }
+      },
+      "n_test": 54,
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "isolation_forest",
+      "threshold": 0.84,
+      "precision": 0.3333,
+      "recall": 0.6667,
+      "f1": 0.4444,
+      "fpr": 0.1667,
+      "auc": 0.8194,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 4,
+          "recall": 0.5
+        },
+        "b_benign_surface": {
+          "support": 2,
+          "recall": 1.0
+        }
+      },
+      "n_test": 54,
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "autoencoder",
+      "threshold": 3.53,
+      "precision": 0.6,
+      "recall": 1.0,
+      "f1": 0.75,
+      "fpr": 0.0833,
+      "auc": 0.9549,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 4,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 2,
+          "recall": 1.0
+        }
+      },
+      "n_test": 54,
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "behaviorguard",
+      "threshold": 0.6,
+      "precision": 0.2297,
+      "recall": 0.8947,
+      "f1": 0.3656,
+      "fpr": 0.6477,
+      "auc": 0.7201,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 7,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 12,
+          "recall": 0.8333
+        }
+      },
+      "n_test": 107,
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "isolation_forest",
+      "threshold": 0.72,
+      "precision": 0.3,
+      "recall": 0.4737,
+      "f1": 0.3673,
+      "fpr": 0.2386,
+      "auc": 0.6083,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 7,
+          "recall": 0.4286
+        },
+        "b_benign_surface": {
+          "support": 12,
+          "recall": 0.5
+        }
+      },
+      "n_test": 107,
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "autoencoder",
+      "threshold": 3.06,
+      "precision": 0.7143,
+      "recall": 0.5263,
+      "f1": 0.6061,
+      "fpr": 0.0455,
+      "auc": 0.8002,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 7,
+          "recall": 0.7143
+        },
+        "b_benign_surface": {
+          "support": 12,
+          "recall": 0.4167
+        }
+      },
+      "n_test": 107,
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "behaviorguard",
+      "threshold": 0.6,
+      "precision": 0.1531,
+      "recall": 1.0,
+      "f1": 0.2655,
+      "fpr": 0.783,
+      "auc": 0.6761,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 11,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 4,
+          "recall": 1.0
+        }
+      },
+      "n_test": 121,
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "isolation_forest",
+      "threshold": 0.84,
+      "precision": 0.3636,
+      "recall": 0.2667,
+      "f1": 0.3077,
+      "fpr": 0.066,
+      "auc": 0.4799,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 11,
+          "recall": 0.2727
+        },
+        "b_benign_surface": {
+          "support": 4,
+          "recall": 0.25
+        }
+      },
+      "n_test": 121,
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "pipeline": "corrected_v1"
+    },
+    {
+      "method": "autoencoder",
+      "threshold": 3.0,
+      "precision": 0.1944,
+      "recall": 0.4667,
+      "f1": 0.2745,
+      "fpr": 0.2736,
+      "auc": 0.5459,
+      "stratified_ab": {
+        "a_overt": {
+          "support": 11,
+          "recall": 0.5455
+        },
+        "b_benign_surface": {
+          "support": 4,
+          "recall": 0.25
+        }
+      },
+      "n_test": 121,
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "pipeline": "corrected_v1"
+    }
+  ],
+  "comparison": [
+    {
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "method": "behaviorguard",
+      "original": {
+        "precision": 0.5306,
+        "recall": 1.0,
+        "f1": 0.6933,
+        "fpr": 0.8214,
+        "auc": 0.8908
+      },
+      "corrected": {
+        "precision": 0.1154,
+        "recall": 1.0,
+        "f1": 0.2069,
+        "fpr": 0.9583,
+        "auc": 0.8038,
+        "threshold": 0.6
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.4152,
+        "recall": 0.0,
+        "f1": -0.4864,
+        "fpr": 0.1369,
+        "auc": -0.087
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 4,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 2,
+          "recall": 1.0
+        }
+      }
+    },
+    {
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "method": "isolation_forest",
+      "original": {
+        "precision": 0.6875,
+        "recall": 0.8462,
+        "f1": 0.7586,
+        "fpr": 0.3571,
+        "auc": 0.8049,
+        "threshold": 0.69
+      },
+      "corrected": {
+        "precision": 0.3333,
+        "recall": 0.6667,
+        "f1": 0.4444,
+        "fpr": 0.1667,
+        "auc": 0.8194,
+        "threshold": 0.84
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.3542,
+        "recall": -0.1795,
+        "f1": -0.3142,
+        "fpr": -0.1904,
+        "auc": 0.0145
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 4,
+          "recall": 0.5
+        },
+        "b_benign_surface": {
+          "support": 2,
+          "recall": 1.0
+        }
+      }
+    },
+    {
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "method": "autoencoder",
+      "original": {
+        "precision": 0.8966,
+        "recall": 1.0,
+        "f1": 0.9455,
+        "fpr": 0.1071,
+        "auc": 0.9519,
+        "threshold": 3.26
+      },
+      "corrected": {
+        "precision": 0.6,
+        "recall": 1.0,
+        "f1": 0.75,
+        "fpr": 0.0833,
+        "auc": 0.9549,
+        "threshold": 3.53
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.2966,
+        "recall": 0.0,
+        "f1": -0.1955,
+        "fpr": -0.0238,
+        "auc": 0.003
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 4,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 2,
+          "recall": 1.0
+        }
+      }
+    },
+    {
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "method": "behaviorguard",
+      "original": {
+        "precision": 0.6582,
+        "recall": 1.0,
+        "f1": 0.7939,
+        "fpr": 0.4909,
+        "auc": 0.8969
+      },
+      "corrected": {
+        "precision": 0.2297,
+        "recall": 0.8947,
+        "f1": 0.3656,
+        "fpr": 0.6477,
+        "auc": 0.7201,
+        "threshold": 0.6
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.4285,
+        "recall": -0.1053,
+        "f1": -0.4283,
+        "fpr": 0.1568,
+        "auc": -0.1768
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 7,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 12,
+          "recall": 0.8333
+        }
+      }
+    },
+    {
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "method": "isolation_forest",
+      "original": {
+        "precision": 0.6456,
+        "recall": 0.9808,
+        "f1": 0.7786,
+        "fpr": 0.5091,
+        "auc": 0.7923,
+        "threshold": 0.66
+      },
+      "corrected": {
+        "precision": 0.3,
+        "recall": 0.4737,
+        "f1": 0.3673,
+        "fpr": 0.2386,
+        "auc": 0.6083,
+        "threshold": 0.72
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.3456,
+        "recall": -0.5071,
+        "f1": -0.4113,
+        "fpr": -0.2705,
+        "auc": -0.184
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 7,
+          "recall": 0.4286
+        },
+        "b_benign_surface": {
+          "support": 12,
+          "recall": 0.5
+        }
+      }
+    },
+    {
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "method": "autoencoder",
+      "original": {
+        "precision": 0.642,
+        "recall": 1.0,
+        "f1": 0.782,
+        "fpr": 0.5273,
+        "auc": 0.7168,
+        "threshold": 2.62
+      },
+      "corrected": {
+        "precision": 0.7143,
+        "recall": 0.5263,
+        "f1": 0.6061,
+        "fpr": 0.0455,
+        "auc": 0.8002,
+        "threshold": 3.06
+      },
+      "delta_corrected_minus_original": {
+        "precision": 0.0723,
+        "recall": -0.4737,
+        "f1": -0.1759,
+        "fpr": -0.4818,
+        "auc": 0.0834
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 7,
+          "recall": 0.7143
+        },
+        "b_benign_surface": {
+          "support": 12,
+          "recall": 0.4167
+        }
+      }
+    },
+    {
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "method": "behaviorguard",
+      "original": {
+        "precision": 0.4907,
+        "recall": 0.9298,
+        "f1": 0.6424,
+        "fpr": 0.8594,
+        "auc": 0.7378
+      },
+      "corrected": {
+        "precision": 0.1531,
+        "recall": 1.0,
+        "f1": 0.2655,
+        "fpr": 0.783,
+        "auc": 0.6761,
+        "threshold": 0.6
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.3376,
+        "recall": 0.0702,
+        "f1": -0.3769,
+        "fpr": -0.0764,
+        "auc": -0.0617
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 11,
+          "recall": 1.0
+        },
+        "b_benign_surface": {
+          "support": 4,
+          "recall": 1.0
+        }
+      }
+    },
+    {
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "method": "isolation_forest",
+      "original": {
+        "precision": 0.5484,
+        "recall": 0.5965,
+        "f1": 0.5714,
+        "fpr": 0.4375,
+        "auc": 0.511,
+        "threshold": 0.51
+      },
+      "corrected": {
+        "precision": 0.3636,
+        "recall": 0.2667,
+        "f1": 0.3077,
+        "fpr": 0.066,
+        "auc": 0.4799,
+        "threshold": 0.84
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.1848,
+        "recall": -0.3298,
+        "f1": -0.2637,
+        "fpr": -0.3715,
+        "auc": -0.0311
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 11,
+          "recall": 0.2727
+        },
+        "b_benign_surface": {
+          "support": 4,
+          "recall": 0.25
+        }
+      }
+    },
+    {
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "method": "autoencoder",
+      "original": {
+        "precision": 0.5182,
+        "recall": 1.0,
+        "f1": 0.6826,
+        "fpr": 0.8281,
+        "auc": 0.6181,
+        "threshold": 2.22
+      },
+      "corrected": {
+        "precision": 0.1944,
+        "recall": 0.4667,
+        "f1": 0.2745,
+        "fpr": 0.2736,
+        "auc": 0.5459,
+        "threshold": 3.0
+      },
+      "delta_corrected_minus_original": {
+        "precision": -0.3238,
+        "recall": -0.5333,
+        "f1": -0.4081,
+        "fpr": -0.5545,
+        "auc": -0.0722
+      },
+      "substantial_f1_drop": true,
+      "stratified_ab_corrected": {
+        "a_overt": {
+          "support": 11,
+          "recall": 0.5455
+        },
+        "b_benign_surface": {
+          "support": 4,
+          "recall": 0.25
+        }
+      }
+    }
+  ]
+}

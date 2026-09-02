@@ -1,0 +1,35 @@
+{
+  "embedding_model": "all-MiniLM-L6-v2",
+  "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+  "storage": {
+    "full_mahalanobis_compact_bytes": 3354547,
+    "cosine_only_compact_bytes": 9579,
+    "cold_start_compact_bytes": 1286,
+    "full_mahalanobis_compact_kb": 3275.92,
+    "full_mahalanobis_compact_per_1m_users_gb": 3124.17,
+    "cosine_only_compact_kb": 9.35,
+    "cosine_only_compact_per_1m_users_gb": 8.92,
+    "cold_start_compact_kb": 1.26,
+    "cold_start_compact_per_1m_users_gb": 1.2
+  },
+  "storage_note": "Earlier ~1.7 KB / ~1.7 GB-per-1M claim is valid only for cosine-only profiles (centroid without 384x384 covariance). Full Mahalanobis profiles are ~500x larger.",
+  "latency_ms": {
+    "scoring_only_mean": 0.73,
+    "scoring_only_p50": 0.52,
+    "scoring_only_p95": 1.92,
+    "profile_save_full_mahalanobis": 442.44,
+    "profile_load_full_mahalanobis": 175.54,
+    "profile_save_cosine_only": 38.4,
+    "profile_load_cosine_only": 16.94,
+    "budgeted_remote_redis_rtt_ms": [
+      1.0,
+      5.0
+    ]
+  },
+  "end_to_end_estimate_ms": {
+    "cosine_local_store": 56.08,
+    "cosine_remote_store_mid": 20.68,
+    "mahalanobis_local_store": 618.72
+  },
+  "caching_recommendation": "Keep active-session profiles in process memory / Redis with TTL; write-through on session end. Prefer cosine-only profiles in production unless Mahalanobis is shown to pay for its storage cost."
+}

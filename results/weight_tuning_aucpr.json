@@ -1,0 +1,96 @@
+{
+  "protocol": "user_level_5fold_cv_auc_pr",
+  "seed": 42,
+  "n_messages": 10165,
+  "n_positives": 29,
+  "best_weights": {
+    "weights": {
+      "semantic": 0.9,
+      "linguistic": 0.0,
+      "temporal": 0.1
+    },
+    "mean_auc_pr": 0.31577253367728364,
+    "std_auc_pr": 0.10025616851266306,
+    "n_folds": 5
+  },
+  "legacy_default_0.4_0.35_0.25": {
+    "weights": {
+      "semantic": 0.4,
+      "linguistic": 0.35,
+      "temporal": 0.25
+    },
+    "full_holdout": {
+      "auc_pr": 0.010287127923840489,
+      "auc_roc": 0.6556163759083363
+    },
+    "cv_mean_auc_pr": 0.01937811329010086
+  },
+  "linguistic_excluded_renormalized": {
+    "weights": {
+      "semantic": 0.6154,
+      "linguistic": 0.0,
+      "temporal": 0.3846
+    },
+    "full_holdout": {
+      "auc_pr": 0.2281931675109911,
+      "auc_roc": 0.9172733581906758
+    }
+  },
+  "best_full_holdout": {
+    "auc_pr": 0.26414864818716693,
+    "auc_roc": 0.9533601638407316
+  },
+  "top5": [
+    {
+      "weights": {
+        "semantic": 0.9,
+        "linguistic": 0.0,
+        "temporal": 0.1
+      },
+      "mean_auc_pr": 0.31577253367728364,
+      "std_auc_pr": 0.10025616851266306,
+      "n_folds": 5
+    },
+    {
+      "weights": {
+        "semantic": 1.0,
+        "linguistic": 0.0,
+        "temporal": 0.0
+      },
+      "mean_auc_pr": 0.31031505375978685,
+      "std_auc_pr": 0.10569369107389383,
+      "n_folds": 5
+    },
+    {
+      "weights": {
+        "semantic": 0.8,
+        "linguistic": 0.0,
+        "temporal": 0.2
+      },
+      "mean_auc_pr": 0.30159579427973354,
+      "std_auc_pr": 0.09737266264240699,
+      "n_folds": 5
+    },
+    {
+      "weights": {
+        "semantic": 0.7,
+        "linguistic": 0.0,
+        "temporal": 0.3
+      },
+      "mean_auc_pr": 0.27822964510688275,
+      "std_auc_pr": 0.11292832462506192,
+      "n_folds": 5
+    },
+    {
+      "weights": {
+        "semantic": 0.8,
+        "linguistic": 0.1,
+        "temporal": 0.1
+      },
+      "mean_auc_pr": 0.2757750730564115,
+      "std_auc_pr": 0.07407452018253607,
+      "n_folds": 5
+    }
+  ],
+  "objective_note": "Replaces F1-at-FPR=0 tuning criticized by reviewer; AUC-PR is prevalence-aware."
+}

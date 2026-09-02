@@ -1,0 +1,786 @@
+{
+  "evaluation_context": {
+    "dataset": "personachat_processed_corrected.json",
+    "split": "80/20 per-user chronological holdout",
+    "n_test_messages": 10165,
+    "n_test_positives": 29,
+    "threshold": 0.6,
+    "scoring": "composite cosine evaluate(), s_ling excluded",
+    "baseline_f1_for_power": 0.364,
+    "holdout_f1_at_tau": 0.3137,
+    "confusion_at_tau": {
+      "tp": 8,
+      "fp": 14,
+      "fn": 21
+    }
+  },
+  "anomaly_type_breakdown": {
+    "counts_before_recall": {
+      "ATO": 26,
+      "SE": 2,
+      "PI": 1
+    },
+    "total": 29,
+    "any_type_under_15_examples": true,
+    "types_under_15": [
+      "SE",
+      "PI"
+    ],
+    "flag": "per_type_recall_suggestive_only_not_confirmatory",
+    "per_type_recall_secondary_only": {
+      "ATO": {
+        "n_positives": 26,
+        "tp": 6,
+        "fn": 20,
+        "recall": 0.2308,
+        "underpowered_per_type_recall": false,
+        "interpretation": "sample_adequate_for_exploratory_recall"
+      },
+      "SE": {
+        "n_positives": 2,
+        "tp": 1,
+        "fn": 1,
+        "recall": 0.5,
+        "underpowered_per_type_recall": true,
+        "interpretation": "suggestive_only_not_confirmatory"
+      },
+      "PI": {
+        "n_positives": 1,
+        "tp": 1,
+        "fn": 0,
+        "recall": 1.0,
+        "underpowered_per_type_recall": true,
+        "interpretation": "suggestive_only_not_confirmatory"
+      }
+    }
+  },
+  "distance_histogram_primary": {
+    "score": "s_sem (semantic component, continuous)",
+    "n_detected": 8,
+    "n_missed": 21,
+    "histogram_detected": {
+      "edges": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        1.0
+      ],
+      "counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        4,
+        2,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "histogram_missed": {
+      "edges": [
+        0.0,
+        0.05,
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3,
+        0.35,
+        0.4,
+        0.45,
+        0.5,
+        0.55,
+        0.6,
+        0.65,
+        0.7,
+        0.75,
+        0.8,
+        0.85,
+        0.9,
+        0.95,
+        1.0
+      ],
+      "counts": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        2,
+        17,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "per_positive_records": [
+      {
+        "message_index": 387,
+        "user_id": "pc_user_00738",
+        "anomaly_type": "ATO",
+        "s_sem": 0.471,
+        "composite_score": 0.534,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 646,
+        "user_id": "pc_user_01192",
+        "anomaly_type": "ATO",
+        "s_sem": 0.496,
+        "composite_score": 0.573,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 942,
+        "user_id": "pc_user_01705",
+        "anomaly_type": "ATO",
+        "s_sem": 0.434,
+        "composite_score": 0.539,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 1030,
+        "user_id": "pc_user_01884",
+        "anomaly_type": "SE",
+        "s_sem": 0.461,
+        "composite_score": 0.527,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 1718,
+        "user_id": "pc_user_03095",
+        "anomaly_type": "SE",
+        "s_sem": 0.612,
+        "composite_score": 0.648,
+        "detected_at_tau": true
+      },
+      {
+        "message_index": 2190,
+        "user_id": "pc_user_03840",
+        "anomaly_type": "ATO",
+        "s_sem": 0.485,
+        "composite_score": 0.549,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 2369,
+        "user_id": "pc_user_04150",
+        "anomaly_type": "ATO",
+        "s_sem": 0.473,
+        "composite_score": 0.564,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 3400,
+        "user_id": "pc_user_05951",
+        "anomaly_type": "ATO",
+        "s_sem": 0.766,
+        "composite_score": 0.743,
+        "detected_at_tau": true
+      },
+      {
+        "message_index": 3637,
+        "user_id": "pc_user_06331",
+        "anomaly_type": "ATO",
+        "s_sem": 0.5,
+        "composite_score": 0.581,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 3765,
+        "user_id": "pc_user_06591",
+        "anomaly_type": "ATO",
+        "s_sem": 0.496,
+        "composite_score": 0.58,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 3818,
+        "user_id": "pc_user_06697",
+        "anomaly_type": "ATO",
+        "s_sem": 0.608,
+        "composite_score": 0.617,
+        "detected_at_tau": true
+      },
+      {
+        "message_index": 3821,
+        "user_id": "pc_user_06697",
+        "anomaly_type": "ATO",
+        "s_sem": 0.467,
+        "composite_score": 0.543,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 3899,
+        "user_id": "pc_user_06855",
+        "anomaly_type": "ATO",
+        "s_sem": 0.491,
+        "composite_score": 0.58,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 3958,
+        "user_id": "pc_user_06949",
+        "anomaly_type": "ATO",
+        "s_sem": 0.639,
+        "composite_score": 0.641,
+        "detected_at_tau": true
+      },
+      {
+        "message_index": 4196,
+        "user_id": "pc_user_07354",
+        "anomaly_type": "ATO",
+        "s_sem": 0.652,
+        "composite_score": 0.634,
+        "detected_at_tau": true
+      },
+      {
+        "message_index": 4199,
+        "user_id": "pc_user_07354",
+        "anomaly_type": "ATO",
+        "s_sem": 0.461,
+        "composite_score": 0.549,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 4558,
+        "user_id": "pc_user_07996",
+        "anomaly_type": "ATO",
+        "s_sem": 0.438,
+        "composite_score": 0.539,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 4841,
+        "user_id": "pc_user_08492",
+        "anomaly_type": "ATO",
+        "s_sem": 0.458,
+        "composite_score": 0.516,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 4900,
+        "user_id": "pc_user_08583",
+        "anomaly_type": "ATO",
+        "s_sem": 0.472,
+        "composite_score": 0.566,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 4902,
+        "user_id": "pc_user_08583",
+        "anomaly_type": "ATO",
+        "s_sem": 0.394,
+        "composite_score": 0.532,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 5216,
+        "user_id": "pc_user_09168",
+        "anomaly_type": "ATO",
+        "s_sem": 0.467,
+        "composite_score": 0.539,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 5927,
+        "user_id": "pc_user_10319",
+        "anomaly_type": "ATO",
+        "s_sem": 0.462,
+        "composite_score": 0.532,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 6099,
+        "user_id": "pc_user_10625",
+        "anomaly_type": "ATO",
+        "s_sem": 0.497,
+        "composite_score": 0.541,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 7122,
+        "user_id": "pc_user_12365",
+        "anomaly_type": "ATO",
+        "s_sem": 0.707,
+        "composite_score": 0.698,
+        "detected_at_tau": true
+      },
+      {
+        "message_index": 7607,
+        "user_id": "pc_user_13112",
+        "anomaly_type": "PI",
+        "s_sem": 0.61,
+        "composite_score": 0.612,
+        "detected_at_tau": true
+      },
+      {
+        "message_index": 7614,
+        "user_id": "pc_user_13124",
+        "anomaly_type": "ATO",
+        "s_sem": 0.453,
+        "composite_score": 0.541,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 8292,
+        "user_id": "pc_user_14392",
+        "anomaly_type": "ATO",
+        "s_sem": 0.488,
+        "composite_score": 0.557,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 8295,
+        "user_id": "pc_user_14392",
+        "anomaly_type": "ATO",
+        "s_sem": 0.48,
+        "composite_score": 0.549,
+        "detected_at_tau": false
+      },
+      {
+        "message_index": 9524,
+        "user_id": "pc_user_16496",
+        "anomaly_type": "ATO",
+        "s_sem": 0.678,
+        "composite_score": 0.706,
+        "detected_at_tau": true
+      }
+    ],
+    "pattern_classification": {
+      "pattern": "B",
+      "pattern_label": "representational_limitation",
+      "cohens_d_s_sem_detected_minus_missed": 5.31,
+      "cohens_d": {
+        "cohens_d": 5.31,
+        "method": "canonical_n_weighted_pooled_sd",
+        "detected": {
+          "n": 8,
+          "mean": 0.659,
+          "std_ddof1": 0.056,
+          "min": 0.608,
+          "max": 0.766
+        },
+        "missed": {
+          "n": 21,
+          "mean": 0.469,
+          "std_ddof1": 0.025,
+          "min": 0.394,
+          "max": 0.5
+        },
+        "pooled_std": 0.036,
+        "mean_diff_detected_minus_missed": 0.19
+      },
+      "s_sem_detected_min_mean_max": [
+        0.608,
+        0.659,
+        0.766
+      ],
+      "s_sem_missed_min_mean_max": [
+        0.394,
+        0.469,
+        0.5
+      ],
+      "s_sem_overlap_fraction_missed_gte_min_detected": 0.0,
+      "s_sem_overlap_count": 0,
+      "composite_missed_near_tau_fraction": 0.9524,
+      "composite_missed_recoverable_if_tau_0_55": 7,
+      "mann_whitney_u_pvalue_two_sided": 4.6e-05,
+      "definitions": {
+        "A_threshold_tradeoff": "Missed positives substantially overlap detected s_sem and/or cluster just below the composite operating threshold; lowering \u03c4 is expected to recover misses.",
+        "B_representational_limitation": "Missed positives occupy a lower, largely non-overlapping s_sem region relative to detected positives; recall gap is primarily representational, not \u03c4 placement.",
+        "C_no_semantic_signal": "Detected and missed positives both concentrate at low s_sem with negligible separation (flat/no signal)."
+      }
+    },
+    "composite_tau_sweep_supplementary": [
+      {
+        "tau": 0.4,
+        "tp": 29,
+        "fp": 9816,
+        "fn": 0,
+        "tn": 320,
+        "f1": 0.0059
+      },
+      {
+        "tau": 0.41,
+        "tp": 29,
+        "fp": 9647,
+        "fn": 0,
+        "tn": 489,
+        "f1": 0.006
+      },
+      {
+        "tau": 0.42,
+        "tp": 29,
+        "fp": 9423,
+        "fn": 0,
+        "tn": 713,
+        "f1": 0.0061
+      },
+      {
+        "tau": 0.43,
+        "tp": 29,
+        "fp": 9167,
+        "fn": 0,
+        "tn": 969,
+        "f1": 0.0063
+      },
+      {
+        "tau": 0.44,
+        "tp": 29,
+        "fp": 8782,
+        "fn": 0,
+        "tn": 1354,
+        "f1": 0.0066
+      },
+      {
+        "tau": 0.45,
+        "tp": 29,
+        "fp": 8315,
+        "fn": 0,
+        "tn": 1821,
+        "f1": 0.0069
+      },
+      {
+        "tau": 0.46,
+        "tp": 29,
+        "fp": 7752,
+        "fn": 0,
+        "tn": 2384,
+        "f1": 0.0074
+      },
+      {
+        "tau": 0.47,
+        "tp": 29,
+        "fp": 7094,
+        "fn": 0,
+        "tn": 3042,
+        "f1": 0.0081
+      },
+      {
+        "tau": 0.48,
+        "tp": 29,
+        "fp": 6336,
+        "fn": 0,
+        "tn": 3800,
+        "f1": 0.0091
+      },
+      {
+        "tau": 0.49,
+        "tp": 29,
+        "fp": 5490,
+        "fn": 0,
+        "tn": 4646,
+        "f1": 0.0105
+      },
+      {
+        "tau": 0.5,
+        "tp": 29,
+        "fp": 4639,
+        "fn": 0,
+        "tn": 5497,
+        "f1": 0.0123
+      },
+      {
+        "tau": 0.51,
+        "tp": 29,
+        "fp": 3741,
+        "fn": 0,
+        "tn": 6395,
+        "f1": 0.0153
+      },
+      {
+        "tau": 0.52,
+        "tp": 28,
+        "fp": 2894,
+        "fn": 1,
+        "tn": 7242,
+        "f1": 0.019
+      },
+      {
+        "tau": 0.53,
+        "tp": 27,
+        "fp": 2075,
+        "fn": 2,
+        "tn": 8061,
+        "f1": 0.0253
+      },
+      {
+        "tau": 0.54,
+        "tp": 21,
+        "fp": 1382,
+        "fn": 8,
+        "tn": 8754,
+        "f1": 0.0293
+      },
+      {
+        "tau": 0.55,
+        "tp": 15,
+        "fp": 870,
+        "fn": 14,
+        "tn": 9266,
+        "f1": 0.0328
+      },
+      {
+        "tau": 0.56,
+        "tp": 14,
+        "fp": 484,
+        "fn": 15,
+        "tn": 9652,
+        "f1": 0.0531
+      },
+      {
+        "tau": 0.57,
+        "tp": 12,
+        "fp": 224,
+        "fn": 17,
+        "tn": 9912,
+        "f1": 0.0906
+      },
+      {
+        "tau": 0.58,
+        "tp": 9,
+        "fp": 107,
+        "fn": 20,
+        "tn": 10029,
+        "f1": 0.1241
+      },
+      {
+        "tau": 0.59,
+        "tp": 8,
+        "fp": 39,
+        "fn": 21,
+        "tn": 10097,
+        "f1": 0.2105
+      },
+      {
+        "tau": 0.6,
+        "tp": 8,
+        "fp": 13,
+        "fn": 21,
+        "tn": 10123,
+        "f1": 0.32
+      }
+    ]
+  },
+  "power_analysis": {
+    "kimi_asserted_table": {
+      "0.05": 0.4,
+      "0.1": 0.6,
+      "0.15": 0.8
+    },
+    "method_1_recall_two_proportion": {
+      "description": "Map \u0394F1 to implied recall at fixed CV precision P=0.533; two-sided normal-approximation power on n=29 positives (TP/29).",
+      "baseline_f1": 0.364,
+      "rows": [
+        {
+          "delta_f1": 0.05,
+          "target_f1": 0.414,
+          "assumed_fixed_precision": 0.533,
+          "implied_target_recall": 0.3448,
+          "implied_target_tp": 10,
+          "baseline_tp": 8,
+          "method": "two_proportion_normal_approximation_on_recall_n_pos=29",
+          "alpha": 0.05,
+          "two_sided": true,
+          "verified_power": 0.1485,
+          "kimi_asserted_power": 0.4,
+          "absolute_error_vs_kimi": -0.2515
+        },
+        {
+          "delta_f1": 0.1,
+          "target_f1": 0.464,
+          "assumed_fixed_precision": 0.533,
+          "implied_target_recall": 0.4138,
+          "implied_target_tp": 12,
+          "baseline_tp": 8,
+          "method": "two_proportion_normal_approximation_on_recall_n_pos=29",
+          "alpha": 0.05,
+          "two_sided": true,
+          "verified_power": 0.3939,
+          "kimi_asserted_power": 0.6,
+          "absolute_error_vs_kimi": -0.2061
+        },
+        {
+          "delta_f1": 0.15,
+          "target_f1": 0.514,
+          "assumed_fixed_precision": 0.533,
+          "implied_target_recall": 0.4828,
+          "implied_target_tp": 14,
+          "baseline_tp": 8,
+          "method": "two_proportion_normal_approximation_on_recall_n_pos=29",
+          "alpha": 0.05,
+          "two_sided": true,
+          "verified_power": 0.6832,
+          "kimi_asserted_power": 0.8,
+          "absolute_error_vs_kimi": -0.1168
+        }
+      ]
+    },
+    "method_1b_recall_holdout_precision": {
+      "description": "Same recall power using holdout precision at \u03c4=0.60.",
+      "baseline_f1": 0.3137,
+      "rows": [
+        {
+          "delta_f1": 0.05,
+          "error": "infeasible at fixed precision"
+        },
+        {
+          "delta_f1": 0.1,
+          "error": "infeasible at fixed precision"
+        },
+        {
+          "delta_f1": 0.15,
+          "error": "infeasible at fixed precision"
+        }
+      ]
+    },
+    "method_2_simulation": {
+      "description": "Positive-class bootstrap + one-sided exact binomial test (n_sim=5000): promote FN positives with probability q calibrated to target F1\u2248baseline+\u0394.",
+      "rows": [
+        {
+          "delta_f1": 0.05,
+          "target_f1": 0.414,
+          "promotion_probability_on_fn_positives": 0.12,
+          "expected_additional_tps": 2.52,
+          "implied_target_recall_under_h1": 0.3628,
+          "method": "positive_class_bootstrap_binomial_test_n_sim",
+          "n_sim": 5000,
+          "power_one_sided_alpha_0_05": 0.2302,
+          "kimi_asserted_power": 0.4
+        },
+        {
+          "delta_f1": 0.1,
+          "target_f1": 0.464,
+          "promotion_probability_on_fn_positives": 0.215,
+          "expected_additional_tps": 4.51,
+          "implied_target_recall_under_h1": 0.4316,
+          "method": "positive_class_bootstrap_binomial_test_n_sim",
+          "n_sim": 5000,
+          "power_one_sided_alpha_0_05": 0.5004,
+          "kimi_asserted_power": 0.6
+        },
+        {
+          "delta_f1": 0.15,
+          "target_f1": 0.514,
+          "promotion_probability_on_fn_positives": 0.31,
+          "expected_additional_tps": 6.51,
+          "implied_target_recall_under_h1": 0.5003,
+          "method": "positive_class_bootstrap_binomial_test_n_sim",
+          "n_sim": 5000,
+          "power_one_sided_alpha_0_05": 0.7716,
+          "kimi_asserted_power": 0.8
+        }
+      ]
+    },
+    "verification_summary": [
+      {
+        "delta_f1": 0.05,
+        "kimi_asserted": 0.4,
+        "verified_recall_power": 0.1485,
+        "verified_simulation_power": 0.2302
+      },
+      {
+        "delta_f1": 0.1,
+        "kimi_asserted": 0.6,
+        "verified_recall_power": 0.3939,
+        "verified_simulation_power": 0.5004
+      },
+      {
+        "delta_f1": 0.15,
+        "kimi_asserted": 0.8,
+        "verified_recall_power": 0.6832,
+        "verified_simulation_power": 0.7716
+      }
+    ]
+  },
+  "paper_framing_recommendation": {
+    "primary_evidence": "s_sem distance histogram (Pattern B)",
+    "secondary_evidence": "anomaly-type breakdown (underpowered per-type)",
+    "recommended_wording": "representational_limitation_deferred_to_v2",
+    "rationale": {
+      "pattern": "B",
+      "pattern_label": "representational_limitation",
+      "cohens_d_s_sem_detected_minus_missed": 5.31,
+      "cohens_d": {
+        "cohens_d": 5.31,
+        "method": "canonical_n_weighted_pooled_sd",
+        "detected": {
+          "n": 8,
+          "mean": 0.659,
+          "std_ddof1": 0.056,
+          "min": 0.608,
+          "max": 0.766
+        },
+        "missed": {
+          "n": 21,
+          "mean": 0.469,
+          "std_ddof1": 0.025,
+          "min": 0.394,
+          "max": 0.5
+        },
+        "pooled_std": 0.036,
+        "mean_diff_detected_minus_missed": 0.19
+      },
+      "s_sem_detected_min_mean_max": [
+        0.608,
+        0.659,
+        0.766
+      ],
+      "s_sem_missed_min_mean_max": [
+        0.394,
+        0.469,
+        0.5
+      ],
+      "s_sem_overlap_fraction_missed_gte_min_detected": 0.0,
+      "s_sem_overlap_count": 0,
+      "composite_missed_near_tau_fraction": 0.9524,
+      "composite_missed_recoverable_if_tau_0_55": 7,
+      "mann_whitney_u_pvalue_two_sided": 4.6e-05,
+      "definitions": {
+        "A_threshold_tradeoff": "Missed positives substantially overlap detected s_sem and/or cluster just below the composite operating threshold; lowering \u03c4 is expected to recover misses.",
+        "B_representational_limitation": "Missed positives occupy a lower, largely non-overlapping s_sem region relative to detected positives; recall gap is primarily representational, not \u03c4 placement.",
+        "C_no_semantic_signal": "Detected and missed positives both concentrate at low s_sem with negligible separation (flat/no signal)."
+      }
+    }
+  }
+}

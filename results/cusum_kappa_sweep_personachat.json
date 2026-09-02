@@ -1,0 +1,134 @@
+{
+  "dataset": "personachat",
+  "bootstrap_method": "percentile",
+  "n_bootstrap": 2000,
+  "seed": 42,
+  "kappa_sweep": {
+    "delta_hat": 0.2512,
+    "theory_kappa_approx_delta_over_2": 0.1256,
+    "canonical_kappa": 0.5,
+    "best_kappa": 0.0,
+    "sweep": [
+      {
+        "kappa": 0.0,
+        "episode_auc": 0.999,
+        "episode_auc_ci95": [
+          0.9982,
+          0.9996
+        ],
+        "det_rate_fa1": 0.9367,
+        "det_rate_fa1_ci95": [
+          0.91,
+          0.9633
+        ],
+        "median_delay": 4.0,
+        "near_theory": true
+      },
+      {
+        "kappa": 0.25,
+        "episode_auc": 0.9935,
+        "episode_auc_ci95": [
+          0.9884,
+          0.997
+        ],
+        "det_rate_fa1": 0.81,
+        "det_rate_fa1_ci95": [
+          0.7667,
+          0.8533
+        ],
+        "median_delay": 4.0,
+        "near_theory": true
+      },
+      {
+        "kappa": 0.5,
+        "episode_auc": 0.9736,
+        "episode_auc_ci95": [
+          0.9628,
+          0.9829
+        ],
+        "det_rate_fa1": 0.63,
+        "det_rate_fa1_ci95": [
+          0.5767,
+          0.6833
+        ],
+        "median_delay": 4.0,
+        "near_theory": false
+      },
+      {
+        "kappa": 0.75,
+        "episode_auc": 0.9246,
+        "episode_auc_ci95": [
+          0.9064,
+          0.9411
+        ],
+        "det_rate_fa1": 0.4567,
+        "det_rate_fa1_ci95": [
+          0.4,
+          0.51
+        ],
+        "median_delay": 5.0,
+        "near_theory": false
+      },
+      {
+        "kappa": 1.0,
+        "episode_auc": 0.8511,
+        "episode_auc_ci95": [
+          0.8271,
+          0.8736
+        ],
+        "det_rate_fa1": 0.2933,
+        "det_rate_fa1_ci95": [
+          0.2433,
+          0.3467
+        ],
+        "median_delay": 5.0,
+        "near_theory": false
+      },
+      {
+        "kappa": 1.5,
+        "episode_auc": 0.7278,
+        "episode_auc_ci95": [
+          0.6977,
+          0.7555
+        ],
+        "det_rate_fa1": 0.1267,
+        "det_rate_fa1_ci95": [
+          0.09,
+          0.1667
+        ],
+        "median_delay": 4.0,
+        "near_theory": false
+      }
+    ]
+  },
+  "residual_family_at_kappa_0.5": {
+    "res_emb": {
+      "auc": 0.9736,
+      "auc_ci95": [
+        0.9628,
+        0.9829
+      ],
+      "det_rate_fa1": 0.63,
+      "median_delay": 4.0
+    },
+    "res_sty": {
+      "auc": 0.8043,
+      "auc_ci95": [
+        0.782,
+        0.8258
+      ],
+      "det_rate_fa1": 0.08,
+      "median_delay": 4.5
+    },
+    "res_comb": {
+      "auc": 0.8184,
+      "auc_ci95": [
+        0.798,
+        0.8381
+      ],
+      "det_rate_fa1": 0.0833,
+      "median_delay": 5.0
+    }
+  },
+  "note_distance_metrics": "Primary residual is cosine distance to EMA centroid (unit-normalized). Euclidean on unnormalized embeddings and Pearson correlation are near-redundant with cosine for MiniLM L2-normalized vectors; Mahalanobis requires per-user covariance (see dual-lambda / Mahalanobis scripts)."
+}

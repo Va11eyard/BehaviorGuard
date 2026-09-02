@@ -1,0 +1,132 @@
+{
+  "dataset": "wildchat_ato_episodes.json",
+  "source": "Anthropic HH organic (WildChat/ShareGPT unavailable)",
+  "protocol": "identical to PersonaChat/BST sequential ATO",
+  "n_streams": 5000,
+  "n_episodes": 300,
+  "cusum_embed": {
+    "auc": 0.7953,
+    "auc_ci95": [
+      0.7667,
+      0.8205
+    ],
+    "det_rate_fa1": 0.2,
+    "det_rate_fa1_ci95": [
+      0.1599,
+      0.2467
+    ],
+    "det_rate_fa10": 0.2967,
+    "median_delay_fa1": 5.5
+  },
+  "comparison": {
+    "personachat_auc": 0.974,
+    "personachat_fa1": 0.63,
+    "bst_auc": 0.9,
+    "bst_fa1": 0.35
+  },
+  "detectors": {
+    "cusum_embed": {
+      "episode_auc": 0.7953,
+      "episode_auc_ci95": [
+        0.7667,
+        0.8205
+      ],
+      "n_benign_messages": 25703,
+      "operating_points": [
+        {
+          "target_fa_per_1000": 0.5,
+          "threshold": 3.5064,
+          "actual_fa_per_1000": 0.506,
+          "n_false_alarms": 13,
+          "detection_rate": 0.1633,
+          "detection_rate_ci95": [
+            0.1267,
+            0.2067
+          ],
+          "n_detected": 49,
+          "n_pre_episode_alarms": 0,
+          "median_delay_msgs": 6.0,
+          "mean_delay_msgs": 5.35
+        },
+        {
+          "target_fa_per_1000": 1.0,
+          "threshold": 3.2894,
+          "actual_fa_per_1000": 1.012,
+          "n_false_alarms": 26,
+          "detection_rate": 0.2,
+          "detection_rate_ci95": [
+            0.1599,
+            0.2467
+          ],
+          "n_detected": 60,
+          "n_pre_episode_alarms": 0,
+          "median_delay_msgs": 5.5,
+          "mean_delay_msgs": 5.32
+        },
+        {
+          "target_fa_per_1000": 2.0,
+          "threshold": 2.9364,
+          "actual_fa_per_1000": 2.023,
+          "n_false_alarms": 52,
+          "detection_rate": 0.23,
+          "detection_rate_ci95": [
+            0.1833,
+            0.2767
+          ],
+          "n_detected": 69,
+          "n_pre_episode_alarms": 4,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 5.13
+        },
+        {
+          "target_fa_per_1000": 5.0,
+          "threshold": 2.4408,
+          "actual_fa_per_1000": 5.019,
+          "n_false_alarms": 129,
+          "detection_rate": 0.27,
+          "detection_rate_ci95": [
+            0.22,
+            0.3233
+          ],
+          "n_detected": 81,
+          "n_pre_episode_alarms": 10,
+          "median_delay_msgs": 5.0,
+          "mean_delay_msgs": 4.72
+        },
+        {
+          "target_fa_per_1000": 10.0,
+          "threshold": 2.0109,
+          "actual_fa_per_1000": 9.999,
+          "n_false_alarms": 257,
+          "detection_rate": 0.2967,
+          "detection_rate_ci95": [
+            0.2433,
+            0.3467
+          ],
+          "n_detected": 89,
+          "n_pre_episode_alarms": 21,
+          "median_delay_msgs": 4.0,
+          "mean_delay_msgs": 4.33
+        }
+      ]
+    }
+  },
+  "three_way_verdict": "partially generalizes: PersonaChat upper bound (AUC 0.974, FA1 63%); BST mid (0.900, 35%); HH/organic third corpus lower (0.795, 20%). Detection remains above chance without persona conditioning, but absolute rates drop.",
+  "null_control_cusum_embed": {
+    "method": "per-episode CUSUM continuation from true pre-episode state with k residuals bootstrap-sampled from the user's own standardized train residuals (n_sim=500, seed=42)",
+    "null_detection_rate_at_fa": {
+      "0.5": 0.007,
+      "1.0": 0.0117,
+      "2.0": 0.0221,
+      "5.0": 0.0477,
+      "10.0": 0.0801
+    },
+    "observed_detection_rate_at_fa": {
+      "0.5": 0.1633,
+      "1.0": 0.2,
+      "2.0": 0.23,
+      "5.0": 0.27,
+      "10.0": 0.2967
+    }
+  }
+}

@@ -1,0 +1,428 @@
+{
+  "task1_covariance_audit": {},
+  "task2_ling_subfeature_audit": {},
+  "task3_proper_holdout_diagnostic": {
+    "blended_skill_talk": {
+      "dataset": "BST",
+      "dataset_key": "blended_skill_talk",
+      "n_anomaly_users": 127,
+      "n_benign_users": 127,
+      "eval_scope": "test_split_only",
+      "strategy": "holdout_40_20_40",
+      "proper_generalization": {
+        "strategy": "holdout_40_20_40",
+        "split_sizes": {
+          "tune": 102,
+          "val": 51,
+          "test": 101
+        },
+        "result": {
+          "n_tune_users": 102,
+          "n_val_users": 51,
+          "n_test_users": 101,
+          "bg_hyperparams": {
+            "lambda": 0.0,
+            "alpha": 0.8,
+            "beta": 0.1,
+            "gamma": 0.1,
+            "tune_f1_insample": 0.4179
+          },
+          "bg_val_threshold": 0.22,
+          "behaviorguard": {
+            "precision": 0.3529,
+            "recall": 0.1935,
+            "f1": 0.25,
+            "fpr": 0.0241,
+            "auc": 0.8936,
+            "threshold": 0.22
+          },
+          "isolation_forest": null,
+          "autoencoder": null
+        }
+      }
+    },
+    "anthropic_hh": {
+      "dataset": "AnthropicHH",
+      "dataset_key": "anthropic_hh",
+      "n_anomaly_users": 245,
+      "n_benign_users": 245,
+      "eval_scope": "test_split_only",
+      "strategy": "holdout_40_20_40",
+      "proper_generalization": {
+        "strategy": "holdout_40_20_40",
+        "split_sizes": {
+          "tune": 196,
+          "val": 98,
+          "test": 196
+        },
+        "result": {
+          "n_tune_users": 196,
+          "n_val_users": 98,
+          "n_test_users": 196,
+          "bg_hyperparams": {
+            "lambda": 0.0,
+            "alpha": 0.8,
+            "beta": 0.1,
+            "gamma": 0.1,
+            "tune_f1_insample": 0.1594
+          },
+          "bg_val_threshold": 0.19,
+          "behaviorguard": {
+            "precision": 0.099,
+            "recall": 0.5082,
+            "f1": 0.1658,
+            "fpr": 0.2762,
+            "auc": 0.6812,
+            "threshold": 0.19
+          },
+          "isolation_forest": null,
+          "autoencoder": null
+        }
+      }
+    },
+    "personachat": {
+      "dataset": "PersonaChat",
+      "dataset_key": "personachat",
+      "n_anomaly_users": 35,
+      "n_benign_users": 35,
+      "eval_scope": "all_users",
+      "strategy": "k_fold",
+      "proper_generalization": {
+        "n_folds": 5,
+        "folds": [
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 0.0,
+              "alpha": 0.8,
+              "beta": 0.1,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.5556
+            },
+            "bg_val_threshold": 0.19,
+            "behaviorguard": {
+              "precision": 0.4,
+              "recall": 0.8,
+              "f1": 0.5333,
+              "fpr": 0.1714,
+              "auc": 0.7257,
+              "threshold": 0.19
+            },
+            "isolation_forest": null,
+            "autoencoder": null
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 0.0,
+              "alpha": 0.8,
+              "beta": 0.1,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.5128
+            },
+            "bg_val_threshold": 0.19,
+            "behaviorguard": {
+              "precision": 0.5714,
+              "recall": 0.8,
+              "f1": 0.6667,
+              "fpr": 0.0857,
+              "auc": 0.9657,
+              "threshold": 0.19
+            },
+            "isolation_forest": null,
+            "autoencoder": null
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 0.0,
+              "alpha": 0.8,
+              "beta": 0.1,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.5926
+            },
+            "bg_val_threshold": 0.19,
+            "behaviorguard": {
+              "precision": 0.375,
+              "recall": 0.75,
+              "f1": 0.5,
+              "fpr": 0.25,
+              "auc": 0.7906,
+              "threshold": 0.19
+            },
+            "isolation_forest": null,
+            "autoencoder": null
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 0.0,
+              "alpha": 0.8,
+              "beta": 0.1,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.5926
+            },
+            "bg_val_threshold": 0.19,
+            "behaviorguard": {
+              "precision": 0.4444,
+              "recall": 0.5714,
+              "f1": 0.5,
+              "fpr": 0.1562,
+              "auc": 0.75,
+              "threshold": 0.19
+            },
+            "isolation_forest": null,
+            "autoencoder": null
+          },
+          {
+            "n_tune_users": 28,
+            "n_val_users": 14,
+            "n_test_users": 14,
+            "bg_hyperparams": {
+              "lambda": 0.0,
+              "alpha": 0.8,
+              "beta": 0.1,
+              "gamma": 0.1,
+              "tune_f1_insample": 0.5926
+            },
+            "bg_val_threshold": 0.19,
+            "behaviorguard": {
+              "precision": 0.2667,
+              "recall": 1.0,
+              "f1": 0.4211,
+              "fpr": 0.3143,
+              "auc": 0.8714,
+              "threshold": 0.19
+            },
+            "isolation_forest": null,
+            "autoencoder": null
+          }
+        ],
+        "behaviorguard_test_aggregate": {
+          "precision": {
+            "mean": 0.4115,
+            "std": 0.0991
+          },
+          "recall": {
+            "mean": 0.7843,
+            "std": 0.1368
+          },
+          "f1": {
+            "mean": 0.5242,
+            "std": 0.0802
+          },
+          "fpr": {
+            "mean": 0.1955,
+            "std": 0.0791
+          },
+          "auc": {
+            "mean": 0.8207,
+            "std": 0.0878
+          }
+        },
+        "isolation_forest_test_aggregate": {
+          "precision": {
+            "mean": null,
+            "std": null
+          },
+          "recall": {
+            "mean": null,
+            "std": null
+          },
+          "f1": {
+            "mean": null,
+            "std": null
+          },
+          "fpr": {
+            "mean": null,
+            "std": null
+          },
+          "auc": {
+            "mean": null,
+            "std": null
+          }
+        },
+        "autoencoder_test_aggregate": {
+          "precision": {
+            "mean": null,
+            "std": null
+          },
+          "recall": {
+            "mean": null,
+            "std": null
+          },
+          "f1": {
+            "mean": null,
+            "std": null
+          },
+          "fpr": {
+            "mean": null,
+            "std": null
+          },
+          "auc": {
+            "mean": null,
+            "std": null
+          }
+        }
+      }
+    }
+  },
+  "task3_vs_baseline_comparison": {
+    "blended_skill_talk": {
+      "behaviorguard_f1_diagnostic": 0.25,
+      "behaviorguard_f1_baseline_proper": 0.4688,
+      "behaviorguard_delta": -0.2188,
+      "isolation_forest_f1_baseline_proper": 0.1772,
+      "autoencoder_f1_baseline_proper": 0.4874,
+      "baseline_if_ae_from_file": {
+        "if": {
+          "precision": 0.1458,
+          "recall": 0.2258,
+          "f1": 0.1772,
+          "fpr": 0.0899,
+          "auc": 0.6889,
+          "threshold": 0.83
+        },
+        "ae": {
+          "precision": 0.3295,
+          "recall": 0.9355,
+          "f1": 0.4874,
+          "fpr": 0.1294,
+          "auc": 0.9262,
+          "threshold": 0.34
+        }
+      }
+    },
+    "anthropic_hh": {
+      "behaviorguard_f1_diagnostic": 0.1658,
+      "behaviorguard_f1_baseline_proper": 0.3495,
+      "behaviorguard_delta": -0.1837,
+      "isolation_forest_f1_baseline_proper": 0.1027,
+      "autoencoder_f1_baseline_proper": 0.175,
+      "baseline_if_ae_from_file": {
+        "if": {
+          "precision": 0.055,
+          "recall": 0.7705,
+          "f1": 0.1027,
+          "fpr": 0.7904,
+          "auc": 0.4872,
+          "threshold": 0.31
+        },
+        "ae": {
+          "precision": 0.0977,
+          "recall": 0.8361,
+          "f1": 0.175,
+          "fpr": 0.4613,
+          "auc": 0.7104,
+          "threshold": 0.22
+        }
+      }
+    },
+    "personachat": {
+      "behaviorguard_f1_diagnostic": 0.5242,
+      "behaviorguard_f1_baseline_proper": 0.3487,
+      "behaviorguard_delta": 0.1755,
+      "isolation_forest_f1_baseline_proper": 0.3701,
+      "autoencoder_f1_baseline_proper": 0.7644,
+      "baseline_if_ae_from_file": {
+        "if": {
+          "precision": {
+            "mean": 0.2459,
+            "std": 0.0493
+          },
+          "recall": {
+            "mean": 0.8264,
+            "std": 0.1307
+          },
+          "f1": {
+            "mean": 0.3701,
+            "std": 0.0382
+          },
+          "fpr": {
+            "mean": 0.4579,
+            "std": 0.2082
+          },
+          "auc": {
+            "mean": 0.7415,
+            "std": 0.1459
+          }
+        },
+        "ae": {
+          "precision": {
+            "mean": 0.682,
+            "std": 0.1366
+          },
+          "recall": {
+            "mean": 0.8914,
+            "std": 0.0911
+          },
+          "f1": {
+            "mean": 0.7644,
+            "std": 0.1052
+          },
+          "fpr": {
+            "mean": 0.0775,
+            "std": 0.048
+          },
+          "auc": {
+            "mean": 0.9381,
+            "std": 0.0361
+          }
+        }
+      }
+    }
+  },
+  "task3_baseline_f1_reference": {
+    "personachat": {
+      "bg": 0.3487,
+      "ae": 0.7644,
+      "if": 0.3701
+    },
+    "blended_skill_talk": {
+      "bg": 0.4688,
+      "ae": 0.4874,
+      "if": 0.1772
+    },
+    "anthropic_hh": {
+      "bg": 0.3495,
+      "ae": 0.175,
+      "if": 0.1027
+    }
+  },
+  "task4_ae_artifact_check": {
+    "val_threshold": 1.1,
+    "template_positives_in_test_window": 11,
+    "template_recall_at_val_threshold": 0.9091,
+    "independent_messages_per_category": {
+      "account_takeover": 12,
+      "social_engineering": 12,
+      "prompt_injection": 12
+    },
+    "independent_recall_at_val_threshold": 0.8611,
+    "recall_ratio_indep_over_template": 0.9472,
+    "recall_holds_steady": true
+  },
+  "exit_criteria": {
+    "pc_f1_target": 0.51,
+    "pc_f1_diagnostic": 0.5242,
+    "pc_f1_pass": true,
+    "gap_close_fraction_required": 0.4,
+    "gap_close_fraction_achieved": 0.4222,
+    "gap_close_pass": true,
+    "ae_recall_holds_steady": true,
+    "proceed_to_full_sprint": true
+  },
+  "diagnostic_config": {
+    "semantic_scoring_mode": "mahalanobis",
+    "mahalanobis_shrinkage": 0.1,
+    "s_ling_fixes": null
+  }
+}

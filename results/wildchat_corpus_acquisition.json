@@ -1,0 +1,10 @@
+{
+  "selected": "Anthropic/hh-rlhf (local corrected processed JSON)",
+  "attempts": [
+    {"name": "allenai/WildChat-1M", "error": "download stalled / aborted after prolonged transfer"},
+    {"name": "RyokoAI/ShareGPT52K", "error": "download stalled / aborted after >20 minutes"},
+    {"name": "lmsys/lmsys-chat-1m", "error": "not attempted after prior stalls"}
+  ],
+  "rationale": "Third sequential-ATO corpus built from Anthropic HH organic messages already on disk. HH is real human–AI interaction without PersonaChat persona conditioning; author-substitution episodes use the identical protocol (k in 5..10, seed 42). Documented as wildchat_ato_episodes.json for study-script compatibility; source is HH, not WildChat.",
+  "output": "datasets/wildchat_ato_episodes.json"
+}
