@@ -31,12 +31,11 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import scripts.sequential_ato_study as study  # noqa: E402
+from turnshift.detectors.cusum import cosine_distance, placebo_continuation, unflatten  # noqa: E402
 from scripts.sequential_ato_study import (  # noqa: E402
     CUSUM_KAPPA,
     LAMBDA_DECAY,
     SEED,
-    cosine_distance,
-    unflatten,
 )
 
 N_SIM = 500
@@ -101,16 +100,17 @@ def main() -> None:
         es, el = episode_start[i], episode_len[i]
         s0 = trajs[i][es - 1] if es > 0 else 0.0
 
-        draws = rng.choice(std_res, size=(N_SIM, el), replace=True)
-        # vectorized CUSUM over simulations
-        s = np.full(N_SIM, s0)
-        crossed = {k: np.zeros(N_SIM, dtype=bool) for k in thresholds}
-        for j in range(el):
-            s = np.maximum(0.0, s + draws[:, j] - CUSUM_KAPPA)
-            for k, h in thresholds.items():
-                crossed[k] |= s > h
+        rates = placebo_continuation(
+            std_res,
+            s0,
+            int(el),
+            thresholds,
+            kappa=CUSUM_KAPPA,
+            n_sim=N_SIM,
+            rng=rng,
+        )
         for k in thresholds:
-            null_rates[k].append(crossed[k].mean())
+            null_rates[k].append(rates[k])
 
     out = {
         "method": (

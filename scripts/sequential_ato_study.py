@@ -38,7 +38,6 @@ from pathlib import Path
 
 import numpy as np
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import roc_auc_score
 from sklearn.preprocessing import StandardScaler
 
 for _stream in (sys.stdout, sys.stderr):
@@ -50,6 +49,13 @@ for _stream in (sys.stdout, sys.stderr):
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
+
+from turnshift.detectors.cusum import (  # noqa: E402
+    cosine_distance,
+    cusum,
+    evaluate_detector,
+    unflatten,
+)
 
 DATASET_PATHS = {
     "personachat": {
@@ -133,22 +139,6 @@ def stylo_features(text: str) -> np.ndarray:
         ],
         dtype=np.float64,
     )
-
-
-def cosine_distance(e: np.ndarray, c: np.ndarray) -> float:
-    ne, nc = np.linalg.norm(e), np.linalg.norm(c)
-    if ne == 0 or nc == 0:
-        return 1.0
-    return float(1.0 - np.dot(e / ne, c / nc))
-
-
-def cusum(residuals: np.ndarray, kappa: float = CUSUM_KAPPA) -> np.ndarray:
-    out = np.empty_like(residuals)
-    s = 0.0
-    for i, r in enumerate(residuals):
-        s = max(0.0, s + r - kappa)
-        out[i] = s
-    return out
 
 
 # ---------------------------------------------------------------- scoring
@@ -457,110 +447,17 @@ def load_scores(recompute: bool, patch_window: bool = False) -> dict:
     return compute_scores()
 
 
-# ---------------------------------------------------------------- evaluation
-
-def unflatten(flat: np.ndarray, lengths: np.ndarray) -> list[np.ndarray]:
-    out, pos = [], 0
-    for n in lengths:
-        out.append(flat[pos : pos + n])
-        pos += n
-    return out
-
-
-def evaluate_detector(
-    trajs: list[np.ndarray],
-    episode_start: np.ndarray,
-    episode_len: np.ndarray,
-) -> dict:
-    is_episode = episode_start >= 0
-    benign_maxima = []          # candidate false alarms (one per stream / pre-episode segment)
-    n_benign_msgs = 0
-    for tr, es in zip(trajs, episode_start):
-        if es < 0:
-            benign_maxima.append(tr.max())
-            n_benign_msgs += len(tr)
-        else:
-            if es > 0:
-                benign_maxima.append(tr[:es].max())
-            n_benign_msgs += int(es)
-    n_benign_msgs = int(n_benign_msgs)
-    benign_maxima = np.array(benign_maxima)
-
-    # Episode-level AUC over whole-stream max statistic
-    stream_max = np.array([tr.max() for tr in trajs])
-    auc = float(roc_auc_score(is_episode.astype(int), stream_max))
-    rng = np.random.default_rng(SEED)
-    n = len(stream_max)
-    boot = []
-    for _ in range(N_BOOTSTRAP):
-        idx = rng.choice(n, n, replace=True)
-        if len(np.unique(is_episode[idx])) < 2:
-            continue
-        boot.append(roc_auc_score(is_episode[idx].astype(int), stream_max[idx]))
-    auc_ci = [round(float(np.percentile(boot, 2.5)), 4), round(float(np.percentile(boot, 97.5)), 4)]
-
-    operating_points = []
-    for target in TARGET_FA_PER_1000:
-        # threshold from benign maxima so that expected FAs ~= target rate
-        n_fa_allowed = target * n_benign_msgs / 1000.0
-        q = 1.0 - n_fa_allowed / max(len(benign_maxima), 1)
-        q = min(max(q, 0.0), 1.0)
-        h = float(np.quantile(benign_maxima, q))
-
-        n_fa = int((benign_maxima > h).sum())
-        detected_delays = []
-        n_pre_alarm = 0
-        for tr, es, el in zip(trajs, episode_start, episode_len):
-            if es < 0:
-                continue
-            if es > 0 and tr[:es].max() > h:
-                n_pre_alarm += 1
-                continue
-            ep = tr[es : es + el]
-            hits = np.nonzero(ep > h)[0]
-            if len(hits):
-                detected_delays.append(int(hits[0]) + 1)
-        n_episodes = int(is_episode.sum())
-        det_rate = len(detected_delays) / n_episodes
-        # bootstrap CI on detection rate over episodes
-        det_flags = np.array(
-            [1] * len(detected_delays) + [0] * (n_episodes - len(detected_delays))
-        )
-        rng2 = np.random.default_rng(SEED + 1)
-        dr_boot = [
-            det_flags[rng2.choice(n_episodes, n_episodes, replace=True)].mean()
-            for _ in range(N_BOOTSTRAP)
-        ]
-        operating_points.append(
-            {
-                "target_fa_per_1000": target,
-                "threshold": round(h, 4),
-                "actual_fa_per_1000": round(1000.0 * n_fa / n_benign_msgs, 3),
-                "n_false_alarms": n_fa,
-                "detection_rate": round(det_rate, 4),
-                "detection_rate_ci95": [
-                    round(float(np.percentile(dr_boot, 2.5)), 4),
-                    round(float(np.percentile(dr_boot, 97.5)), 4),
-                ],
-                "n_detected": len(detected_delays),
-                "n_pre_episode_alarms": n_pre_alarm,
-                "median_delay_msgs": float(np.median(detected_delays)) if detected_delays else None,
-                "mean_delay_msgs": round(float(np.mean(detected_delays)), 2) if detected_delays else None,
-            }
-        )
-
-    return {
-        "episode_auc": round(auc, 4),
-        "episode_auc_ci95": auc_ci,
-        "n_benign_messages": n_benign_msgs,
-        "operating_points": operating_points,
-    }
-
-
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--recompute", action="store_true")
     parser.add_argument("--dataset", choices=sorted(DATASET_PATHS), default="personachat")
+    parser.add_argument(
+        "--out",
+        type=Path,
+        default=None,
+        help="Write detector JSON here instead of the default results/primary path "
+        "(does not modify committed artifacts).",
+    )
     parser.add_argument(
         "--patch-window",
         action="store_true",
@@ -568,6 +465,7 @@ def main() -> None:
     )
     args = parser.parse_args()
     set_dataset(args.dataset)
+    out_path = args.out.resolve() if args.out is not None else OUT_PATH
 
     print(f"Sequential ATO detection study ({args.dataset})", flush=True)
     cache = load_scores(args.recompute, patch_window=args.patch_window)
@@ -603,8 +501,8 @@ def main() -> None:
         trajs = unflatten(cache[d].astype(float), lengths)
         report["detectors"][d] = evaluate_detector(trajs, episode_start, episode_len)
 
-    OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUT_PATH.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
 
     print(f"\n{'detector':<16} {'AUC':>7} {'CI95':>18} | at FA=1/1000: det-rate (CI)    med-delay")
     for d in det_names:
@@ -618,7 +516,7 @@ def main() -> None:
             f"{op['detection_rate']:>6.1%} [{dci[0]:.1%},{dci[1]:.1%}]  "
             f"{med if med is not None else '-':>5}"
         )
-    print(f"\nSaved to {OUT_PATH}")
+    print(f"\nSaved to {out_path}")
 
 
 if __name__ == "__main__":
