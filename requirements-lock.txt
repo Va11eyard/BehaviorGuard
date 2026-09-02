@@ -1,0 +1,23 @@
+# Exact versions from the environment used for paper revision experiments.
+# Generated 2026-08-11. Install with: pip install -r requirements-lock.txt
+#
+# Core
+pydantic==2.9.2
+hypothesis==6.148.7
+sentence-transformers==5.1.2
+numpy==2.4.4
+scikit-learn==1.7.2
+scipy==1.16.2
+datasets==4.2.0
+torch==2.11.0
+transformers==4.57.0
+huggingface-hub==0.35.3
+
+# Dev / eval
+pytest==8.3.3
+pytest-cov==7.0.0
+ruff==0.16.0
+matplotlib==3.10.6
+
+# Embedding model pin (Hub revision)
+# sentence-transformers/all-MiniLM-L6-v2 @ 1110a243fdf4706b3f48f1d95db1a4f5529b4d41

@@ -15,6 +15,7 @@ import json
 import os
 import sys
 import time
+from pathlib import Path
 import numpy as np
 from datetime import datetime
 from collections import defaultdict
@@ -517,7 +518,7 @@ def evaluate_method(
     method_name: str,
     dataset_name: str,
     test_data: Dict,
-    max_users: int = 20,  # Reduced for faster evaluation
+    max_users: int | None = None,
     config: SystemConfig = None,
     enable_semantic: bool = True,
     enable_linguistic: bool = True,
@@ -525,8 +526,16 @@ def evaluate_method(
     overrides_enabled: bool = True,
     profile_builder=None,
     canonical_metrics: bool = False,
+    contamination: float | str = 0.1,
 ) -> Dict:
-    """Evaluate a single method on a dataset."""
+    """Evaluate a single method on a dataset.
+
+    Args:
+        max_users: Cap on sampled test users. ``None`` (default) evaluates the
+            full test split. Historical paper runs used ``max_users=20`` as a
+            compute shortcut; that protocol is superseded by full-holdout
+            evaluation (see results/sequential_ato_study*.json).
+    """
     print(f"\n  Evaluating {method_name} on {dataset_name}...")
     
     # Prepare test data
@@ -548,11 +557,14 @@ def evaluate_method(
             users_with_anomalies.append(user)
         else:
             users_without_anomalies.append(user)
-    
-    sampled_test_users = users_with_anomalies[:max_users]
-    remaining = max_users - len(sampled_test_users)
-    if remaining > 0:
-        sampled_test_users.extend(users_without_anomalies[:remaining])
+
+    if max_users is None:
+        sampled_test_users = users_with_anomalies + users_without_anomalies
+    else:
+        sampled_test_users = users_with_anomalies[:max_users]
+        remaining = max_users - len(sampled_test_users)
+        if remaining > 0:
+            sampled_test_users.extend(users_without_anomalies[:remaining])
     
     # Build profiles and track cold-start coverage
     test_user_profiles = {}
@@ -579,6 +591,7 @@ def evaluate_method(
     predictions = []
     aligned_test_msgs: List[Dict] = []
     latencies = []
+    n_train_features: Optional[int] = None
     
     # For baseline methods, collect training features (content_safety needs no training)
     if method_name in ["isolation_forest", "autoencoder"]:
@@ -599,15 +612,15 @@ def evaluate_method(
         train_features = np.array(train_features)
         
         if method_name == "isolation_forest":
-            iso_forest = IsolationForestBaseline(contamination=0.1, random_state=SEED)
+            n_train_features = len(train_features)
+            iso_forest = IsolationForestBaseline(
+                contamination=contamination, random_state=SEED
+            )
             iso_forest.fit(train_features)
         elif method_name == "autoencoder":
             autoencoder = AutoencoderBaseline(
                 input_dim=train_features.shape[1],
-                hidden_dims=[128, 64],
-                latent_dim=16,
-                epochs=20,
-                batch_size=32
+                random_seed=SEED,
             )
             autoencoder.fit(train_features, verbose=False)
     
@@ -699,6 +712,8 @@ def evaluate_method(
     )
     metrics["cold_start_count"] = cold_start_count
     metrics["n_test_users"] = n_test_users
+    if n_train_features is not None:
+        metrics["n_train_features"] = n_train_features
 
     if canonical_metrics:
         boot = get_bootstrap_metrics(np.asarray(y_true), np.asarray(y_scores))
@@ -778,7 +793,7 @@ results = {
         "evaluation_timestamp": datetime.now().isoformat(),
         "seed": SEED,
         "ml_based": True,
-        "embedding_model": "all-MiniLM-L6-v2",
+        "embedding_model": "sentence-transformers/all-MiniLM-L6-v2@1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
     },
     "methods": {},
     "ablations": {},
@@ -1289,6 +1304,42 @@ def run_evaluation_override_ablations_only(dataset_filter=None) -> Dict:
     return results
 
 
+def run_evaluation_diagnostic_harness_only(dataset_filter=None) -> Dict:
+    """Run s_ling saturation audit + λ-sweep via real analyzers (80/20 split)."""
+    from scripts.diagnostic_harness import run_full_diagnostic
+
+    path_map = {
+        "personachat": ROOT / "datasets/personachat_processed_corrected.json",
+        "blended_skill_talk": ROOT / "datasets/blended_skill_talk_processed_corrected.json",
+        "anthropic_hh": ROOT / "datasets/anthropic_hh_processed_corrected.json",
+    }
+    if dataset_filter:
+        keys = [dataset_filter] if isinstance(dataset_filter, str) else list(dataset_filter)
+    else:
+        keys = ["personachat"]
+
+    harness_results: Dict[str, Any] = {}
+    for key in keys:
+        ds_path = path_map.get(key)
+        if ds_path is None or not ds_path.exists():
+            print(f"  [SKIP] no corrected dataset for {key}")
+            continue
+        print(f"\n[diagnostic harness] {key} ...")
+        harness_results[key] = run_full_diagnostic(dataset_path=ds_path)
+
+    out_path = ROOT / "results" / "diagnostic_harness_output.json"
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(
+        json.dumps(convert_to_json_serializable(harness_results), indent=2),
+        encoding="utf-8",
+    )
+    print(f"\n[OK] Diagnostic harness results saved to {out_path}")
+    return {"diagnostic_harness": harness_results}
+
+
+ROOT = Path(__file__).resolve().parent
+
+
 def run_evaluation_lambda_sweep_only(dataset_filter=None) -> Dict:
     """Run only the PRIORITY 4 λ sensitivity sweep (faster path)."""
     global results
@@ -1304,7 +1355,11 @@ def run_evaluation_lambda_sweep_only(dataset_filter=None) -> Dict:
 
 # Run when executed directly
 if __name__ == "__main__":
-    if os.environ.get("BG_OVERRIDE_ABLATION_ONLY"):
+    if os.environ.get("BG_DIAGNOSTIC_HARNESS"):
+        run_evaluation_diagnostic_harness_only(
+            dataset_filter=os.environ.get("BG_DIAGNOSTIC_DATASET")
+        )
+    elif os.environ.get("BG_OVERRIDE_ABLATION_ONLY"):
         run_evaluation_override_ablations_only()
     elif os.environ.get("BG_LAMBDA_SWEEP_ONLY"):
         run_evaluation_lambda_sweep_only()

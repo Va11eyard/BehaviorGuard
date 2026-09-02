@@ -207,7 +207,7 @@ Seed is fixed at 42 for all stochastic components.
 pytest tests/ -v
 ```
 
-**Current Status:** 84 tests passing.
+**Current Status:** 88 tests passing.
 
 ### Run Specific Test Suites
 
@@ -375,7 +375,7 @@ src/behaviorguard/
 ├── profile_manager.py          # Algorithm 1: incremental profile building
 └── cli.py                      # Command-line interface
 
-tests/                          # 84 tests
+tests/                          # 88 tests
 evaluation.py                   # Full evaluation pipeline vs. baselines
 evaluate.py                     # CLI for evaluation (--overrides, --datasets)
 reproduce.py                    # Single-command paper reproduction

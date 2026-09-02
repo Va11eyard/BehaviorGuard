@@ -6,9 +6,8 @@ import json
 from typing import Optional, Tuple
 
 import numpy as np
-from sentence_transformers import SentenceTransformer
 
-from behaviorguard.utils.torch_device import embedding_device
+from behaviorguard.embedding_config import EMBEDDING_MODEL_NAME, load_sentence_transformer
 
 
 class TemplateOverrideProvider:
@@ -17,11 +16,18 @@ class TemplateOverrideProvider:
     def __init__(
         self,
         template_path: str,
-        model_name: str = "all-MiniLM-L6-v2",
+        model_name: str | None = None,
         theta: float = 0.82,
     ):
         self.theta = theta
-        self.model = SentenceTransformer(model_name, device=embedding_device())
+        if model_name is None or model_name == EMBEDDING_MODEL_NAME:
+            self.model = load_sentence_transformer()
+        else:
+            from sentence_transformers import SentenceTransformer
+
+            from behaviorguard.utils.torch_device import embedding_device
+
+            self.model = SentenceTransformer(model_name, device=embedding_device())
         self.templates, self.labels = self._load_and_embed(template_path)
 
     def _load_and_embed(self, path: str) -> tuple[np.ndarray, list[str]]:

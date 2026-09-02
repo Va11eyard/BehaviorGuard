@@ -2,7 +2,7 @@
 
 import numpy as np
 from sklearn.ensemble import IsolationForest
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 import pickle
 
 
@@ -19,7 +19,7 @@ class IsolationForestBaseline:
         self,
         n_estimators: int = 100,
         max_samples: int = 256,
-        contamination: float = 0.1,
+        contamination: Union[float, str] = 0.1,
         random_state: int = 42
     ):
         """
@@ -66,6 +66,23 @@ class IsolationForestBaseline:
         self.train_score_std = np.std(train_scores) + 1e-8
         
         self.is_fitted = True
+
+    def _normalize_features(self, feature_vectors: np.ndarray) -> np.ndarray:
+        """Z-score normalize features using training statistics."""
+        if not self.is_fitted:
+            raise ValueError("Model not fitted. Call fit() first.")
+        vectors = np.atleast_2d(feature_vectors)
+        return (vectors - self.feature_mean) / self.feature_std
+
+    def predict_sklearn_labels(self, feature_vectors: np.ndarray) -> np.ndarray:
+        """
+        Return sklearn's native predict() output: -1 (anomaly) or 1 (normal).
+
+        Uses the contamination-calibrated internal offset; does not apply the
+        sigmoid score threshold used by detect_single().
+        """
+        normalized = self._normalize_features(feature_vectors)
+        return self.model.predict(normalized)
     
     def predict(self, feature_vectors: np.ndarray) -> Dict:
         """
@@ -85,7 +102,7 @@ class IsolationForestBaseline:
             raise ValueError("Model not fitted. Call fit() first.")
         
         # Normalize features
-        normalized_features = (feature_vectors - self.feature_mean) / self.feature_std
+        normalized_features = self._normalize_features(feature_vectors)
         
         # Get anomaly scores (more negative = more normal, less negative = more anomalous)
         raw_scores = self.model.score_samples(normalized_features)

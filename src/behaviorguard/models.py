@@ -40,7 +40,10 @@ class SemanticProfile(BaseModel):
     primary_domains: List[str]
     topic_diversity_score: float
     embedding_centroid_summary: str
-    embedding_centroid: Optional[List[float]] = None  # Pre-computed EMA centroid when available
+    embedding_centroid: Optional[List[float]] = None  # L2-normalized EMA centroid (cosine mode)
+    embedding_mean: Optional[List[float]] = None  # raw mean embedding for Mahalanobis
+    embedding_covariance: Optional[List[float]] = None  # row-major d×d covariance
+    embedding_sample_count: int = 0
 
 
 class LinguisticProfile(BaseModel):
@@ -48,6 +51,8 @@ class LinguisticProfile(BaseModel):
 
     avg_message_length_tokens: float
     avg_message_length_chars: float
+    avg_message_length_tokens_std: float = 10.0
+    avg_message_length_chars_std: float = 50.0
     lexical_diversity_mean: float
     lexical_diversity_std: float
     formality_score_mean: float
@@ -159,10 +164,16 @@ class SystemConfig(BaseModel):
     deployment_context: Literal["consumer", "enterprise", "financial", "healthcare", "government"]
     enable_temporal_scoring: bool = True
     enable_linguistic_scoring: bool = True
+    # When False, CompositeScorer zeros linguistic weight and renormalizes.
+    # Default False: AUC-PR weight retuning and stylometric holdout eval show the
+    # linguistic axis does not improve prevalence-aware ranking on corrected data.
+    linguistic_component_enabled: bool = False
     enable_semantic_scoring: bool = True
     overrides_enabled: bool = True
     override_4_enabled: bool = False
     template_path: Optional[str] = None
+    semantic_scoring_mode: Literal["cosine", "mahalanobis"] = "cosine"
+    mahalanobis_shrinkage: float = 0.1
 
 
 # Component Results

@@ -1,0 +1,56 @@
+{
+  "PersonaChat": {
+    "cold_start": {
+      "n_users": 13,
+      "n_messages": 26,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "fpr": 0.0
+    },
+    "stable": {
+      "n_users": 7,
+      "n_messages": 28,
+      "precision": 0.9285714285714286,
+      "recall": 1.0,
+      "f1": 0.9629629629629629,
+      "fpr": 1.0
+    }
+  },
+  "BST": {
+    "cold_start": {
+      "n_users": 0,
+      "n_messages": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "fpr": 0.0
+    },
+    "stable": {
+      "n_users": 20,
+      "n_messages": 107,
+      "precision": 0.6582278481012658,
+      "recall": 1.0,
+      "f1": 0.7938931297709924,
+      "fpr": 0.4909090909090909
+    }
+  },
+  "HH": {
+    "cold_start": {
+      "n_users": 0,
+      "n_messages": 0,
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "fpr": 0.0
+    },
+    "stable": {
+      "n_users": 20,
+      "n_messages": 121,
+      "precision": 0.49074074074074076,
+      "recall": 0.9298245614035088,
+      "f1": 0.6424242424242425,
+      "fpr": 0.859375
+    }
+  }
+}

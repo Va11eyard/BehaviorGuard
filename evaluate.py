@@ -48,6 +48,15 @@ def main():
         help="Number of bootstrap iterations for 95%% CI (0=disabled)",
     )
     parser.add_argument(
+        "--max-users",
+        type=int,
+        default=None,
+        help=(
+            "Cap sampled test users (historical paper shortcut used 20). "
+            "Default None = full holdout / all test users."
+        ),
+    )
+    parser.add_argument(
         "--output",
         default="full_evaluation_results.json",
         help="Output JSON file path",
@@ -68,6 +77,7 @@ def main():
     print("=" * 80)
     print(f"Start: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Overrides: {args.overrides}, Datasets: {dataset_names}")
+    print(f"max_users: {args.max_users if args.max_users is not None else 'all (full holdout)'}")
     print(f"Seed: {SEED}")
 
     # Import evaluation components
@@ -96,12 +106,14 @@ def main():
                 "behaviorguard",
                 ds_name,
                 datasets[ds_name],
+                max_users=args.max_users,
                 overrides_enabled=True,
             )
             m_off, _ = evaluate_method(
                 "behaviorguard",
                 ds_name,
                 datasets[ds_name],
+                max_users=args.max_users,
                 overrides_enabled=False,
             )
             results["override_ablation"]["overrides_on"][ds_name] = m_on
@@ -155,6 +167,7 @@ def main():
         "overrides": args.overrides,
         "datasets": list(run_datasets.keys()),
         "bootstrap": args.bootstrap,
+        "max_users": args.max_users,
     }
     out = convert_to_json_serializable(results)
     with open(args.output, "w") as f:

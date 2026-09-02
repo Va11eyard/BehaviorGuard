@@ -34,6 +34,9 @@ def build_system_config(sensitivity: str = "medium") -> SystemConfig:
         deployment_context="consumer",
         enable_temporal_scoring=True,
         enable_linguistic_scoring=True,
+        # Explicit True so weight-combination unit tests exercise the linguistic axis
+        # even though production default is False after AUC-PR retuning.
+        linguistic_component_enabled=True,
         enable_semantic_scoring=True,
     )
 
@@ -424,6 +427,53 @@ def test_normal_override_excludes_disabled_components():
         "normal_override fired on disabled-component artifact: "
         f"enabled-mean=0.20 but old mean-of-three=0.133. got={r2.detection_mechanism}"
     )
+
+
+def test_linguistic_component_enabled_excludes_weight_medium():
+    """linguistic_component_enabled=False excludes weight; analyzer may still run."""
+    scorer = CompositeScorer()
+    config = SystemConfig(
+        sensitivity_level="medium",
+        deployment_context="enterprise",
+        enable_semantic_scoring=True,
+        enable_linguistic_scoring=True,
+        linguistic_component_enabled=False,
+        enable_temporal_scoring=True,
+        overrides_enabled=False,
+    )
+    profile = build_user_profile(has_sensitive_ops=True)
+    message = build_current_message()
+    component_scores = build_component_scores(semantic=0.8, linguistic=0.9, temporal=0.4)
+
+    result = scorer.compute_score(component_scores, config, message, profile)
+
+    # Medium AUC-PR weights already set linguistic=0; excluding the flag is a no-op
+    # renormalization of (0.9, 0.0, 0.1).
+    expected = 0.8 * 0.9 + 0.4 * 0.1
+    assert result.detection_mechanism == "composite_score"
+    assert abs(result.anomaly_score - expected) < 0.001
+
+
+def test_ablation_renormalizes_weights_excludes_linguistic_medium():
+    """linguistic disabled at medium: semantic/temporal stay at AUC-PR (0.9, 0.1)."""
+    scorer = CompositeScorer()
+    config = SystemConfig(
+        sensitivity_level="medium",
+        deployment_context="enterprise",
+        enable_semantic_scoring=True,
+        enable_linguistic_scoring=False,
+        enable_temporal_scoring=True,
+        overrides_enabled=False,
+    )
+    profile = build_user_profile(has_sensitive_ops=True)
+    message = build_current_message()
+    component_scores = build_component_scores(semantic=0.8, linguistic=0.9, temporal=0.4)
+
+    result = scorer.compute_score(component_scores, config, message, profile)
+
+    expected = 0.8 * 0.9 + 0.4 * 0.1
+    assert result.detection_mechanism == "composite_score"
+    assert abs(result.anomaly_score - expected) < 0.001
 
 
 def test_ablation_renormalizes_weights_semantic_only():

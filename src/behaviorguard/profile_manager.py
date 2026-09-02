@@ -75,27 +75,46 @@ class _RunningStats:
 
 class _EmbeddingAccumulator:
     """
-    Maintains an EMA-weighted embedding centroid using standard exponential
-    moving average: µ_new = λ * µ_old + (1 - λ) * e_new.
+    Maintains EMA-weighted embedding centroid and sample covariance.
 
-    decay (λ) controls how much history is retained. Lower λ weights recent
-    messages more heavily (more responsive); higher λ weights history more
-    (more stable). λ=0.95 gives ~20-message effective window.
+    decay (λ) controls how much history is retained for the centroid EMA.
+    Covariance is computed from the batch of normal messages at build time.
     """
 
     def __init__(self, decay: float = 0.95):
         self.decay = decay
         self._centroid: Optional[np.ndarray] = None
+        self._raw_mean: Optional[np.ndarray] = None
+        self._covariance: Optional[np.ndarray] = None
+        self._embeddings: list[np.ndarray] = []
         self._count: int = 0
 
     def update(self, embedding: np.ndarray) -> None:
         e = embedding.astype(np.float64)
+        self._embeddings.append(e.copy())
         if self._centroid is None:
             self._centroid = e.copy()
         else:
-            # Standard EMA: µ_new = λ * µ_old + (1-λ) * e_new
             self._centroid = self.decay * self._centroid + (1.0 - self.decay) * e
         self._count += 1
+
+    def finalize_statistics(self) -> tuple[Optional[np.ndarray], Optional[np.ndarray]]:
+        """Compute raw mean and covariance from collected embeddings."""
+        if not self._embeddings:
+            return None, None
+        matrix = np.stack(self._embeddings, axis=0)
+        raw_mean = matrix.mean(axis=0)
+        n = matrix.shape[0]
+        if n >= 2:
+            cov = np.cov(matrix, rowvar=False)
+            if cov.ndim == 0:
+                cov = np.array([[float(cov)]])
+        else:
+            d = matrix.shape[1]
+            cov = np.eye(d) * 1e-6
+        self._raw_mean = raw_mean
+        self._covariance = cov
+        return raw_mean, cov
 
     @property
     def centroid(self) -> Optional[np.ndarray]:
@@ -103,6 +122,14 @@ class _EmbeddingAccumulator:
             return None
         norm = np.linalg.norm(self._centroid)
         return self._centroid / norm if norm > 0 else self._centroid
+
+    @property
+    def raw_mean(self) -> Optional[np.ndarray]:
+        return self._raw_mean
+
+    @property
+    def covariance(self) -> Optional[np.ndarray]:
+        return self._covariance
 
     @property
     def count(self) -> int:
@@ -185,11 +212,13 @@ class ProfileManager:
     def __init__(
         self,
         decay: float = 0.95,
-        embedding_model: str = "all-MiniLM-L6-v2",
+        embedding_model: str | None = None,
     ):
+        from behaviorguard.embedding_config import EMBEDDING_MODEL_NAME
+
         self.decay = decay
         self._model = None
-        self._embedding_model_name = embedding_model
+        self._embedding_model_name = embedding_model or EMBEDDING_MODEL_NAME
 
     # ── lazy model loading ────────────────────────────────────────────────────
 
@@ -198,11 +227,9 @@ class ProfileManager:
         """Lazily load sentence transformer model."""
         if self._model is None:
             try:
-                from sentence_transformers import SentenceTransformer  # type: ignore[import]
-                self._model = SentenceTransformer(
-                    self._embedding_model_name,
-                    device=embedding_device(),
-                )
+                from behaviorguard.embedding_config import load_sentence_transformer
+
+                self._model = load_sentence_transformer()
             except ImportError as exc:
                 raise ImportError(
                     "sentence-transformers is required for ProfileManager text encoding.\n"
@@ -344,6 +371,8 @@ class ProfileManager:
         )
 
         centroid = embedder.centroid
+        raw_mean, cov = embedder.finalize_statistics()
+        cov_flat = cov.flatten().tolist() if cov is not None else None
         return UserProfile(
             user_id=user_id,
             account_age_days=account_age_days,
@@ -356,10 +385,15 @@ class ProfileManager:
                     f"EMA centroid (decay={self.decay}) over {embedder.count} messages"
                 ),
                 embedding_centroid=centroid.tolist() if centroid is not None else None,
+                embedding_mean=raw_mean.tolist() if raw_mean is not None else None,
+                embedding_covariance=cov_flat,
+                embedding_sample_count=embedder.count,
             ),
             linguistic_profile=LinguisticProfile(
                 avg_message_length_tokens=len_tokens.mean,
                 avg_message_length_chars=len_chars.mean,
+                avg_message_length_tokens_std=max(len_tokens.std, 1.0),
+                avg_message_length_chars_std=max(len_chars.std, 1.0),
                 lexical_diversity_mean=lex_div.mean,
                 lexical_diversity_std=max(lex_div.std, 0.01),
                 formality_score_mean=formality.mean,
@@ -468,16 +502,24 @@ class ProfileManager:
                 all_topic_words.append(w)
         all_topic_words = all_topic_words[:15]  # cap at 15
 
-        # Update EMA centroid
+        # Update EMA centroid; retain batch covariance (online single-msg cov is unreliable)
         e_new = self.model.encode(text, convert_to_numpy=True, show_progress_bar=False)
-        old_centroid = profile.semantic_profile.embedding_centroid
-        if old_centroid is not None:
-            mu_old = np.array(old_centroid, dtype=np.float64)
+        if profile.semantic_profile.embedding_mean is not None:
+            mu_old = np.array(profile.semantic_profile.embedding_mean, dtype=np.float64)
             mu_new = self.decay * mu_old + (1.0 - self.decay) * e_new
         else:
             mu_new = e_new.astype(np.float64)
         norm = np.linalg.norm(mu_new)
         new_centroid = (mu_new / norm) if norm > 0 else mu_new
+        raw_mean = mu_new
+        d = len(raw_mean)
+        if profile.semantic_profile.embedding_covariance is not None:
+            cov = np.array(
+                profile.semantic_profile.embedding_covariance, dtype=np.float64
+            ).reshape(d, d)
+        else:
+            cov = np.eye(d) * 1e-6
+        cov_flat = cov.flatten().tolist()
 
         # Update temporal profile
         ts = message.parsed_timestamp()
@@ -503,10 +545,15 @@ class ProfileManager:
                     f"(decay={self.decay})"
                 ),
                 embedding_centroid=new_centroid.tolist(),
+                embedding_mean=raw_mean.tolist(),
+                embedding_covariance=cov_flat,
+                embedding_sample_count=n + 1,
             ),
             linguistic_profile=LinguisticProfile(
                 avg_message_length_tokens=new_avg_tokens,
                 avg_message_length_chars=new_avg_chars,
+                avg_message_length_tokens_std=max(new_avg_tokens * 0.15, lp.avg_message_length_tokens_std),
+                avg_message_length_chars_std=max(new_avg_chars * 0.15, lp.avg_message_length_chars_std),
                 lexical_diversity_mean=new_lex_mean,
                 lexical_diversity_std=new_lex_std,
                 formality_score_mean=new_form_mean,

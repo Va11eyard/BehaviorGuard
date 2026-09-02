@@ -220,6 +220,9 @@ sentence_transformers/
 # in your user global gitignore (e.g. ~/.cache/huggingface/).
 
 # Evaluation outputs
+# Exception (force-added, tracked despite this rule): results/sequential_ato_study*.json
+# and results/sequential_ato_scores*.npz — canonical sequential-ATO study artifacts
+# committed in 9d02121 for reproducibility of the paper's headline finding.
 results/
 outputs/
 *.json.out
@@ -232,6 +235,9 @@ full_evaluation_results.json
 # Data — do NOT push real TSARKA/FMA/Dana datasets
 data/raw/
 data/processed/
+# Exception (force-added, tracked despite this rule): datasets/*_ato_episodes.json —
+# seeded author-substitution episode benchmarks (built from public PersonaChat/BST,
+# no sensitive data) committed in 9d02121 so the sequential-ATO study is reproducible.
 datasets/
 
 # JSONL: ignore by default; allow tiny synthetic fixtures

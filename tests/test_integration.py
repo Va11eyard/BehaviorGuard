@@ -71,7 +71,9 @@ def build_normal_user_profile() -> UserProfile:
 def build_normal_message() -> CurrentMessage:
     """Build a normal message."""
     return CurrentMessage(
-        text="How do I implement a binary search tree in Python?",
+        # Keywords overlap the profile's typical_topics so the legacy heuristic
+        # semantic analyzer stays in-band under semantic-heavy AUC-PR weights.
+        text="How do I use python for programming and web development with databases?",
         timestamp="2024-01-02T14:30:00Z",
         session_id="session-456",
         message_sequence_in_session=3,

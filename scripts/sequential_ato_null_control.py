@@ -45,7 +45,7 @@ N_SIM = 500
 def main() -> None:
     import argparse
 
-    from sentence_transformers import SentenceTransformer
+    from behaviorguard.embedding_config import load_sentence_transformer
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", choices=sorted(study.DATASET_PATHS), default="personachat")
@@ -76,7 +76,7 @@ def main() -> None:
                 seen[t] = len(texts)
                 texts.append(t)
     print(f"embedding {len(texts)} train texts for {len(ep_idx)} episode users...", flush=True)
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = load_sentence_transformer()
     emb = model.encode(texts, convert_to_numpy=True, batch_size=128, show_progress_bar=False)
 
     def E(t: str) -> np.ndarray:

@@ -34,15 +34,19 @@ class BehaviorGuardEvaluatorML:
     - No hardcoded keyword patterns
     """
 
-    def __init__(self, embedding_model: str = "all-MiniLM-L6-v2"):
+    def __init__(self, embedding_model: str | None = None):
         """
         Initialize ML-based evaluator.
         
         Args:
             embedding_model: Name of sentence transformer model to use
         """
+        from behaviorguard.embedding_config import EMBEDDING_MODEL_NAME
+
         # ML-based analyzers
-        self.semantic_analyzer = SemanticAnalyzerML(model_name=embedding_model)
+        self.semantic_analyzer = SemanticAnalyzerML(
+            model_name=embedding_model or EMBEDDING_MODEL_NAME
+        )
         self.linguistic_analyzer = LinguisticAnalyzerML()
         self.temporal_analyzer = TemporalAnalyzerML()
 
@@ -83,8 +87,10 @@ class BehaviorGuardEvaluatorML:
         system_config = evaluation_input.system_config
 
         # Check for cold start scenario
+        from behaviorguard.embedding_config import EMBEDDING_MODEL_NAME
+
         is_cold_start = self.cold_start_handler.is_cold_start(user_profile)
-        metadata = {"ml_based": True, "embedding_model": "all-MiniLM-L6-v2"}
+        metadata = {"ml_based": True, "embedding_model": EMBEDDING_MODEL_NAME}
 
         if is_cold_start:
             metadata["cold_start"] = True
@@ -92,7 +98,10 @@ class BehaviorGuardEvaluatorML:
 
         # Step 1: ML-based Component Analysis
         semantic_result = self.semantic_analyzer.analyze(
-            current_message, user_profile.semantic_profile
+            current_message,
+            user_profile.semantic_profile,
+            system_config=system_config,
+            total_interactions=user_profile.total_interactions,
         )
         linguistic_result = self.linguistic_analyzer.analyze(
             current_message, user_profile.linguistic_profile

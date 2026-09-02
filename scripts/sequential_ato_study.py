@@ -62,6 +62,21 @@ DATASET_PATHS = {
         "cache": ROOT / "results" / "sequential_ato_scores_bst.npz",
         "out": ROOT / "results" / "sequential_ato_study_bst.json",
     },
+    "personachat_mimicry": {
+        "dataset": ROOT / "datasets" / "personachat_ato_episodes_mimicry.json",
+        "cache": ROOT / "results" / "sequential_ato_scores_mimicry.npz",
+        "out": ROOT / "results" / "sequential_ato_study_mimicry.json",
+    },
+    "bst_mimicry": {
+        "dataset": ROOT / "datasets" / "blended_skill_talk_ato_episodes_mimicry.json",
+        "cache": ROOT / "results" / "sequential_ato_scores_bst_mimicry.npz",
+        "out": ROOT / "results" / "sequential_ato_study_bst_mimicry.json",
+    },
+    "wildchat": {
+        "dataset": ROOT / "datasets" / "wildchat_ato_episodes.json",
+        "cache": ROOT / "results" / "sequential_ato_scores_wildchat.npz",
+        "out": ROOT / "results" / "sequential_ato_study_wildchat.json",
+    },
 }
 
 DATASET = DATASET_PATHS["personachat"]["dataset"]
@@ -206,6 +221,11 @@ def compute_scores() -> dict:
         "verifier_lr",
     ]
     trajectories: dict[str, list[np.ndarray]] = {d: [] for d in det_names}
+    residual_trajs: dict[str, list[np.ndarray]] = {
+        "res_sty": [],
+        "res_emb": [],
+        "res_comb": [],
+    }
     meta = []
     n_skipped = 0
     t0 = time.perf_counter()
@@ -307,6 +327,9 @@ def compute_scores() -> dict:
         trajectories["permsg_bg"].append(np.array(bg_stat))
         trajectories["window_embed"].append(np.array(win_stat))
         trajectories["verifier_lr"].append(ver_stat)
+        residual_trajs["res_sty"].append(res_sty)
+        residual_trajs["res_emb"].append(res_emb)
+        residual_trajs["res_comb"].append(res_comb)
         meta.append(
             {
                 "user_id": uid,
@@ -325,6 +348,8 @@ def compute_scores() -> dict:
     lengths = np.array([m["stream_len"] for m in meta])
     for d in det_names:
         flat[d] = np.concatenate(trajectories[d])
+    for k, vals in residual_trajs.items():
+        flat[k] = np.concatenate(vals)
     cache = {
         "lengths": lengths,
         "episode_start": np.array([m["episode_start"] for m in meta]),
@@ -334,7 +359,7 @@ def compute_scores() -> dict:
     }
     SCORE_CACHE.parent.mkdir(parents=True, exist_ok=True)
     np.savez(SCORE_CACHE, **cache)
-    print(f"  cached statistic trajectories to {SCORE_CACHE.name}", flush=True)
+    print(f"  cached statistic trajectories (+residuals) to {SCORE_CACHE.name}", flush=True)
     return cache
 
 
@@ -347,11 +372,11 @@ def recompute_window_embed(cache: dict) -> dict:
     (mu_0 = e_0; mu_i = 0.5*mu_{i-1} + 0.5*e_i; L2-normalized) so no profile
     rebuild is needed.
     """
-    from sentence_transformers import SentenceTransformer  # noqa: PLC0415
+    from behaviorguard.embedding_config import load_sentence_transformer  # noqa: PLC0415
 
     data = json.loads(DATASET.read_text(encoding="utf-8"))
     streams = data["streams"]
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    model = load_sentence_transformer()
 
     def windows(texts: list[str]) -> list[str]:
         return [" ".join(texts[max(0, i - WINDOW_W + 1) : i + 1]) for i in range(len(texts))]

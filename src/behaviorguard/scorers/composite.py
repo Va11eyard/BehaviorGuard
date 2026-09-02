@@ -19,10 +19,13 @@ class CompositeScorer:
     def __init__(self, template_provider=None):
         self.template_provider = template_provider
 
-    # Weight configurations by sensitivity level
+    # Weight configurations by sensitivity level.
+    # Medium retuned by user-level 5-fold CV AUC-PR on the corrected PersonaChat
+    # holdout (scripts/weight_tuning_aucpr.py): best simplex point is
+    # (0.9, 0.0, 0.1). Linguistic weight 0 matches linguistic_component_enabled=False.
     WEIGHTS = {
         "low": {"semantic": 0.5, "linguistic": 0.3, "temporal": 0.2},
-        "medium": {"semantic": 0.4, "linguistic": 0.35, "temporal": 0.25},
+        "medium": {"semantic": 0.9, "linguistic": 0.0, "temporal": 0.1},
         "high": {"semantic": 0.4, "linguistic": 0.3, "temporal": 0.3},
         "maximum": {"semantic": 0.35, "linguistic": 0.35, "temporal": 0.3},
     }
@@ -119,7 +122,10 @@ class CompositeScorer:
 
         if not system_config.enable_semantic_scoring:
             weights["semantic"] = 0.0
-        if not system_config.enable_linguistic_scoring:
+        if (
+            not system_config.enable_linguistic_scoring
+            or not system_config.linguistic_component_enabled
+        ):
             weights["linguistic"] = 0.0
         if not system_config.enable_temporal_scoring:
             weights["temporal"] = 0.0
@@ -193,7 +199,11 @@ class CompositeScorer:
             s
             for s, enabled in (
                 (component_scores.semantic, system_config.enable_semantic_scoring),
-                (component_scores.linguistic, system_config.enable_linguistic_scoring),
+                (
+                    component_scores.linguistic,
+                    system_config.enable_linguistic_scoring
+                    and system_config.linguistic_component_enabled,
+                ),
                 (component_scores.temporal, system_config.enable_temporal_scoring),
             )
             if enabled
