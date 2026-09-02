@@ -2,6 +2,9 @@
 
 **Formerly published as BehaviorGuard.**
 
+[![CI](https://github.com/Va11eyard/BehaviorGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/Va11eyard/BehaviorGuard/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 A **machine learning-driven** AI security agent for detecting behavioral anomalies in conversational AI interactions.
 
 ## Overview
