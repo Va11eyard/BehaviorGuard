@@ -10,7 +10,7 @@ Detectors (all share the same alarm-time framework; statistic trajectory per str
   cusum_embed     CUSUM over standardized embedding-distance residuals (ablation)
   cusum_combined  CUSUM over the mean of both standardized residuals
   permsg_combined same combined residual, no accumulation (isolates CUSUM's value)
-  permsg_bg       per-message BehaviorGuard composite (ling-excluded cosine,
+  permsg_bg       per-message TurnShift composite (ling-excluded cosine,
                   overrides off - the best-supported per-message config)
   window_embed    CQA-style cumulative context: normalized mean embedding of the
                   last W=5 messages, distance to centroid, standardized
@@ -156,7 +156,7 @@ def cusum(residuals: np.ndarray, kappa: float = CUSUM_KAPPA) -> np.ndarray:
 def compute_scores() -> dict:
     """Heavy phase: embeddings, PM profiles, per-stream statistic trajectories."""
     import evaluation as ev  # noqa: PLC0415 (heavy import: loads datasets + models)
-    from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: PLC0415
+    from turnshift.models import EvaluationInput, SystemConfig  # noqa: PLC0415
 
     data = json.loads(DATASET.read_text(encoding="utf-8"))
     streams = data["streams"]
@@ -285,7 +285,7 @@ def compute_scores() -> dict:
             w = np.stack([E(t) for t in stream_texts[max(0, i - WINDOW_W + 1) : i + 1]]).mean(axis=0)
             win_stat.append((cosine_distance(w, centroid) - mu_win) / sd_win)
 
-        # -- BehaviorGuard per-message composite
+        # -- TurnShift per-message composite
         bg_stat = []
         for i, m in enumerate(stream_msgs):
             prev = stream_msgs[i - 1] if i > 0 and stream_msgs[i - 1]["session_id"] == m["session_id"] else None
@@ -372,7 +372,7 @@ def recompute_window_embed(cache: dict) -> dict:
     (mu_0 = e_0; mu_i = 0.5*mu_{i-1} + 0.5*e_i; L2-normalized) so no profile
     rebuild is needed.
     """
-    from behaviorguard.embedding_config import load_sentence_transformer  # noqa: PLC0415
+    from turnshift.embedding_config import load_sentence_transformer  # noqa: PLC0415
 
     data = json.loads(DATASET.read_text(encoding="utf-8"))
     streams = data["streams"]

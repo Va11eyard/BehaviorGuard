@@ -3,15 +3,15 @@
 import numpy as np
 import pytest
 
-from behaviorguard.models import (
+from turnshift.models import (
     ComponentScores,
     CurrentMessage,
     LinguisticFeatures,
     RequestedOperation,
     TemporalContext,
 )
-from behaviorguard.scorers.composite import CompositeScorer
-from behaviorguard.profile_manager import ProfileManager, MessageRecord, _EmbeddingAccumulator
+from turnshift.scorers.composite import CompositeScorer
+from turnshift.profile_manager import ProfileManager, MessageRecord, _EmbeddingAccumulator
 
 
 def test_ema_constant_embeddings_converges():
@@ -33,7 +33,7 @@ def test_ema_constant_embeddings_converges():
 
 def test_composite_score_bounds():
     """Composite score must be in [0, 1] for all inputs."""
-    from behaviorguard.models import (
+    from turnshift.models import (
         OperationalProfile,
         SemanticProfile,
         LinguisticProfile,

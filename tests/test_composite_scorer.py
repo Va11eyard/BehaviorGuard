@@ -3,7 +3,7 @@
 import pytest
 from hypothesis import HealthCheck, given, settings, strategies as st
 
-from behaviorguard.models import (
+from turnshift.models import (
     ComponentScores,
     CurrentMessage,
     LinguisticFeatures,
@@ -16,7 +16,7 @@ from behaviorguard.models import (
     UserProfile,
     LinguisticProfile,
 )
-from behaviorguard.scorers.composite import CompositeScorer
+from turnshift.scorers.composite import CompositeScorer
 
 
 # Test data builders
@@ -125,7 +125,7 @@ def build_current_message(
     )
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 2: Weighted score combination respects sensitivity configuration
+# Feature: turnshift-anomaly-scoring, Property 2: Weighted score combination respects sensitivity configuration
 @settings(suppress_health_check=[HealthCheck.too_slow])
 @given(
     semantic=st.floats(min_value=0.0, max_value=0.85),  # Below override threshold
@@ -169,7 +169,7 @@ def test_property_weighted_combination(semantic, linguistic, temporal, sensitivi
     assert 0.0 <= result.anomaly_score <= 1.0
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 11: Instant HIGH_RISK override for critical operations
+# Feature: turnshift-anomaly-scoring, Property 11: Instant HIGH_RISK override for critical operations
 def test_property_high_risk_override_semantic_critical():
     """
     Property 11: Instant HIGH_RISK override for critical operations.
@@ -194,7 +194,7 @@ def test_property_high_risk_override_semantic_critical():
     assert "semantic" in result.applied_overrides[0].lower() or "critical" in result.applied_overrides[0].lower()
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 12: Instant HIGH_RISK override for bot detection
+# Feature: turnshift-anomaly-scoring, Property 12: Instant HIGH_RISK override for bot detection
 def test_property_high_risk_override_bot_timing():
     """
     Property 12: Instant HIGH_RISK override for bot detection.

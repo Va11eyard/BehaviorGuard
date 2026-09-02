@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import scripts.sequential_ato_study as study  # noqa: E402
-from behaviorguard.embedding_config import load_sentence_transformer  # noqa: E402
+from turnshift.embedding_config import load_sentence_transformer  # noqa: E402
 from scripts.sequential_ato_study import (  # noqa: E402
     CUSUM_KAPPA,
     SEED,

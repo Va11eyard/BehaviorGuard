@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Single-command reproduction of BehaviorGuard paper results.
+Single-command reproduction of TurnShift paper results.
 
 Runs: profile building → scoring → baselines → ablations → statistical tests
 Outputs: results/tables.csv, results/figures/ (if generated)
@@ -48,7 +48,7 @@ def _dataset_checksum(filepath: Path) -> str:
 
 def main():
     print("=" * 80)
-    print("BEHAVIORGUARD REPRODUCTION")
+    print("TURNSHIFT REPRODUCTION")
     print("=" * 80)
     print(f"Start: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Seed: {SEED}")
@@ -85,7 +85,7 @@ def main():
     for ds_name, data in results.get("methods", {}).get("behaviorguard", {}).items():
         m = data["metrics"]
         rows.append(
-            f"behaviorguard,{ds_name},{m['precision']:.4f},{m['recall']:.4f},"
+            f"turnshift,{ds_name},{m['precision']:.4f},{m['recall']:.4f},"
             f"{m['f1']:.4f},{m['fpr']:.4f},{m['roc_auc']:.4f}"
         )
     for method in ["rule_based", "isolation_forest", "autoencoder", "content_safety"]:

@@ -35,7 +35,7 @@ Must report `PASS` with s_ling values matching to 4 decimal places.
 python scripts/verify_composite_wiring.py
 ```
 
-Confirms `run_lambda_sweep()` uses `BehaviorGuardEvaluatorML.evaluate()` /
+Confirms `run_lambda_sweep()` uses `TurnShiftEvaluatorML.evaluate()` /
 `CompositeScorer` (not a hand-written α·s_sem + β·s_ling + γ·s_temp).
 
 ## Step 5 — evaluation.py integration

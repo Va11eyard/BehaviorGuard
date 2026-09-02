@@ -388,11 +388,11 @@ def collect_personachat_production_scores(
     sys.path.insert(0, str(root / "src"))
 
     import evaluation as ev  # noqa: E402
-    from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-    from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+    from turnshift import TurnShiftEvaluatorML  # noqa: E402
+    from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 
     test_data = json.loads(dataset_path.read_text(encoding="utf-8"))
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     config = SystemConfig(
         sensitivity_level="medium",
         deployment_context="enterprise",

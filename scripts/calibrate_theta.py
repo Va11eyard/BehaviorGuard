@@ -21,7 +21,7 @@ for _stream in (sys.stdout, sys.stderr):
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "src"))
 
-from behaviorguard.overrides.template_override import TemplateOverrideProvider
+from turnshift.overrides.template_override import TemplateOverrideProvider
 
 
 def _stable_fraction(key: str, salt: str, frac: float) -> bool:

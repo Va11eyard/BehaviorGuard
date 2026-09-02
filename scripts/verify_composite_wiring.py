@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify harness composite matches BehaviorGuardEvaluatorML.evaluate()."""
+"""Verify harness composite matches TurnShiftEvaluatorML.evaluate()."""
 
 from __future__ import annotations
 
@@ -12,8 +12,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.models import EvaluationInput  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.models import EvaluationInput  # noqa: E402
 from scripts.diagnostic_harness import (  # noqa: E402
     DIAG_CONFIG,
     _build_profile,
@@ -47,7 +47,7 @@ def main() -> int:
     cur = ev.message_to_current_message(msg, prev, user_profile=profile)
     config = DIAG_CONFIG.model_copy(deep=True)
 
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     eval_result = evaluator.evaluate(
         EvaluationInput(user_profile=profile, current_message=cur, system_config=config)
     )

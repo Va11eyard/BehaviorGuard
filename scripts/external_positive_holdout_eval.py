@@ -25,7 +25,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 
 SEED = 42
 LAMBDA_DECAY = 0.50

@@ -199,8 +199,8 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# ══ BehaviorGuard — project-specific ══
-# Tracked: src/behaviorguard/, tests/, evaluation.py, pyproject.toml, README, .env.example, etc.
+# ══ TurnShift — project-specific ══
+# Tracked: src/turnshift/, tests/, evaluation.py, pyproject.toml, README, .env.example, etc.
 
 # Secrets — never push
 .env
@@ -259,6 +259,8 @@ profiles/
 # ── Internal planning / sensitive docs ───────────────────────────────────
 BehaviorGuard_Concerns_Register.md
 BehaviorGuard_Execution_Plan.md
+TurnShift_Concerns_Register.md
+TurnShift_Execution_Plan.md
 
 # ── PDF pre-print (publish via arXiv, not as a binary blob in git) ────────
 *.pdf

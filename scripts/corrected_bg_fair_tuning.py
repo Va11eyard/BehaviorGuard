@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Fair corrected-data BehaviorGuard tuning vs IF/AE (F1-max protocol).
+Fair corrected-data TurnShift tuning vs IF/AE (F1-max protocol).
 
 Tasks:
   1. BG F1-max threshold sweep at λ=0.50, default weights (0.4, 0.35, 0.25)
@@ -35,8 +35,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 from scripts.task1_isolation_forest_rerun import _evaluate_optimal_threshold  # noqa: E402
 from scripts.task5_autoencoder_rerun import (  # noqa: E402
     SWEEP_HIGH,
@@ -130,7 +130,7 @@ def collect_component_scores(
     """Score test window; return per-message component scores and labels."""
     builder = ev._build_profile_with_pm(lambda_decay)
     profiles = _prepare_test_profiles(test_data, max_users, builder)
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     rows: list[dict] = []
 
     for uid, ud in profiles.items():

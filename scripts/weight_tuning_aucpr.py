@@ -57,7 +57,7 @@ def build_or_load_component_scores(force: bool = False) -> dict:
         return {k: d[k] for k in d.files}
 
     import evaluation as ev
-    from behaviorguard.models import EvaluationInput, SystemConfig
+    from turnshift.models import EvaluationInput, SystemConfig
 
     data = json.loads(DATASET.read_text(encoding="utf-8"))
     builder = ev._build_profile_with_pm(0.50)

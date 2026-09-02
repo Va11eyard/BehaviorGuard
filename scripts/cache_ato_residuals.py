@@ -3,7 +3,7 @@
 Cache standardized embedding/stylometric residuals for sequential ATO streams.
 
 Faster than a full --recompute of sequential_ato_study.py because it skips the
-per-message BehaviorGuard evaluator and verifier LR. Used by kappa / distance-
+per-message TurnShift evaluator and verifier LR. Used by kappa / distance-
 metric ablations.
 """
 
@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import scripts.sequential_ato_study as study  # noqa: E402
-from behaviorguard.embedding_config import load_sentence_transformer  # noqa: E402
+from turnshift.embedding_config import load_sentence_transformer  # noqa: E402
 from scripts.sequential_ato_study import (  # noqa: E402
     LAMBDA_DECAY,
     SEED,

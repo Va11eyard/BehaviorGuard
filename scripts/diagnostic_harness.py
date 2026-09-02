@@ -2,7 +2,7 @@
 """
 Diagnostic harness: s_ling sub-feature saturation audit + λ-sweep (before/after fix).
 
-All component scores call real BehaviorGuard analyzers — no TF-IDF or manual
+All component scores call real TurnShift analyzers — no TF-IDF or manual
 approximations. If wiring regresses, functions raise rather than silently fallback.
 """
 
@@ -29,11 +29,11 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard.analyzers.linguistic_ml import LinguisticAnalyzerML  # noqa: E402
-from behaviorguard.analyzers.semantic_ml import SemanticAnalyzerML  # noqa: E402
-from behaviorguard.analyzers.temporal_ml import TemporalAnalyzerML  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.models import (  # noqa: E402
+from turnshift.analyzers.linguistic_ml import LinguisticAnalyzerML  # noqa: E402
+from turnshift.analyzers.semantic_ml import SemanticAnalyzerML  # noqa: E402
+from turnshift.analyzers.temporal_ml import TemporalAnalyzerML  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.models import (  # noqa: E402
     ComponentScores,
     CurrentMessage,
     EvaluationInput,
@@ -155,14 +155,14 @@ def _compute_s_temp_real(
 
 
 def _production_component_and_composite(
-    evaluator: BehaviorGuardEvaluatorML,
+    evaluator: TurnShiftEvaluatorML,
     current_message: CurrentMessage,
     user_profile: UserProfile,
     system_config: SystemConfig,
 ) -> tuple[float, float, float, float]:
     """
     Production scoring path: same analyzer + CompositeScorer calls as
-    BehaviorGuardEvaluatorML.evaluate() before output rounding.
+    TurnShiftEvaluatorML.evaluate() before output rounding.
 
     λ (ProfileManager decay) is applied at profile build time, not here.
     total_interactions matches evaluator_ml (static profile count).
@@ -191,7 +191,7 @@ def _production_component_and_composite(
 
 
 def _production_anomaly_score(
-    evaluator: BehaviorGuardEvaluatorML,
+    evaluator: TurnShiftEvaluatorML,
     current_message: CurrentMessage,
     user_profile: UserProfile,
     system_config: SystemConfig,
@@ -303,10 +303,10 @@ def collect_component_rows(
     user_ids: list[str],
     lambda_decay: float,
     system_config: SystemConfig,
-    evaluator: BehaviorGuardEvaluatorML | None = None,
+    evaluator: TurnShiftEvaluatorML | None = None,
 ) -> list[dict]:
     """Collect s_sem/s_ling/s_temp + production composite via evaluate() path."""
-    evaluator = evaluator or BehaviorGuardEvaluatorML()
+    evaluator = evaluator or TurnShiftEvaluatorML()
     users = {u["user_id"]: u for u in test_data["users"]}
     rows: list[dict] = []
 
@@ -341,10 +341,10 @@ def run_lambda_sweep(
     test_data: dict,
     user_ids: list[str],
     system_config: SystemConfig,
-    evaluator: BehaviorGuardEvaluatorML | None = None,
+    evaluator: TurnShiftEvaluatorML | None = None,
 ) -> dict[str, Any]:
     """λ sweep: profile decay varies per λ; composite from production evaluate() path."""
-    evaluator = evaluator or BehaviorGuardEvaluatorML()
+    evaluator = evaluator or TurnShiftEvaluatorML()
 
     lambdas = [round(v, 1) for v in np.arange(0.0, 1.0001, 0.1)]
     per_lambda: dict[str, dict] = {}
@@ -429,7 +429,7 @@ def run_full_diagnostic(
 
     semantic = SemanticAnalyzerML()
     linguistic = LinguisticAnalyzerML()
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
 
     ling_audit = audit_ling_subfeature_saturation(
         test_data, user_ids, lambda_decay=0.5,

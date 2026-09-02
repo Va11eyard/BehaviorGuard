@@ -1,5 +1,5 @@
 """
-BehaviorGuard ML-Based Example
+TurnShift ML-Based Example
 ================================
 Demonstrates the machine-learning anomaly detection system, including:
   - Sentence-embedding semantic analysis (cosine distance)
@@ -16,8 +16,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta, timezone
 from typing import List
 
-from behaviorguard import BehaviorGuardEvaluatorML, ML_AVAILABLE
-from behaviorguard.models import (
+from turnshift import TurnShiftEvaluatorML, ML_AVAILABLE
+from turnshift.models import (
     CurrentMessage,
     EvaluationInput,
     EvaluationResult,
@@ -53,7 +53,7 @@ def make_timestamp(offset_hours: float) -> str:
 def build_profile_from_history(
     user_id: str,
     messages: List[str],
-    evaluator: BehaviorGuardEvaluatorML,
+    evaluator: TurnShiftEvaluatorML,
 ) -> UserProfile:
     """
     Build a UserProfile by learning from a list of historical messages.
@@ -189,12 +189,12 @@ def print_result(label: str, result: EvaluationResult) -> None:
 
 def main() -> None:
     print("=" * 65)
-    print("  BehaviorGuard — ML-Based Example")
+    print("  TurnShift — ML-Based Example")
     print("  (sentence-transformers · Mahalanobis · z-scores)")
     print("=" * 65)
 
     print("\n[1/5] Loading ML evaluator (sentence-transformer all-MiniLM-L6-v2)...")
-    evaluator = BehaviorGuardEvaluatorML(embedding_model="all-MiniLM-L6-v2")
+    evaluator = TurnShiftEvaluatorML(embedding_model="all-MiniLM-L6-v2")
     print("  OK")
 
     # ── Build profile from representative conversation history ───────────────

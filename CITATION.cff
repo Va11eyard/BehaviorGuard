@@ -1,13 +1,13 @@
 cff-version: 1.2.0
-message: "If you use BehaviorGuard in your research, please cite it as below."
+message: "If you use TurnShift in your research, please cite it as below."
 type: software
-title: "BehaviorGuard: Context-Aware Anomaly Detection in Conversational AI"
+title: "TurnShift: sequential behavioral-shift detection in conversational AI"
 abstract: >
-  BehaviorGuard is an LLM-native anomaly detection framework that detects
-  anomalous user requests by modeling per-user behavioral patterns across
-  semantic, linguistic, and temporal dimensions. It maintains privacy-preserving
-  user profiles from interaction histories and computes multi-dimensional anomaly
-  scores to drive tiered response policies.
+  TurnShift (formerly BehaviorGuard) detects mid-conversation author
+  substitution by accumulating per-user embedding residuals with CUSUM.
+  It also maintains privacy-preserving user profiles (semantic, linguistic,
+  temporal) used by a composite per-message scorer; that scorer is retained
+  as a baseline, not as a primary result.
 authors:
   - family-names: "Mynzhassar"
     given-names: "Dinmukhammed"

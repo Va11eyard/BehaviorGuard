@@ -22,8 +22,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 from production_sling_audit_snippet import PRODUCTION_CLASSIFICATION_THRESHOLD  # noqa: E402
 
 DATASET = ROOT / "datasets" / "personachat_processed_corrected.json"
@@ -71,7 +71,7 @@ def collect_mahalanobis_only() -> tuple[np.ndarray, np.ndarray]:
     os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
     test_data = json.loads(DATASET.read_text(encoding="utf-8"))
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     config = SystemConfig(**BASE_CONFIG, semantic_scoring_mode="mahalanobis")
     builder = ev._build_profile_with_pm(LAMBDA_DECAY)
     by_user: dict[str, list] = defaultdict(list)
@@ -117,7 +117,7 @@ def collect_scores_both_modes() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     os.environ.setdefault("TRANSFORMERS_OFFLINE", "1")
 
     test_data = json.loads(DATASET.read_text(encoding="utf-8"))
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     config_cos = SystemConfig(**BASE_CONFIG, semantic_scoring_mode="cosine")
     config_maha = SystemConfig(**BASE_CONFIG, semantic_scoring_mode="mahalanobis")
     builder = ev._build_profile_with_pm(LAMBDA_DECAY)
@@ -165,7 +165,7 @@ def collect_scores_both_modes() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 def collect_scores(semantic_mode: str) -> tuple[np.ndarray, np.ndarray]:
     test_data = json.loads(DATASET.read_text(encoding="utf-8"))
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     config = SystemConfig(
         **BASE_CONFIG,
         semantic_scoring_mode=semantic_mode,
@@ -309,8 +309,8 @@ def bootstrap_auc_diff(
 
 def verify_linguistic_flag() -> dict:
     """Confirm linguistic_component_enabled=False matches enable_linguistic_scoring=False."""
-    from behaviorguard.scorers.composite import CompositeScorer
-    from behaviorguard.models import ComponentScores, SystemConfig
+    from turnshift.scorers.composite import CompositeScorer
+    from turnshift.models import ComponentScores, SystemConfig
 
     scorer = CompositeScorer()
     cs = ComponentScores(semantic=0.8, linguistic=0.9, temporal=0.4)

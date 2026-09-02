@@ -4,8 +4,8 @@ import json
 
 import pytest
 
-from behaviorguard.models import ErrorResponse, EvaluationInput
-from behaviorguard.validator import InputValidator
+from turnshift.models import ErrorResponse, EvaluationInput
+from turnshift.validator import InputValidator
 
 
 @pytest.fixture

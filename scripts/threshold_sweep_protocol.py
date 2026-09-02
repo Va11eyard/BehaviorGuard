@@ -42,8 +42,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 from scripts.personachat_holdout_split import (  # noqa: E402
     DEFAULT_DATASET,
     load_dataset,
@@ -100,7 +100,7 @@ def score_partition(
     profiles: dict[str, Any],
     *,
     half: str,
-    evaluator: BehaviorGuardEvaluatorML,
+    evaluator: TurnShiftEvaluatorML,
     config: SystemConfig,
 ) -> list[dict]:
     """Score validation or final-test messages using pre-built profiles."""
@@ -255,7 +255,7 @@ def run_protocol(
         "note": "Profiles built from first 80% only; same profile reused for both holdout halves",
     }
 
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     cfg = config or EVAL_CONFIG
     val_rows = score_partition(split.users, profiles, half="validation", evaluator=evaluator, config=cfg)
     final_rows = score_partition(split.users, profiles, half="final_test", evaluator=evaluator, config=cfg)

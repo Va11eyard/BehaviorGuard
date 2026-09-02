@@ -2,7 +2,7 @@
 Full evaluation pipeline with baselines, ablations, and statistical tests.
 
 This script runs:
-1. BehaviorGuard (full system)
+1. TurnShift (full system)
 2. Baselines (Rule-based, Isolation Forest, Autoencoder)
 3. Ablation studies (7 configurations)
 4. Statistical significance tests
@@ -35,20 +35,20 @@ SEED = 42
 np.random.seed(SEED)
 
 print("="*80)
-print("BEHAVIORGUARD FULL EVALUATION PIPELINE")
+print("TURNSHIFT FULL EVALUATION PIPELINE")
 print("="*80)
 print(f"Start time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-# Import BehaviorGuard components
-from behaviorguard import BehaviorGuardEvaluatorML
-from behaviorguard.analyzers.semantic_ml import SemanticAnalyzerML
-from behaviorguard.analyzers.linguistic_ml import LinguisticAnalyzerML
-from behaviorguard.analyzers.temporal_ml import TemporalAnalyzerML
-from behaviorguard.baselines.rule_based import RuleBasedDetector
-from behaviorguard.baselines.isolation_forest_baseline import IsolationForestBaseline
-from behaviorguard.baselines.autoencoder_baseline import AutoencoderBaseline
-from behaviorguard.baselines.content_safety_baseline import ContentSafetyBaseline
-from behaviorguard.models import (
+# Import TurnShift components
+from turnshift import TurnShiftEvaluatorML
+from turnshift.analyzers.semantic_ml import SemanticAnalyzerML
+from turnshift.analyzers.linguistic_ml import LinguisticAnalyzerML
+from turnshift.analyzers.temporal_ml import TemporalAnalyzerML
+from turnshift.baselines.rule_based import RuleBasedDetector
+from turnshift.baselines.isolation_forest_baseline import IsolationForestBaseline
+from turnshift.baselines.autoencoder_baseline import AutoencoderBaseline
+from turnshift.baselines.content_safety_baseline import ContentSafetyBaseline
+from turnshift.models import (
     UserProfile, SemanticProfile, LinguisticProfile, 
     TemporalProfile, OperationalProfile,
     EvaluationInput, CurrentMessage, SystemConfig,
@@ -72,7 +72,7 @@ for name, filepath in dataset_files.items():
 
 # Initialize components
 print("\n[2/7] Initializing detectors...")
-evaluator = BehaviorGuardEvaluatorML()
+evaluator = TurnShiftEvaluatorML()
 semantic_analyzer = SemanticAnalyzerML()
 linguistic_analyzer = LinguisticAnalyzerML()
 temporal_analyzer = TemporalAnalyzerML()
@@ -189,7 +189,7 @@ def message_to_current_message(
     populate most_active_hours_utc for any user with >=3 normal messages).
     """
     from datetime import datetime as dt
-    from behaviorguard.utils.operation_risk_classifier import classify_operation_risk
+    from turnshift.utils.operation_risk_classifier import classify_operation_risk
 
     text = msg["message_text"]
     timestamp = dt.fromisoformat(msg["timestamp"])
@@ -435,7 +435,7 @@ def compute_per_class_metrics(messages: List[Dict], results: List) -> Dict:
 
     messages: raw test-message dicts (may contain 'anomaly_type', 'attack_phase', 'should_flag')
     results: list aligned by index with 'messages'. Each item is either a
-             BehaviorGuardResult (has .anomaly_score) or a dict with
+             TurnShiftResult (has .anomaly_score) or a dict with
              'anomaly_score' or 'predicted_score'.
 
     Returns:
@@ -487,7 +487,7 @@ def compute_per_class_metrics(messages: List[Dict], results: List) -> Dict:
 
 def _build_profile_with_pm(decay: float):
     """Return a profile builder that uses ProfileManager with given decay."""
-    from behaviorguard import ProfileManager, MessageRecord
+    from turnshift import ProfileManager, MessageRecord
 
     pm = ProfileManager(decay=decay)
 
@@ -740,7 +740,7 @@ def evaluate_method(
         metrics["fpr_verified"] = fp / n_negatives
     print(f"    [FPR] FP={fp}, TN={tn}, FPR={metrics['fpr']:.4f} (FP/(FP+TN)={fp}/{n_negatives})")
 
-    # Attribution breakdown: for BehaviorGuard true-positive detections only
+    # Attribution breakdown: for TurnShift true-positive detections only
     if method_name == "behaviorguard":
         tp_mechanisms = [
             p["detection_mechanism"]
@@ -1167,8 +1167,8 @@ def run_evaluation(dataset_filter=None):
         else datasets
     )
 
-    # [3/7] Evaluate BehaviorGuard (full system)
-    print("\n[3/7] Evaluating BehaviorGuard (full system)...")
+    # [3/7] Evaluate TurnShift (full system)
+    print("\n[3/7] Evaluating TurnShift (full system)...")
     for dataset_name in run_datasets:
         metrics, preds = evaluate_method("behaviorguard", dataset_name, datasets[dataset_name])
         if "behaviorguard" not in results["methods"]:
@@ -1269,7 +1269,7 @@ def run_evaluation(dataset_filter=None):
             "practical_significance": abs(cohens_d) > 0.2
         }
 
-    # Compare BehaviorGuard vs baselines
+    # Compare TurnShift vs baselines
     for baseline in ["rule_based", "isolation_forest", "autoencoder", "content_safety"]:
         comparison_name = f"behaviorguard_vs_{baseline}"
         results["statistical_tests"][comparison_name] = {}
@@ -1291,7 +1291,7 @@ def run_evaluation_override_ablations_only(dataset_filter=None) -> Dict:
     """Run only the PRIORITY 1 override ablation matrix (EMA builder, faster path).
 
     overrides_on_full is computed inside the ablation with the canonical EMA builder,
-    so the redundant non-EMA [3/7] BehaviorGuard run is intentionally skipped here.
+    so the redundant non-EMA [3/7] TurnShift run is intentionally skipped here.
     """
     global results
     results["metadata"]["evaluation_timestamp"] = datetime.now().isoformat()

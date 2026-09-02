@@ -28,10 +28,10 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.baselines.autoencoder_baseline import AutoencoderBaseline  # noqa: E402
-from behaviorguard.baselines.isolation_forest_baseline import IsolationForestBaseline  # noqa: E402
-from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.baselines.autoencoder_baseline import AutoencoderBaseline  # noqa: E402
+from turnshift.baselines.isolation_forest_baseline import IsolationForestBaseline  # noqa: E402
+from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 
 CORRECTED_PATHS = {
     "personachat": ROOT / "datasets/personachat_processed_corrected.json",
@@ -133,11 +133,11 @@ def collect_bg_rows(
     test_data: dict,
     user_ids: list[str],
     lambda_decay: float,
-    evaluator: BehaviorGuardEvaluatorML | None = None,
+    evaluator: TurnShiftEvaluatorML | None = None,
     system_config: SystemConfig | None = None,
 ) -> list[dict]:
     if evaluator is None:
-        evaluator = BehaviorGuardEvaluatorML()
+        evaluator = TurnShiftEvaluatorML()
     config = system_config or BG_CONFIG
     by_user = _messages_by_user(test_data)
     users = _user_lookup(test_data)
@@ -412,7 +412,7 @@ def run_one_split(
 
     if bg_cache is None:
         bg_cache = {}
-        evaluator = BehaviorGuardEvaluatorML()
+        evaluator = TurnShiftEvaluatorML()
         config = system_config or BG_CONFIG
         for lam in LAMBDAS:
             bg_cache[lam] = collect_bg_rows(
@@ -474,7 +474,7 @@ def load_leaked_numbers() -> dict[str, Any]:
     if bg_path and bg_path.exists():
         bg = _load_json(bg_path)
         for dk, ds in bg.get("datasets", {}).items():
-            leaked.setdefault(dk, {})["behaviorguard_t4_best_combined"] = ds.get(
+            leaked.setdefault(dk, {})["turnshift_t4_best_combined"] = ds.get(
                 "task4_best_combined_f1max"
             )
             leaked[dk]["behaviorguard_f1max_lambda_0.50"] = ds.get("task1_f1max_lambda_0.50")
@@ -511,7 +511,7 @@ def run_dataset(
     # Precompute BG scores for all λ (dominant cost)
     print("  Precomputing BG component scores (11 λ values)...")
     bg_cache: dict[float, list[dict]] = {}
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     config = system_config or BG_CONFIG
     for lam in LAMBDAS:
         print(f"    λ={lam:.1f}...", flush=True)

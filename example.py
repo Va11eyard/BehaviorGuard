@@ -1,5 +1,5 @@
 """
-BehaviorGuard Rule-Based Example
+TurnShift Rule-Based Example
 =================================
 Demonstrates the deterministic rule-based anomaly detection system.
 
@@ -8,8 +8,8 @@ Run with:
 """
 
 from datetime import datetime, timezone
-from behaviorguard import BehaviorGuardEvaluator
-from behaviorguard.models import (
+from turnshift import TurnShiftEvaluator
+from turnshift.models import (
     EvaluationInput,
     UserProfile,
     SemanticProfile,
@@ -143,10 +143,10 @@ def print_result(label: str, result) -> None:
 
 def main() -> None:
     print("=" * 60)
-    print("  BehaviorGuard — Rule-Based Example")
+    print("  TurnShift — Rule-Based Example")
     print("=" * 60)
 
-    evaluator = BehaviorGuardEvaluator()
+    evaluator = TurnShiftEvaluator()
     profile = build_software_engineer_profile()
     config = SystemConfig(
         sensitivity_level="medium",

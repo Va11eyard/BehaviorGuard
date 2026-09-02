@@ -1,11 +1,11 @@
-"""Integration tests for BehaviorGuard system."""
+"""Integration tests for TurnShift system."""
 
 import json
 
 import pytest
 
-from behaviorguard import BehaviorGuardEvaluator
-from behaviorguard.models import (
+from turnshift import TurnShiftEvaluator
+from turnshift.models import (
     CurrentMessage,
     EvaluationInput,
     LinguisticFeatures,
@@ -165,7 +165,7 @@ def build_high_risk_message() -> CurrentMessage:
 
 def test_integration_normal_behavior():
     """Test complete evaluation flow with normal behavior."""
-    evaluator = BehaviorGuardEvaluator()
+    evaluator = TurnShiftEvaluator()
 
     evaluation_input = EvaluationInput(
         user_profile=build_normal_user_profile(),
@@ -208,7 +208,7 @@ def test_integration_normal_behavior():
 
 def test_integration_suspicious_behavior():
     """Test complete evaluation flow with suspicious behavior."""
-    evaluator = BehaviorGuardEvaluator()
+    evaluator = TurnShiftEvaluator()
 
     evaluation_input = EvaluationInput(
         user_profile=build_normal_user_profile(),
@@ -242,7 +242,7 @@ def test_integration_suspicious_behavior():
 
 def test_integration_high_risk_behavior():
     """Test complete evaluation flow with high-risk behavior."""
-    evaluator = BehaviorGuardEvaluator()
+    evaluator = TurnShiftEvaluator()
 
     evaluation_input = EvaluationInput(
         user_profile=build_normal_user_profile(),
@@ -273,7 +273,7 @@ def test_integration_high_risk_behavior():
 
 def test_integration_cold_start():
     """Test cold start scenario with new user."""
-    evaluator = BehaviorGuardEvaluator()
+    evaluator = TurnShiftEvaluator()
 
     # New user with <20 interactions
     new_user = build_normal_user_profile()
@@ -304,7 +304,7 @@ def test_integration_cold_start():
 
 def test_integration_json_output():
     """Test JSON output formatting."""
-    evaluator = BehaviorGuardEvaluator()
+    evaluator = TurnShiftEvaluator()
 
     evaluation_input = EvaluationInput(
         user_profile=build_normal_user_profile(),
@@ -337,7 +337,7 @@ def test_integration_json_output():
 
 def test_integration_deterministic():
     """Test that evaluation is deterministic."""
-    evaluator = BehaviorGuardEvaluator()
+    evaluator = TurnShiftEvaluator()
 
     evaluation_input = EvaluationInput(
         user_profile=build_normal_user_profile(),

@@ -33,7 +33,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard.baselines.isolation_forest_baseline import IsolationForestBaseline
+from turnshift.baselines.isolation_forest_baseline import IsolationForestBaseline
 
 RANDOM_SEED = ev.SEED
 DECISION_THRESHOLD = 0.60

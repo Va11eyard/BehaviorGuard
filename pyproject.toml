@@ -1,9 +1,11 @@
 [project]
-name = "behaviorguard"
+name = "turnshift"
 version = "1.0.0"
-description = "BehaviorGuard Anomaly Scoring System - AI security agent for detecting behavioral anomalies"
+description = "Sequential behavioral-shift detection in conversational AI via per-user profiling and CUSUM over embedding residuals"
 readme = "README.md"
 requires-python = ">=3.10"
+authors = [{name = "Dinmukhammed Mynzhassar"}]
+license = {text = "MIT"}
 dependencies = [
     "pydantic>=2.5.0",
     "hypothesis>=6.92.0",
@@ -13,6 +15,10 @@ dependencies = [
     "scipy>=1.11.0",
     "datasets>=2.14.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/Va11eyard/BehaviorGuard"
+Repository = "https://github.com/Va11eyard/BehaviorGuard"
 
 [project.optional-dependencies]
 dev = [
@@ -25,18 +31,18 @@ dev = [
 ]
 
 [project.scripts]
-behaviorguard = "behaviorguard.cli:main"
+turnshift = "turnshift.cli:main"
 
 [tool.poetry]
-name = "behaviorguard"
+name = "turnshift"
 version = "1.0.0"
-description = "BehaviorGuard Anomaly Scoring System - AI security agent for detecting behavioral anomalies"
-authors = ["BehaviorGuard Team"]
+description = "Sequential behavioral-shift detection in conversational AI via per-user profiling and CUSUM over embedding residuals"
+authors = ["Dinmukhammed Mynzhassar"]
 readme = "README.md"
-packages = [{include = "behaviorguard", from = "src"}]
+packages = [{include = "turnshift", from = "src"}]
 
 [tool.poetry.scripts]
-behaviorguard = "behaviorguard.cli:main"
+turnshift = "turnshift.cli:main"
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -65,7 +71,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --cov=src/behaviorguard --cov-report=term-missing"
+addopts = "-v --cov=src/turnshift --cov-report=term-missing"
 
 [tool.mypy]
 python_version = "3.10"

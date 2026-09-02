@@ -30,9 +30,9 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import ProfileManager, MessageRecord  # noqa: E402
-from behaviorguard.baselines.autoencoder_baseline import AutoencoderBaseline  # noqa: E402
-from behaviorguard.models import SystemConfig  # noqa: E402
+from turnshift import ProfileManager, MessageRecord  # noqa: E402
+from turnshift.baselines.autoencoder_baseline import AutoencoderBaseline  # noqa: E402
+from turnshift.models import SystemConfig  # noqa: E402
 import scripts.corrected_proper_generalization_eval as pg  # noqa: E402
 
 CORRECTED_PC = ROOT / "datasets/personachat_processed_corrected.json"

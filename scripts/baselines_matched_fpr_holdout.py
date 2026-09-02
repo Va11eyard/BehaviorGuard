@@ -3,7 +3,7 @@
 Fair full-holdout baseline comparison at matched FPR with significance tests.
 
 Reports AUC-ROC, AUC-PR, and detection rate at FPR in {1%, 5%} for:
-  BehaviorGuard (linguistic off), IsolationForest, Autoencoder, rule-based.
+  TurnShift (linguistic off), IsolationForest, Autoencoder, rule-based.
 
 Significance: paired bootstrap difference-in-AUC (percentile CI) + DeLong test
 when available; Holm-Bonferroni across BG-vs-baseline comparisons.
@@ -107,9 +107,9 @@ def recall_at_fpr(y: np.ndarray, scores: np.ndarray, target: float) -> dict:
 
 def score_all() -> dict[str, np.ndarray]:
     import evaluation as ev
-    from behaviorguard.baselines.autoencoder_baseline import AutoencoderBaseline
-    from behaviorguard.baselines.isolation_forest_baseline import IsolationForestBaseline
-    from behaviorguard.models import EvaluationInput, SystemConfig
+    from turnshift.baselines.autoencoder_baseline import AutoencoderBaseline
+    from turnshift.baselines.isolation_forest_baseline import IsolationForestBaseline
+    from turnshift.models import EvaluationInput, SystemConfig
 
     data = json.loads(DATASET.read_text(encoding="utf-8"))
     builder = ev._build_profile_with_pm(0.50)

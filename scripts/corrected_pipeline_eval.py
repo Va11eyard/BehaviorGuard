@@ -2,7 +2,7 @@
 """
 Full evaluation on corrected (de-confounded) injected datasets.
 
-Runs BehaviorGuard (canonical), Isolation Forest (F1-max), Autoencoder (F1-max),
+Runs TurnShift (canonical), Isolation Forest (F1-max), Autoencoder (F1-max),
 compares against original confounded results, and writes comparison tables.
 
 Usage:
@@ -162,7 +162,7 @@ def eval_isolation_forest(test_data: dict, dataset_key: str) -> dict[str, Any]:
     metrics = _evaluate_optimal_threshold(test_data, MAX_USERS, "max_f1_threshold")
     t_star = float(metrics["threshold_used"])
     train_f, test_f, y_true, _ = _prepare_isolation_forest_eval(test_data, MAX_USERS)
-    from behaviorguard.baselines.isolation_forest_baseline import IsolationForestBaseline
+    from turnshift.baselines.isolation_forest_baseline import IsolationForestBaseline
 
     iso = IsolationForestBaseline(contamination="auto", random_state=ev.SEED)
     iso.fit(train_f)
@@ -261,7 +261,7 @@ def main() -> None:
     parser.add_argument("--output-dir", default="results")
     parser.add_argument(
         "--methods",
-        default="behaviorguard,isolation_forest,autoencoder",
+        default="turnshift,isolation_forest,autoencoder",
     )
     args = parser.parse_args()
     out_dir = ROOT / args.output_dir

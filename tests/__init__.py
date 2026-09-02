@@ -1,1 +1,1 @@
-"""Tests for BehaviorGuard system."""
+"""Tests for TurnShift system."""

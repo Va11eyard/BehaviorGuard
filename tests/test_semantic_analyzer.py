@@ -3,8 +3,8 @@
 import pytest
 from hypothesis import given, strategies as st
 
-from behaviorguard.analyzers.semantic import SemanticAnalyzer
-from behaviorguard.models import (
+from turnshift.analyzers.semantic import SemanticAnalyzer
+from turnshift.models import (
     CurrentMessage,
     LinguisticFeatures,
     RequestedOperation,
@@ -65,7 +65,7 @@ def build_current_message(
     )
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 6: Semantic score ranges match deviation levels
+# Feature: turnshift-anomaly-scoring, Property 6: Semantic score ranges match deviation levels
 def test_property_semantic_score_ranges():
     """
     Property 6: Semantic score ranges match deviation levels.

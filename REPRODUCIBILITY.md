@@ -30,7 +30,7 @@ legacy 20-user sample; full-holdout and sequential ATO studies take longer.
 
 **Embedding model pin:** `sentence-transformers/all-MiniLM-L6-v2` at Hub revision
 `1110a243fdf4706b3f48f1d95db1a4f5529b4d41` (see
-`src/behaviorguard/embedding_config.py`).
+`src/turnshift/embedding_config.py`).
 
 ---
 

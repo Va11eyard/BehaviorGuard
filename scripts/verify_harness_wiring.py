@@ -12,9 +12,9 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard.analyzers.linguistic_ml import LinguisticAnalyzerML  # noqa: E402
-from behaviorguard.analyzers.semantic_ml import SemanticAnalyzerML  # noqa: E402
-from behaviorguard.analyzers.temporal_ml import TemporalAnalyzerML  # noqa: E402
+from turnshift.analyzers.linguistic_ml import LinguisticAnalyzerML  # noqa: E402
+from turnshift.analyzers.semantic_ml import SemanticAnalyzerML  # noqa: E402
+from turnshift.analyzers.temporal_ml import TemporalAnalyzerML  # noqa: E402
 from scripts.diagnostic_harness import (  # noqa: E402
     DIAG_CONFIG,
     _build_profile,

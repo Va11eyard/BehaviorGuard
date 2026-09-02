@@ -3,8 +3,8 @@
 import pytest
 from hypothesis import given, strategies as st
 
-from behaviorguard.analyzers.linguistic import LinguisticAnalyzer
-from behaviorguard.models import (
+from turnshift.analyzers.linguistic import LinguisticAnalyzer
+from turnshift.models import (
     CurrentMessage,
     LinguisticFeatures,
     LinguisticProfile,
@@ -87,7 +87,7 @@ def build_current_message(
     )
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 7: Linguistic penalties are correctly applied
+# Feature: turnshift-anomaly-scoring, Property 7: Linguistic penalties are correctly applied
 @given(
     length_deviation=st.floats(min_value=0.0, max_value=5.0),
     diversity_deviation=st.floats(min_value=0.0, max_value=5.0),
@@ -124,7 +124,7 @@ def test_property_linguistic_penalties(length_deviation, diversity_deviation):
         assert result.score >= 0.1, f"Expected score >= 0.1 for diversity shift, got {result.score}"
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 8: Language switching increases linguistic score
+# Feature: turnshift-anomaly-scoring, Property 8: Language switching increases linguistic score
 @given(
     has_language_history=st.booleans(),
 )

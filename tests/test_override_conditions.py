@@ -1,7 +1,7 @@
 """Unit tests for override conditions firing correctly."""
 
 import pytest
-from behaviorguard.models import (
+from turnshift.models import (
     ComponentScores,
     CurrentMessage,
     LinguisticFeatures,
@@ -14,7 +14,7 @@ from behaviorguard.models import (
     UserProfile,
     LinguisticProfile,
 )
-from behaviorguard.scorers.composite import CompositeScorer
+from turnshift.scorers.composite import CompositeScorer
 
 
 def _profile(has_sensitive_ops: bool = False) -> UserProfile:

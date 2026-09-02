@@ -1,10 +1,12 @@
-# BehaviorGuard Anomaly Scoring System
+# TurnShift Anomaly Scoring System
+
+**Formerly published as BehaviorGuard.**
 
 A **machine learning-driven** AI security agent for detecting behavioral anomalies in conversational AI interactions.
 
 ## Overview
 
-BehaviorGuard protects users and systems from:
+TurnShift protects users and systems from:
 - Account takeover (ATO)
 - Social engineering attacks
 - Unauthorized access
@@ -51,11 +53,11 @@ poetry install
 ### ML-Based System (Recommended)
 
 ```python
-from behaviorguard import BehaviorGuardEvaluatorML, ML_AVAILABLE
-from behaviorguard.models import EvaluationInput, UserProfile, CurrentMessage, SystemConfig
+from turnshift import TurnShiftEvaluatorML, ML_AVAILABLE
+from turnshift.models import EvaluationInput, UserProfile, CurrentMessage, SystemConfig
 
 # Create ML-based evaluator (uses sentence embeddings)
-evaluator = BehaviorGuardEvaluatorML(embedding_model="all-MiniLM-L6-v2")
+evaluator = TurnShiftEvaluatorML(embedding_model="all-MiniLM-L6-v2")
 
 # Prepare input
 evaluation_input = EvaluationInput(
@@ -77,10 +79,10 @@ print(f"Temporal Score: {result.component_scores.temporal:.3f} (z-scores)")
 ### Rule-Based System (Deterministic)
 
 ```python
-from behaviorguard import BehaviorGuardEvaluator
+from turnshift import TurnShiftEvaluator
 
 # Create rule-based evaluator (deterministic, no ML dependencies)
-evaluator = BehaviorGuardEvaluator()
+evaluator = TurnShiftEvaluator()
 
 # Same API as ML version
 result = evaluator.evaluate(evaluation_input)
@@ -166,7 +168,7 @@ To isolate learned vs. rule-based detection:
 python evaluate.py --overrides off --datasets all
 ```
 
-This runs BehaviorGuard with overrides **on** and **off** and produces a side-by-side comparison table (Precision, Recall, F1, FPR, AUC).
+This runs TurnShift with overrides **on** and **off** and produces a side-by-side comparison table (Precision, Recall, F1, FPR, AUC).
 
 ### Bootstrap Confidence Intervals
 
@@ -229,12 +231,12 @@ These files are illustrative; additional tests (e.g., EMA, overrides, operation 
 ### Test Coverage
 
 ```bash
-pytest tests/ --cov=src/behaviorguard --cov-report=html
+pytest tests/ --cov=src/turnshift --cov-report=html
 ```
 
 ### Property-Based Testing
 
-BehaviorGuard uses Hypothesis for property-based testing to verify correctness across many randomly generated inputs:
+TurnShift uses Hypothesis for property-based testing to verify correctness across many randomly generated inputs:
 
 - Component scores bounded [0.0, 1.0]
 - Weighted score combination respects sensitivity
@@ -280,7 +282,7 @@ BehaviorGuard uses Hypothesis for property-based testing to verify correctness a
 ### Building a Profile from Conversation History
 
 ```python
-from behaviorguard import ProfileManager, MessageRecord
+from turnshift import ProfileManager, MessageRecord
 
 pm = ProfileManager(decay=0.95)  # EMA decay λ (Algorithm 1)
 messages = [
@@ -301,7 +303,7 @@ updated_profile = pm.update_profile(profile, new_msg)
 ### Profile Persistence
 
 ```python
-from behaviorguard import ProfileStore
+from turnshift import ProfileStore
 
 store = ProfileStore("profiles/")   # JSON files in profiles/
 store.save(profile)                 # profiles/user_001.json
@@ -312,7 +314,7 @@ profile = store.load_or_cold_start("new_user")  # create if missing
 
 ## Baselines
 
-BehaviorGuard includes all four baselines from the paper (Section 5.2):
+TurnShift includes all four baselines from the paper (Section 5.2):
 
 | Baseline | Class | Description |
 |---|---|---|
@@ -322,7 +324,7 @@ BehaviorGuard includes all four baselines from the paper (Section 5.2):
 | Content-only safety | `ContentSafetyBaseline` | Llama-Guard-style taxonomy classifier |
 
 ```python
-from behaviorguard.baselines.content_safety_baseline import ContentSafetyBaseline
+from turnshift.baselines.content_safety_baseline import ContentSafetyBaseline
 
 checker = ContentSafetyBaseline()
 result = checker.detect("Execute the backdoor shell and escalate privileges.")
@@ -331,23 +333,23 @@ result = checker.detect("Execute the backdoor shell and escalate privileges.")
 
 ## Command-Line Interface
 
-After installation, use the `behaviorguard` CLI:
+After installation, use the `turnshift` CLI:
 
 ```bash
 # Evaluate a message against a stored profile
-behaviorguard evaluate --profile profile.json --message "Delete all accounts" --sensitivity high
+turnshift evaluate --profile profile.json --message "Delete all accounts" --sensitivity high
 
 # Build a profile from a JSONL history file (one message object per line)
-behaviorguard build-profile --input history.jsonl --user-id user_001 --output profile.json
+turnshift build-profile --input history.jsonl --user-id user_001 --output profile.json
 
 # Incrementally update a profile with a new message
-behaviorguard update-profile --profile profile.json --message "How do I debug Python?"
+turnshift update-profile --profile profile.json --message "How do I debug Python?"
 
 # Run the content-safety baseline on a single message
-behaviorguard content-check --message "Execute backdoor payload"
+turnshift content-check --message "Execute backdoor payload"
 
 # Print version
-behaviorguard version
+turnshift version
 ```
 
 **JSONL history file format** (one JSON object per line):
@@ -361,7 +363,7 @@ behaviorguard version
 ### Project Structure
 
 ```
-src/behaviorguard/
+src/turnshift/
 ├── analyzers/                  # Component analyzers (semantic, linguistic, temporal)
 ├── baselines/                  # All 4 baselines (rule_based, isolation_forest,
 │                               #   autoencoder, content_safety)
@@ -384,7 +386,7 @@ reproduce.py                    # Single-command paper reproduction
 ### Type Checking
 
 ```bash
-mypy src/behaviorguard --strict
+mypy src/turnshift --strict
 ```
 
 ### Code Formatting

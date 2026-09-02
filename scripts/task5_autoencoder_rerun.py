@@ -33,7 +33,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard.baselines.autoencoder_baseline import AutoencoderBaseline
+from turnshift.baselines.autoencoder_baseline import AutoencoderBaseline
 
 RANDOM_SEED = ev.SEED
 DECISION_THRESHOLD = 0.60

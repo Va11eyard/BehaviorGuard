@@ -5,7 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from behaviorguard.profile_manager import MessageRecord, ProfileManager
+from turnshift.profile_manager import MessageRecord, ProfileManager
 
 
 def test_message_record_model_validate_round_trip_minimal() -> None:

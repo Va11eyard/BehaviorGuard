@@ -21,7 +21,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard.baselines.autoencoder_baseline import AutoencoderBaseline
+from turnshift.baselines.autoencoder_baseline import AutoencoderBaseline
 from scripts.task5_autoencoder_rerun import (
     DATASET_DISPLAY_NAMES,
     _build_autoencoder_eval_config,
@@ -193,7 +193,7 @@ def main() -> None:
             },
             "tau_star": TAU_STAR[dk],
             "auc": round(float(auc), 4),
-            "auc_behaviorguard": BG_AUC[dk],
+            "auc_turnshift": BG_AUC[dk],
             "auc_isolation_forest_max_f1": IF_AUC[dk],
             "auc_vs_bg_delta": round(float(auc) - BG_AUC[dk], 4),
             "length_error_correlation": round(corr_len_raw, 4),

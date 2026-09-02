@@ -41,8 +41,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 from scripts.personachat_holdout_split import (  # noqa: E402
     DEFAULT_DATASET,
     N_CV_FOLDS,
@@ -98,7 +98,7 @@ def collect_holdout_scores_both_modes(
 
     profile_info = build_profiles_once(users_lookup, records, lambda_decay)
     profiles = profile_info["profiles"]
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     config_cos = SystemConfig(**BASE_CONFIG, semantic_scoring_mode="cosine")
     config_maha = SystemConfig(**BASE_CONFIG, semantic_scoring_mode="mahalanobis")
 

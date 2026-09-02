@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-BehaviorGuard evaluation CLI.
+TurnShift evaluation CLI.
 
 Usage:
   python evaluate.py                    # Full evaluation (overrides on)
@@ -27,7 +27,7 @@ np.random.seed(SEED)
 
 def main():
     parser = argparse.ArgumentParser(
-        description="BehaviorGuard evaluation pipeline",
+        description="TurnShift evaluation pipeline",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(
@@ -73,7 +73,7 @@ def main():
     )
 
     print("=" * 80)
-    print("BEHAVIORGUARD EVALUATION")
+    print("TURNSHIFT EVALUATION")
     print("=" * 80)
     print(f"Start: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"Overrides: {args.overrides}, Datasets: {dataset_names}")
@@ -96,9 +96,9 @@ def main():
 
     run_datasets = {k: v for k, v in datasets.items() if k in dataset_names}
 
-    # Override ablation: run BehaviorGuard with overrides ON and OFF, produce comparison
+    # Override ablation: run TurnShift with overrides ON and OFF, produce comparison
     if args.overrides == "off":
-        print("\n[OVERRIDE ABLATION] Running BehaviorGuard with overrides ON and OFF...")
+        print("\n[OVERRIDE ABLATION] Running TurnShift with overrides ON and OFF...")
         results["override_ablation"] = {"overrides_on": {}, "overrides_off": {}}
 
         for ds_name in run_datasets:

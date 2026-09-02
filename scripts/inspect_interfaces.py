@@ -12,13 +12,13 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 TARGETS = [
-    ("SemanticAnalyzerML", "behaviorguard.analyzers.semantic_ml", "SemanticAnalyzerML"),
-    ("LinguisticAnalyzerML", "behaviorguard.analyzers.linguistic_ml", "LinguisticAnalyzerML"),
-    ("TemporalAnalyzerML", "behaviorguard.analyzers.temporal_ml", "TemporalAnalyzerML"),
-    ("BehaviorGuardEvaluatorML", "behaviorguard.evaluator_ml", "BehaviorGuardEvaluatorML"),
-    ("ProfileManager", "behaviorguard.profile_manager", "ProfileManager"),
-    ("CurrentMessage", "behaviorguard.models", "CurrentMessage"),
-    ("SystemConfig", "behaviorguard.models", "SystemConfig"),
+    ("SemanticAnalyzerML", "turnshift.analyzers.semantic_ml", "SemanticAnalyzerML"),
+    ("LinguisticAnalyzerML", "turnshift.analyzers.linguistic_ml", "LinguisticAnalyzerML"),
+    ("TemporalAnalyzerML", "turnshift.analyzers.temporal_ml", "TemporalAnalyzerML"),
+    ("TurnShiftEvaluatorML", "turnshift.evaluator_ml", "TurnShiftEvaluatorML"),
+    ("ProfileManager", "turnshift.profile_manager", "ProfileManager"),
+    ("CurrentMessage", "turnshift.models", "CurrentMessage"),
+    ("SystemConfig", "turnshift.models", "SystemConfig"),
 ]
 
 
@@ -30,7 +30,7 @@ def _fmt_sig(obj) -> str:
 
 
 def main() -> None:
-    print("BehaviorGuard interface discovery")
+    print("TurnShift interface discovery")
     print(f"repo_root={ROOT}")
     print("=" * 72)
 

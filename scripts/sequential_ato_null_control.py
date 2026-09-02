@@ -45,7 +45,7 @@ N_SIM = 500
 def main() -> None:
     import argparse
 
-    from behaviorguard.embedding_config import load_sentence_transformer
+    from turnshift.embedding_config import load_sentence_transformer
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset", choices=sorted(study.DATASET_PATHS), default="personachat")

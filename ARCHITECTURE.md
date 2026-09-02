@@ -1,12 +1,12 @@
-# BehaviorGuard Codebase Architecture Guide
+# TurnShift Codebase Architecture Guide
 
-BehaviorGuard is a **behavioral anomaly detector** for conversational AI: it learns per-user baselines from message history and scores new messages on semantic, linguistic, and temporal dimensions, then classifies risk and recommends policy actions.
+TurnShift is a **behavioral anomaly detector** for conversational AI: it learns per-user baselines from message history and scores new messages on semantic, linguistic, and temporal dimensions, then classifies risk and recommends policy actions.
 
 ---
 
 ## 1. What It Does (One Sentence)
 
-**Given a user profile + a new message, BehaviorGuard outputs an anomaly score in [0, 1], a risk level, and a recommended action** — comparing the message against that user's learned behavioral baseline rather than generic content filters.
+**Given a user profile + a new message, TurnShift outputs an anomaly score in [0, 1], a risk level, and a recommended action** — comparing the message against that user's learned behavioral baseline rather than generic content filters.
 
 ---
 
@@ -41,8 +41,8 @@ BehaviorGuard is a **behavioral anomaly detector** for conversational AI: it lea
 ```mermaid
 flowchart TB
     subgraph production [Production / Library Path]
-        CLI[cli.py / behaviorguard CLI]
-        EVML[BehaviorGuardEvaluatorML]
+        CLI[cli.py / turnshift CLI]
+        EVML[TurnShiftEvaluatorML]
         PM[ProfileManager]
         PS[ProfileStore]
     end
@@ -72,7 +72,7 @@ flowchart TB
 
 | Area | Path | Role |
 |------|------|------|
-| **Core library** | `src/behaviorguard/` | All detection logic — this is what you import |
+| **Core library** | `src/turnshift/` | All detection logic — this is what you import |
 | **Tests** | `tests/` | 84+ pytest tests |
 | **Main eval harness** | `evaluation.py`, `evaluate.py`, `reproduce.py` | Paper-scale experiments |
 | **Diagnostic scripts** | `scripts/` | s_ling audits, fair tuning, wiring verification |
@@ -99,7 +99,7 @@ flowchart TD
         UP --> In[EvaluationInput]
         CM[CurrentMessage] --> In
         CFG[SystemConfig] --> In
-        In --> EV[BehaviorGuardEvaluatorML.evaluate]
+        In --> EV[TurnShiftEvaluatorML.evaluate]
 
         EV --> S1[SemanticAnalyzerML → s_sem]
         EV --> S2[LinguisticAnalyzerML → s_ling]
@@ -121,7 +121,7 @@ flowchart TD
 
 The orchestrator wires analyzers → composite scorer → classifiers → explainers:
 
-```71:203:src/behaviorguard/evaluator_ml.py
+```71:203:src/turnshift/evaluator_ml.py
     def evaluate(self, evaluation_input: EvaluationInput) -> EvaluationResult:
         # ...
         # Step 1: ML-based Component Analysis
@@ -153,10 +153,10 @@ The orchestrator wires analyzers → composite scorer → classifiers → explai
 10. **Output** — `EvaluationResult` with metadata
 
 **Two evaluator variants:**
-- `BehaviorGuardEvaluator` (`evaluator.py`) — rule-based, no ML deps
-- `BehaviorGuardEvaluatorML` (`evaluator_ml.py`) — **recommended**; uses sentence-transformers
+- `TurnShiftEvaluator` (`evaluator.py`) — rule-based, no ML deps
+- `TurnShiftEvaluatorML` (`evaluator_ml.py`) — **recommended**; uses sentence-transformers
 
-Public API exported from `__init__.py`: `BehaviorGuardEvaluatorML`, `ProfileManager`, `ProfileStore`, `InputValidator`, all Pydantic models.
+Public API exported from `__init__.py`: `TurnShiftEvaluatorML`, `ProfileManager`, `ProfileStore`, `InputValidator`, all Pydantic models.
 
 ---
 
@@ -328,7 +328,7 @@ Cold-start handler (`utils/cold_start.py`): only flag extreme scores > 0.85 when
 
 1. Loads 3 HuggingFace-derived datasets from `datasets/`
 2. Builds profiles per user (80% train / 20% test split)
-3. Runs BehaviorGuard + 4 baselines + ablations
+3. Runs TurnShift + 4 baselines + ablations
 4. Computes metrics, bootstrap CIs, paired t-tests
 5. Writes `full_evaluation_results.json`, `evaluation_results.csv`, `maturity_analysis.json`
 
@@ -379,7 +379,7 @@ Returns precision, recall, F1, accuracy, confusion matrix (TP/TN/FP/FN), FPR/FNR
 - `is_anomaly` — excluded from profile training
 - `should_flag` — ground-truth label for metrics
 
-### Baselines (`src/behaviorguard/baselines/`)
+### Baselines (`src/turnshift/baselines/`)
 
 | Class | Method |
 |-------|--------|
@@ -428,24 +428,24 @@ Returns precision, recall, F1, accuracy, confusion matrix (TP/TN/FP/FN), FPR/FNR
 | `python evaluation.py` | Full 7-stage eval pipeline |
 | `python evaluate.py --overrides off` | Eval with CLI flags |
 | `python reproduce.py` | One-command paper reproduction |
-| `behaviorguard evaluate --profile X --message Y` | Production single-message check |
+| `turnshift evaluate --profile X --message Y` | Production single-message check |
 
 ### Diagnostic / audit scripts (`scripts/`)
 
 | Script | Purpose | Key imports |
 |--------|---------|-------------|
-| `diagnostic_harness.py` | s_ling saturation + λ sweep (cosine vs Mahalanobis) | `evaluation`, analyzers, `BehaviorGuardEvaluatorML` |
+| `diagnostic_harness.py` | s_ling saturation + λ sweep (cosine vs Mahalanobis) | `evaluation`, analyzers, `TurnShiftEvaluatorML` |
 | `diagnostic_gate_eval.py` | 1-week gate: holdout eval, AE artifact check | `evaluation`, `ProfileManager`, `corrected_proper_generalization_eval` |
-| `inspect_interfaces.py` | Print analyzer public APIs | `behaviorguard.analyzers.*`, `evaluator_ml` |
+| `inspect_interfaces.py` | Print analyzer public APIs | `turnshift.analyzers.*`, `evaluator_ml` |
 | `verify_harness_wiring.py` | Harness scores == direct analyzer calls | `diagnostic_harness`, analyzers |
-| `verify_composite_wiring.py` | Harness == `BehaviorGuardEvaluatorML.evaluate()` | `diagnostic_harness`, `evaluation` |
-| `verify_behaviorguard_canonical.py` | Reproduce paper Table III | `evaluation.evaluate_method` |
+| `verify_composite_wiring.py` | Harness == `TurnShiftEvaluatorML.evaluate()` | `diagnostic_harness`, `evaluation` |
+| `verify_turnshift_canonical.py` | Reproduce paper Table III | `evaluation.evaluate_method` |
 | `corrected_pipeline_eval.py` | Eval on de-confounded datasets | `evaluation`, task1, task5 |
-| `corrected_proper_generalization_eval.py` | Tune/val/test holdout (no leakage) | `evaluation`, `BehaviorGuardEvaluatorML`, baselines |
+| `corrected_proper_generalization_eval.py` | Tune/val/test holdout (no leakage) | `evaluation`, `TurnShiftEvaluatorML`, baselines |
 | `corrected_bg_fair_tuning.py` | Fair hyperparameter tuning vs IF/AE | `evaluation`, task1, task5 |
 | `validate_corrected_injection.py` | QA on corrected injection | `tools/rebuild_injected_datasets` |
 | `audit_positive_surface_form.py` | Overt vs gardening vs metadata-only positives | `evaluation` |
-| `investigate_gardening_detection.py` | Deep-dive benign-surface detection | `evaluation`, `BehaviorGuardEvaluatorML` |
+| `investigate_gardening_detection.py` | Deep-dive benign-surface detection | `evaluation`, `TurnShiftEvaluatorML` |
 | `sling_exclusion_holdout_eval.py` | Held-out compare `enable_linguistic_scoring` on vs off | `evaluation`, `production_sling_audit_snippet` |
 | `task1_isolation_forest_rerun.py` | IF contamination/threshold sweep | `evaluation`, `IsolationForestBaseline` |
 | `task5_autoencoder_rerun.py` | AE F1-max threshold | `evaluation`, `AutoencoderBaseline` |
@@ -483,7 +483,7 @@ flowchart LR
 
     subgraph detection_layer
         VAL[InputValidator]
-        EVML[BehaviorGuardEvaluatorML]
+        EVML[TurnShiftEvaluatorML]
         ANA[Analyzers ML]
         COMP[CompositeScorer]
         RISK[Risk + Policy]
@@ -511,7 +511,7 @@ flowchart LR
 JSON message dict
   → ev.message_to_current_message() → CurrentMessage
   → ProfileManager.build_from_history() → UserProfile
-  → BehaviorGuardEvaluatorML.evaluate(EvaluationInput)
+  → TurnShiftEvaluatorML.evaluate(EvaluationInput)
       → SemanticAnalyzerML.analyze()      → s_sem
       → LinguisticAnalyzerML.analyze()    → s_ling
       → TemporalAnalyzerML.analyze()      → s_temp
@@ -527,7 +527,7 @@ JSON message dict
 
 | Variable | Effect |
 |----------|--------|
-| `BEHAVIORGUARD_DEVICE` | `cpu` / `cuda` / `auto` for embeddings |
+| `TURNSHIFT_DEVICE` | `cpu` / `cuda` / `auto` for embeddings |
 | `BG_DIAGNOSTIC_HARNESS=1` | Run diagnostic harness instead of full eval |
 | `BG_DIAGNOSTIC_DATASET` | Filter diagnostic to one dataset |
 | `BG_OVERRIDE_ABLATION_ONLY=1` | Override ablations only |
@@ -538,11 +538,11 @@ JSON message dict
 
 ## 12. Mental Model — Three Layers
 
-1. **Library** (`src/behaviorguard/`) — reusable detection engine; import in your app
+1. **Library** (`src/turnshift/`) — reusable detection engine; import in your app
 2. **Harness** (`evaluation.py` + `scripts/`) — batch experiments, ablations, diagnostics
 3. **Data** (`datasets/`, `tools/`, `data/`) — synthetic anomaly injection and corrected eval sets
 
-**Production path:** `ProfileStore` → `BehaviorGuardEvaluatorML.evaluate()` → act on `recommended_action`
+**Production path:** `ProfileStore` → `TurnShiftEvaluatorML.evaluate()` → act on `recommended_action`
 
 **Research path:** load JSON datasets → build profiles → score test window → `compute_metrics()` at τ=0.60 → compare to baselines
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Investigate BehaviorGuard detection of category-(b) gardening positives vs benign.
+Investigate TurnShift detection of category-(b) gardening positives vs benign.
 """
 
 from __future__ import annotations
@@ -24,10 +24,10 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML
-from behaviorguard.baselines.autoencoder_baseline import AutoencoderBaseline
-from behaviorguard.baselines.isolation_forest_baseline import IsolationForestBaseline
-from behaviorguard.models import EvaluationInput, SystemConfig
+from turnshift import TurnShiftEvaluatorML
+from turnshift.baselines.autoencoder_baseline import AutoencoderBaseline
+from turnshift.baselines.isolation_forest_baseline import IsolationForestBaseline
+from turnshift.models import EvaluationInput, SystemConfig
 from scripts.task5_autoencoder_rerun import (
     _build_autoencoder_eval_config,
     _prepare_baseline_eval,
@@ -116,7 +116,7 @@ def _prev_in_session(test_msgs, i):
 def investigate_personachat():
     td = ev.datasets["personachat"]
     profiles = _collect_eval_users(td)
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
 
     b_positives = []
     for uid, ud in profiles.items():

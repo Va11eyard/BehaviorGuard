@@ -23,8 +23,8 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
-from behaviorguard.embedding_config import EMBEDDING_MODEL_NAME, EMBEDDING_MODEL_REVISION  # noqa: E402
-from behaviorguard.models import (  # noqa: E402
+from turnshift.embedding_config import EMBEDDING_MODEL_NAME, EMBEDDING_MODEL_REVISION  # noqa: E402
+from turnshift.models import (  # noqa: E402
     CurrentMessage,
     EvaluationInput,
     LinguisticFeatures,
@@ -37,8 +37,8 @@ from behaviorguard.models import (  # noqa: E402
     TemporalProfile,
     UserProfile,
 )
-from behaviorguard.profile_manager import MessageRecord, ProfileManager  # noqa: E402
-from behaviorguard.utils.profile_store import ProfileStore  # noqa: E402
+from turnshift.profile_manager import MessageRecord, ProfileManager  # noqa: E402
+from turnshift.utils.profile_store import ProfileStore  # noqa: E402
 
 
 def _size_bytes(obj) -> int:
@@ -46,7 +46,7 @@ def _size_bytes(obj) -> int:
 
 
 def main() -> None:
-    from behaviorguard.evaluator_ml import BehaviorGuardEvaluatorML
+    from turnshift.evaluator_ml import TurnShiftEvaluatorML
 
     pm = ProfileManager(decay=0.5)
     texts = [
@@ -130,7 +130,7 @@ def main() -> None:
         sizes[k.replace("_bytes", "_per_1m_users_gb")] = round(sizes[k] * 1_000_000 / (1024**3), 2)
 
     # Latency: scoring only
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     cur = CurrentMessage(
         text="Can you help me export my account settings?",
         timestamp="2024-01-01T13:00:00",

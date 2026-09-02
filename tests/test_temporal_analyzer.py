@@ -3,8 +3,8 @@
 import pytest
 from hypothesis import given, strategies as st
 
-from behaviorguard.analyzers.temporal import TemporalAnalyzer
-from behaviorguard.models import (
+from turnshift.analyzers.temporal import TemporalAnalyzer
+from turnshift.models import (
     CurrentMessage,
     LinguisticFeatures,
     RequestedOperation,
@@ -76,7 +76,7 @@ def build_current_message(
     )
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 9: Temporal penalties for unusual activity
+# Feature: turnshift-anomaly-scoring, Property 9: Temporal penalties for unusual activity
 @given(
     hour=st.integers(min_value=0, max_value=23),
 )
@@ -108,7 +108,7 @@ def test_property_temporal_penalties_unusual_hours(hour):
             assert result.score >= 0.0, f"Expected score >= 0.0 for unusual hours, got {result.score}"
 
 
-# Feature: behaviorguard-anomaly-scoring, Property 10: Bot-like timing detection
+# Feature: turnshift-anomaly-scoring, Property 10: Bot-like timing detection
 @given(
     gap_seconds=st.floats(min_value=0.1, max_value=100.0),
 )

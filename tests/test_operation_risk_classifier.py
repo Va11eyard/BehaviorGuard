@@ -2,7 +2,7 @@
 
 import pytest
 
-from behaviorguard.utils.operation_risk_classifier import classify_operation_risk
+from turnshift.utils.operation_risk_classifier import classify_operation_risk
 
 
 def test_delete_all_accounts_paraphrases():

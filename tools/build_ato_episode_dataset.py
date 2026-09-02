@@ -139,7 +139,7 @@ def main() -> None:
     centroids: dict[str, list[float]] | None = None
     if donor_mode == "mimicry":
         print("Computing train centroids for mimicry donor selection...", flush=True)
-        from behaviorguard.embedding_config import load_sentence_transformer
+        from turnshift.embedding_config import load_sentence_transformer
         import numpy as np
 
         model = load_sentence_transformer()

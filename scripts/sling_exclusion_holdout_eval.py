@@ -20,8 +20,8 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
-from behaviorguard import BehaviorGuardEvaluatorML  # noqa: E402
-from behaviorguard.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift import TurnShiftEvaluatorML  # noqa: E402
+from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
 from production_sling_audit_snippet import PRODUCTION_CLASSIFICATION_THRESHOLD  # noqa: E402
 
 DATASET = ROOT / "datasets" / "personachat_processed_corrected.json"
@@ -56,7 +56,7 @@ def _prev_in_session(test_msgs: list, i: int):
 
 def run_holdout_eval(enable_linguistic: bool) -> dict:
     test_data = json.loads(DATASET.read_text(encoding="utf-8"))
-    evaluator = BehaviorGuardEvaluatorML()
+    evaluator = TurnShiftEvaluatorML()
     config = SystemConfig(
         sensitivity_level="medium",
         deployment_context="enterprise",
