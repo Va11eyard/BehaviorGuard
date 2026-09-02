@@ -534,7 +534,7 @@ def evaluate_method(
         max_users: Cap on sampled test users. ``None`` (default) evaluates the
             full test split. Historical paper runs used ``max_users=20`` as a
             compute shortcut; that protocol is superseded by full-holdout
-            evaluation (see results/sequential_ato_study*.json).
+            evaluation (see results/primary/sequential_ato_study*.json).
     """
     print(f"\n  Evaluating {method_name} on {dataset_name}...")
     
@@ -955,9 +955,12 @@ def append_results_csv(
     dataset: str,
     experiment_type: str,
     metrics: Dict,
-    csv_path: str = "evaluation_results.csv",
+    csv_path: str = "results/evaluation_results.csv",
 ) -> None:
-    """Upsert one experiment row in evaluation_results.csv keyed on (dataset, experiment_type).
+    """Upsert one experiment row in results/evaluation_results.csv keyed on (dataset, experiment_type).
+
+    Live output is separate from the frozen archived copy under
+    results/archived-per-message-study/evaluation_results.csv.
 
     Re-running the same experiment replaces the prior row instead of appending a duplicate.
     """

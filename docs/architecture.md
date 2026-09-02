@@ -78,9 +78,9 @@ flowchart TB
 | **Diagnostic scripts** | `scripts/` | s_ling audits, fair tuning, wiring verification |
 | **Dataset tools** | `tools/` | Anomaly templates + corrected dataset rebuild |
 | **Datasets** | `datasets/` (gitignored) | PersonaChat, Blended Skill Talk, Anthropic HH |
-| **Results** | `results/` (gitignored) | JSON/CSV outputs from runs |
+| **Results** | `results/primary/`, `results/archived-per-message-study/`, `results/methodology-diagnostics/` | Sequential study (primary), per-message artifact, diagnostics |
 | **Profiles** | `profiles/` (gitignored) | Saved user profile JSON |
-| **Docs** | `README.md`, `REPRODUCIBILITY.md`, `INTEGRATION.md`, this file | Install, paper repro, diagnostic integration |
+| **Docs** | `docs/`, `README.md`, this file | Install, paper repro, diagnostic integration |
 
 ---
 
@@ -532,7 +532,7 @@ JSON message dict
 | `BG_DIAGNOSTIC_DATASET` | Filter diagnostic to one dataset |
 | `BG_OVERRIDE_ABLATION_ONLY=1` | Override ablations only |
 | `BG_LAMBDA_SWEEP_ONLY=1` | λ sensitivity sweep only |
-| `HF_DATASETS_OFFLINE=1` | Offline HuggingFace (per INTEGRATION.md) |
+| `HF_DATASETS_OFFLINE=1` | Offline HuggingFace (per docs/diagnostic-harness.md) |
 
 ---
 
@@ -557,4 +557,4 @@ JSON message dict
 5. `analyzers/*_ml.py` — scoring math
 6. `scorers/composite.py` — weights + overrides
 7. `evaluation.py` — how everything is measured at scale
-8. `INTEGRATION.md` — diagnostic harness protocol
+8. `docs/diagnostic-harness.md` — diagnostic harness protocol

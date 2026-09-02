@@ -37,8 +37,8 @@ import scripts.corrected_proper_generalization_eval as pg  # noqa: E402
 
 CORRECTED_PC = ROOT / "datasets/personachat_processed_corrected.json"
 INDEPENDENT_MSGS = ROOT / "data/independent_anomaly_messages.json"
-OUT = ROOT / "results/diagnostic_gate_eval.json"
-BASELINE_PROPER_PATH = ROOT / "results/corrected_proper_generalization_eval.json"
+OUT = ROOT / "results/methodology-diagnostics/diagnostic_gate_eval.json"
+BASELINE_PROPER_PATH = ROOT / "results/methodology-diagnostics/corrected_proper_generalization_eval.json"
 
 DIAG_BG_CONFIG = SystemConfig(
     sensitivity_level="medium",

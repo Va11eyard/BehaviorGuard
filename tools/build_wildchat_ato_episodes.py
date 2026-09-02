@@ -33,7 +33,7 @@ MIN_TAIL_MSGS = 1
 EPISODE_GAP_SECONDS = 300
 MAX_USERS = 5000
 OUTPUT = ROOT / "datasets" / "wildchat_ato_episodes.json"
-META_OUT = ROOT / "results" / "wildchat_corpus_acquisition.json"
+META_OUT = ROOT / "results" / "methodology-diagnostics" / "wildchat_corpus_acquisition.json"
 
 
 def _try_load():

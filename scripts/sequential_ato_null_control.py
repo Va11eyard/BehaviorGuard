@@ -9,7 +9,7 @@ bootstrap-sampled from the user's OWN standardized train residuals (same
 author, same length) instead of the attacker's. The crossing rate at the
 FA=1/1000 threshold estimates the length-induced null detection rate.
 
-Appends {"null_control_cusum_embed": ...} to results/sequential_ato_study.json.
+Appends {"null_control_cusum_embed": ...} to results/primary/sequential_ato_study.json.
 """
 
 from __future__ import annotations

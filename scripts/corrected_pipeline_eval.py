@@ -60,9 +60,9 @@ DISPLAY = {
 }
 
 ORIGINAL_RESULTS = {
-    "behaviorguard": ROOT / "results/behaviorguard_canonical_verify.json",
-    "isolation_forest": ROOT / "results/task1_isolation_forest_results.json",
-    "autoencoder": ROOT / "results/task5_autoencoder_results.json",
+    "behaviorguard": ROOT / "results/methodology-diagnostics/behaviorguard_canonical_verify.json",
+    "isolation_forest": ROOT / "results/methodology-diagnostics/task1_isolation_forest_results.json",
+    "autoencoder": ROOT / "results/methodology-diagnostics/task5_autoencoder_results.json",
 }
 
 BG_THRESHOLD = 0.60

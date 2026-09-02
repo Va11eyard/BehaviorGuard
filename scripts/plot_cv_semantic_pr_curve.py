@@ -8,7 +8,7 @@ Inset: ROC for FPR ∈ [0, 0.05] (Mahalanobis ranking advantage region).
 
 Outputs paper/figures/cv_semantic_pr_curve.{pdf,png}
         paper/figures/cv_semantic_pr_curve.caption.tex
-        results/cv_semantic_pr_curve.json
+        results/methodology-diagnostics/cv_semantic_pr_curve.json
 
 Usage:
     python scripts/plot_cv_semantic_pr_curve.py
@@ -38,12 +38,12 @@ for _stream in (sys.stdout, sys.stderr):
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORES_CACHE = ROOT / "results" / "threshold_sweep_cv_scores.npz"
-PROTOCOL_JSON = ROOT / "results" / "threshold_sweep_cv_protocol.json"
+PROTOCOL_JSON = ROOT / "results" / "methodology-diagnostics" / "threshold_sweep_cv_protocol.json"
 OUT_DIR = ROOT / "paper" / "figures"
 OUT_PNG = OUT_DIR / "cv_semantic_pr_curve.png"
 OUT_PDF = OUT_DIR / "cv_semantic_pr_curve.pdf"
 OUT_CAPTION = OUT_DIR / "cv_semantic_pr_curve.caption.tex"
-META_JSON = ROOT / "results" / "cv_semantic_pr_curve.json"
+META_JSON = ROOT / "results" / "methodology-diagnostics" / "cv_semantic_pr_curve.json"
 
 FIGURE_CAPTION = (
     "Precision--recall (main panel) and low-FPR ROC inset for cosine vs.\\ "

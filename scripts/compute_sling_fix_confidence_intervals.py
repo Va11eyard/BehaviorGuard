@@ -184,7 +184,7 @@ def main() -> None:
         ),
     }
 
-    out = ROOT / "results" / "sling_fix_confidence_intervals.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "sling_fix_confidence_intervals.json"
     out.write_text(json.dumps(results, indent=2), encoding="utf-8")
     print(json.dumps(results, indent=2))
     print(f"\nSaved to {out}")

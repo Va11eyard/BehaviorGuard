@@ -54,28 +54,28 @@ sys.path.insert(0, str(ROOT / "src"))
 DATASET_PATHS = {
     "personachat": {
         "dataset": ROOT / "datasets" / "personachat_ato_episodes.json",
-        "cache": ROOT / "results" / "sequential_ato_scores.npz",
-        "out": ROOT / "results" / "sequential_ato_study.json",
+        "cache": ROOT / "results" / "primary" / "sequential_ato_scores.npz",
+        "out": ROOT / "results" / "primary" / "sequential_ato_study.json",
     },
     "bst": {
         "dataset": ROOT / "datasets" / "blended_skill_talk_ato_episodes.json",
-        "cache": ROOT / "results" / "sequential_ato_scores_bst.npz",
-        "out": ROOT / "results" / "sequential_ato_study_bst.json",
+        "cache": ROOT / "results" / "primary" / "sequential_ato_scores_bst.npz",
+        "out": ROOT / "results" / "primary" / "sequential_ato_study_bst.json",
     },
     "personachat_mimicry": {
         "dataset": ROOT / "datasets" / "personachat_ato_episodes_mimicry.json",
         "cache": ROOT / "results" / "sequential_ato_scores_mimicry.npz",
-        "out": ROOT / "results" / "sequential_ato_study_mimicry.json",
+        "out": ROOT / "results" / "primary" / "sequential_ato_study_mimicry.json",
     },
     "bst_mimicry": {
         "dataset": ROOT / "datasets" / "blended_skill_talk_ato_episodes_mimicry.json",
         "cache": ROOT / "results" / "sequential_ato_scores_bst_mimicry.npz",
-        "out": ROOT / "results" / "sequential_ato_study_bst_mimicry.json",
+        "out": ROOT / "results" / "primary" / "sequential_ato_study_bst_mimicry.json",
     },
     "wildchat": {
         "dataset": ROOT / "datasets" / "wildchat_ato_episodes.json",
         "cache": ROOT / "results" / "sequential_ato_scores_wildchat.npz",
-        "out": ROOT / "results" / "sequential_ato_study_wildchat.json",
+        "out": ROOT / "results" / "primary" / "sequential_ato_study_wildchat.json",
     },
 }
 

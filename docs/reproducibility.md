@@ -81,12 +81,12 @@ python scripts/sequential_ato_null_control.py --dataset bst
 ```
 
 Output: `full_evaluation_results.json` (legacy pipeline) and
-`results/sequential_ato_study*.json` (primary findings).
+`results/primary/sequential_ato_study*.json` (primary findings).
 
 > The Table III / 20-user F1 figures in earlier drafts are retained only as a
 > diagnosed base-rate artifact. Canonical claims use full-holdout and sequential
-> detection metrics — see `evaluation_results.README.md` and
-> `results/sequential_ato_study*.json`.
+> detection metrics — see `results/archived-per-message-study/README.md` and
+> `results/primary/sequential_ato_study*.json`.
 
 Mean scoring latency (embedding + composite, excluding profile I/O):
 13–17 ms per request (CPU, pinned MiniLM). End-to-end latency including profile

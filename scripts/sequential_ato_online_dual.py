@@ -149,7 +149,7 @@ def run_ablations(dataset: str) -> dict:
         "online": "EMA absorbs each stream message after scoring (production realism / poisoning)",
         "dual_lambda": f"CUSUM on |d_fast - d_slow| with lambdas {FAST_LAMBDA}/{SLOW_LAMBDA}",
     }
-    out = ROOT / "results" / f"sequential_ato_online_dual_{dataset}.json"
+    out = ROOT / "results" / "primary" / f"sequential_ato_online_dual_{dataset}.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
     print(f"Saved {out}")

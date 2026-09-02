@@ -197,7 +197,7 @@ def main() -> None:
         "top5": ranked[:5],
         "objective_note": "Replaces F1-at-FPR=0 tuning criticized by reviewer; AUC-PR is prevalence-aware.",
     }
-    out = ROOT / "results" / "weight_tuning_aucpr.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "weight_tuning_aucpr.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
     print(f"Saved {out}")

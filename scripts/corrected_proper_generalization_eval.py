@@ -59,8 +59,8 @@ BG_CONFIG = SystemConfig(
 )
 
 LEAKED_SOURCES = {
-    "behaviorguard_insample": ROOT / "results" / "corrected_bg_fair_tuning.json",
-    "baselines_insample": ROOT / "results" / "corrected_pipeline_eval.json",
+    "behaviorguard_insample": ROOT / "results" / "methodology-diagnostics" / "corrected_bg_fair_tuning.json",
+    "baselines_insample": ROOT / "results" / "methodology-diagnostics" / "corrected_pipeline_eval.json",
 }
 
 
@@ -609,7 +609,7 @@ def main() -> None:
                 if m:
                     print(f"  {method} test: F1={m['f1']} AUC={m['auc']}")
 
-    out_path = ROOT / "results" / "corrected_proper_generalization_eval.json"
+    out_path = ROOT / "results" / "methodology-diagnostics" / "corrected_proper_generalization_eval.json"
     out_path.write_text(json.dumps(results, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\nWrote {out_path}")
 

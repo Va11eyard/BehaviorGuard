@@ -475,7 +475,7 @@ def main() -> None:
         print(f"  T4 best F1={t4['f1']} vs IF={baselines['isolation_forest']['f1']} AE={baselines['autoencoder']['f1']}")
         print(f"  Fixed τ=0.60 AUC={fixed_row['auc']} (unchanged by τ; scores fixed at λ=0.5)")
 
-    out_path = ROOT / "results" / "corrected_bg_fair_tuning.json"
+    out_path = ROOT / "results" / "methodology-diagnostics" / "corrected_bg_fair_tuning.json"
     out_path.write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
     print(f"\nWrote {out_path}")
 

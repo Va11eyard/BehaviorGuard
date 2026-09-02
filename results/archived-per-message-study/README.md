@@ -1,10 +1,14 @@
 # evaluation_results.csv — superseded-data notice
 
+These results are retained as a diagnosed evaluation-methodology artifact per
+the paper section on the base-rate fallacy. They are not primary performance
+claims. See `results/primary/` for the supported sequential detection findings.
+
 Retained for reproducibility of the original Table III protocol. These numbers do
 NOT reflect realistic-prevalence performance — see
-`results/sling_fix_confidence_intervals.json`,
-`results/threshold_sweep_cv_protocol.json`, and
-`results/sequential_ato_study*.json` for the corrected methodology and results.
+`results/methodology-diagnostics/sling_fix_confidence_intervals.json`,
+`results/methodology-diagnostics/threshold_sweep_cv_protocol.json`, and
+`results/primary/sequential_ato_study*.json` for the corrected methodology and results.
 
 Background: the Table III protocol evaluates on a 20-user sample with ~48%
 positive prevalence. At the realistic prevalence of the full corrected holdout

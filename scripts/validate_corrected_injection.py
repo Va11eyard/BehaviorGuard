@@ -138,7 +138,7 @@ def validate_dataset(name: str, corrected_path: Path, original_path: Path | None
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--output", default="results/corrected_injection_validation.json")
+    parser.add_argument("--output", default="results/methodology-diagnostics/corrected_injection_validation.json")
     args = parser.parse_args()
 
     reports = []

@@ -16,10 +16,10 @@ $env:PYTHONPATH = "E:\PyCharm 2025.2.1.1\BehaviorGuard\src"
 ## Step 1 — Interface discovery
 
 ```powershell
-python scripts/inspect_interfaces.py > results/interfaces.txt
+python scripts/inspect_interfaces.py > results/methodology-diagnostics/interfaces.txt
 ```
 
-Review `results/interfaces.txt` for `[SKIP]` lines before wiring.
+Review `results/methodology-diagnostics/interfaces.txt` for `[SKIP]` lines before wiring.
 
 ## Step 4 — Wiring verification (required before trusting Part 5)
 

@@ -59,4 +59,4 @@ sudo apt install texlive-latex-extra texlive-fonts-recommended
 
 The paper describes exactly the system implemented in `src/turnshift/`.
 To reproduce the reported numbers, follow the steps in
-[`REPRODUCIBILITY.md`](../REPRODUCIBILITY.md) at the repository root.
+[`docs/reproducibility.md`](../docs/reproducibility.md).

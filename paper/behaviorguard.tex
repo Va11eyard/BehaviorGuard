@@ -447,7 +447,7 @@ capitalization, stopword and first-person ratios, type--token, politeness proxie
 into the linguistic analyzer and compare three holdout configurations by AUC-PR on
 the corrected PersonaChat full holdout ($n{=}10{,}165$, 29 positives):
 linguistic off (AUC-PR $0.228$), legacy 4-feature ($0.004$), and stylometric
-10-feature ($0.009$) (\texttt{results/stylometric\_linguistic\_eval.json}).
+10-feature ($0.009$) (\texttt{results/methodology-diagnostics/stylometric\_linguistic\_eval.json}).
 Neither linguistic mode beats linguistic-off by the pre-registered $0.01$ AUC-PR
 margin---and AUC-PR weight retuning independently sets the linguistic weight to zero
 (\S\ref{sec:scoring})---so the canonical default is
@@ -660,7 +660,7 @@ and detection rate at \emph{matched} FPR $\in \{1\%, 5\%\}$ rather than a shared
 score threshold, with paired bootstrap AUC differences, DeLong $p$-values, and
 Holm--Bonferroni correction across \BG{}-vs-baseline pairs
 (\texttt{scripts/baselines\_matched\_fpr\_holdout.py};
-\texttt{results/baselines\_matched\_fpr\_holdout.json}).
+\texttt{results/methodology-diagnostics/baselines\_matched\_fpr\_holdout.json}).
 On that holdout ($n{=}10{,}165$, 29 positives, prevalence $0.285\%$),
 linguistic-off \BG{} attains AUC-ROC $0.953$ / AUC-PR $0.263$, versus
 Isolation Forest $0.553$ / $0.003$, Autoencoder $0.890$ / $0.027$, and
@@ -853,7 +853,7 @@ residuals and accumulates $S_i = \max(0,\, S_{i-1} + r_i - \kappa)$ with
 canonical $\kappa{=}0.5$.
 CUSUM theory suggests $\kappa \approx \delta/2$ for a mean shift of size $\delta$; on
 PersonaChat the empirical residual shift is $\hat\delta \approx 0.251$, so the theory
-value is $\kappa \approx 0.126$ (\texttt{results/cusum\_kappa\_sweep\_personachat.json}).
+value is $\kappa \approx 0.126$ (\texttt{results/primary/cusum\_kappa\_sweep\_personachat.json}).
 Sweeping $\kappa \in \{0, 0.25, 0.5, 0.75, 1.0, 1.5\}$ at FA$=$1/1{,}000 yields
 detection $93.7\%$ ($\kappa{=}0$), $81\%$ ($\kappa{=}0.25$), and $63\%$
 ($\kappa{=}0.5$), with AUC remaining $\ge 0.97$ through $\kappa{=}0.5$.
@@ -862,7 +862,7 @@ canonical $\kappa{=}0.5$ remains a \emph{conservative} operating point relative 
 near-theory values on both corpora.
 Primary residuals use cosine distance to the EMA centroid; Euclidean and Pearson
 correlation on L2-normalized MiniLM vectors are near-redundant with cosine
-(\texttt{results/cusum\_kappa\_sweep\_*.json}).
+(\texttt{results/primary/cusum\_kappa\_sweep\_*.json}).
 Six comparators cover the design space: CUSUM over stylometric residuals
 (\texttt{cusum\_stylo}) and over combined residuals (\texttt{cusum\_combined});
 the same combined residual without accumulation (\texttt{permsg\_combined});
@@ -880,7 +880,7 @@ When claiming pairwise superiority among detectors, we pre-specify
 Holm--Bonferroni correction over the family of \texttt{cusum\_embed} versus each of
 the six comparators on each of two datasets (12 comparisons), using paired
 percentile-bootstrap differences in episode AUC ($n{=}2000$, seed~42).
-Corrected $p$-values are archived in \texttt{results/cusum\_holm\_bonferroni.json}:
+Corrected $p$-values are archived in \texttt{results/primary/cusum\_holm\_bonferroni.json}:
 all 12 \texttt{cusum\_embed} advantages remain significant after Holm--Bonferroni
 correction at $\alpha{=}0.05$.
 
@@ -956,7 +956,7 @@ The placebo detection rate is 0.7\% on PersonaChat and 0.11\% on BST---versus
 rather than stream length.
 On the third corpus (Anthropic HH organic streams; see below) the same placebo
 protocol yields a null rate of 1.17\% at FA$=$1/1{,}000 versus 20.0\% observed
-(\texttt{results/sequential\_ato\_study\_wildchat.json}).
+(\texttt{results/primary/sequential\_ato\_study\_wildchat.json}).
 
 \textbf{Cross-dataset replication and the persona-conditioning caveat.}
 The BST replication is the honest headline: AUC degrades from 0.974 to 0.900
@@ -968,7 +968,7 @@ from 8.0\% to 9.7\%)---consistent with PersonaChat's persona conditioning creati
 unusually strong topical identity that inflates semantic separability.
 A third author-substitution corpus built from Anthropic HH organic
 human--assistant turns (WildChat-1M / ShareGPT downloads stalled on this
-machine; acquisition note in \texttt{results/wildchat\_corpus\_acquisition.json})
+machine; acquisition note in \texttt{results/methodology-diagnostics/wildchat\_corpus\_acquisition.json})
 further degrades to AUC $0.795$ and FA$=$1/1{,}000 detection $20.0\%$
 (median delay 5.5 messages; placebo 1.17\%), while remaining far above chance.
 We therefore read 0.974 as a persona-conditioned upper bound, 0.900/35.0\% as a
@@ -995,11 +995,11 @@ to accumulate reliably, which is why the embedding residual dominates and why
 underperforms \texttt{cusum\_embed}.
 Fourth, random donor selection overstates detectability against a mimicry attacker:
 nearest-centroid donor episodes drop PersonaChat FA$=$1/1{,}000 detection from
-63\% to 35\% (AUC 0.870; \texttt{results/sequential\_ato\_study\_mimicry.json}).
+63\% to 35\% (AUC 0.870; \texttt{results/primary/sequential\_ato\_study\_mimicry.json}).
 An online profile that absorbs each stream message after scoring loses about
 8 detection points relative to a frozen profile (71.7\%$\to$63.7\% in the
 lightweight residual protocol;
-\texttt{results/sequential\_ato\_online\_dual\_personachat.json}), quantifying
+\texttt{results/primary/sequential\_ato\_online\_dual\_personachat.json}), quantifying
 poisoning risk.
 A dual-$\lambda$ divergence CUSUM ($\lambda_{\mathrm{fast}}{=}0.5$,
 $\lambda_{\mathrm{slow}}{=}0.99$) intended as a poisoning defense fails on this
@@ -1044,7 +1044,7 @@ Legacy weights $(\alpha, \beta, \gamma) = (0.4, 0.35, 0.25)$ were selected by a 
 grid search optimizing F1 at FPR$=$0.
 User-level 5-fold CV AUC-PR retuning on the corrected PersonaChat holdout yields
 $(0.9, 0.0, 0.1)$ as the medium default (\S\ref{sec:scoring};
-\texttt{results/weight\_tuning\_aucpr.json}), with linguistic weight driven to zero.
+\texttt{results/methodology-diagnostics/weight\_tuning\_aucpr.json}), with linguistic weight driven to zero.
 
 \paragraph{Evaluation scale and synthetic anomalies.}
 The per-message evaluation sets archived in \Cref{app:permessage} are small
@@ -1060,7 +1060,7 @@ counts (\texttt{datasets/*\_processed\_external.json}).
 On the full PersonaChat holdout (linguistic off, $\tau{=}0.60$), detection
 \emph{holds}: external positives yield F1 $0.364$ / AUC-ROC $0.887$ / AUC-PR
 $0.293$ versus corrected in-repo templates F1 $0.314$ / AUC-ROC $0.917$ / AUC-PR
-$0.228$ (\texttt{results/external\_positive\_holdout\_eval.json}).
+$0.228$ (\texttt{results/methodology-diagnostics/external\_positive\_holdout\_eval.json}).
 Tier-2 real multi-turn streams for sequential ATO use Anthropic HH organic traffic
 as a third corpus after WildChat/ShareGPT downloads stalled
 (\S\ref{sec:cusum:results}).
@@ -1133,7 +1133,7 @@ encoders (e.g., \texttt{text-embedding-3-large}, Voyage AI) has not been evaluat
 
 Per-user storage depends on the semantic representation kept online.
 \emph{Measured} JSON-serialized sizes on the production profile schema
-(\texttt{results/deployment\_math\_audit.json}): cosine-only profiles (EMA
+(\texttt{results/methodology-diagnostics/deployment\_math\_audit.json}): cosine-only profiles (EMA
 centroid + linguistic/temporal statistics, no full covariance) occupy
 $\approx$9.4~KB each ($\approx$8.9~GB at 1M users); cold-start stubs are
 $\approx$1.3~KB.

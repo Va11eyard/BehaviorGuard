@@ -527,7 +527,7 @@ def run_personachat_production_audit(
     )
 
     if output_path is None:
-        output_path = Path(__file__).resolve().parent / "results" / "sling_production_audit_personachat.json"
+        output_path = Path(__file__).resolve().parent / "results" / "methodology-diagnostics" / "sling_production_audit_personachat.json"
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(json.dumps(audit, indent=2), encoding="utf-8")
     print(f"\nSaved audit JSON to {output_path}")
@@ -559,7 +559,7 @@ if __name__ == "__main__":
             print(f"    skipped (AUC error):    {stats['bootstrap_skipped_auc_error']}")
             print(f"    effective resamples:    {stats['bootstrap_effective_n']}")
             print(f"    CI: [{stats['ci_low']:+.6f}, {stats['ci_high']:+.6f}]  width={stats['ci_width']:.6f}")
-        out = Path(__file__).resolve().parent / "results" / "sling_bootstrap_stability.json"
+        out = Path(__file__).resolve().parent / "results" / "methodology-diagnostics" / "sling_bootstrap_stability.json"
         out.write_text(json.dumps(stability, indent=2), encoding="utf-8")
         print(f"\nSaved to {out}")
     elif not run_real:

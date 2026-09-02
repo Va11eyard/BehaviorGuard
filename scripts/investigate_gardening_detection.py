@@ -350,7 +350,7 @@ def main():
     bg_rows, baseline_b, profiles = investigate_personachat()
     meta = analyze_injection_metadata(profiles)
 
-    out = ROOT / "results" / "gardening_positive_investigation.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "gardening_positive_investigation.json"
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(
             {

@@ -152,7 +152,7 @@ def main() -> None:
 
     print(f"\n{report['next_priority']}")
 
-    out = ROOT / "results" / "sling_exclusion_holdout_eval.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "sling_exclusion_holdout_eval.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"\nSaved to {out}")
 

@@ -25,7 +25,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_DATASET = ROOT / "datasets" / "personachat_processed_corrected.json"
 COMPONENT_CACHE = ROOT / "results" / "sling_audit_component_scores.npz"
 COSINE_CACHE = ROOT / "results" / "mahalanobis_comparison_scores.npz"
-OUTPUT = ROOT / "results" / "kimi_recall_diagnostics.json"
+OUTPUT = ROOT / "results" / "methodology-diagnostics" / "kimi_recall_diagnostics.json"
 
 THRESHOLD = 0.60
 PER_TYPE_MIN_N = 15

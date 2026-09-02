@@ -383,7 +383,7 @@ def main() -> None:
         "bootstrap_auc_mahalanobis_minus_cosine": boot,
     }
 
-    out = ROOT / "results" / "mahalanobis_bootstrap_comparison.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "mahalanobis_bootstrap_comparison.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(f"\nCosine    AUC={m_cos['auc']:.6f}  F1={m_cos['f1']['point']:.3f} [{m_cos['f1']['ci_low']:.3f},{m_cos['f1']['ci_high']:.3f}]")
     print(f"Mahalanob AUC={m_maha['auc']:.6f}  F1={m_maha['f1']['point']:.3f} [{m_maha['f1']['ci_low']:.3f},{m_maha['f1']['ci_high']:.3f}]")

@@ -262,7 +262,7 @@ def main() -> None:
         "significance": comparisons,
         "note": "Matched-FPR operating points replace shared score-threshold comparison.",
     }
-    out = ROOT / "results" / "baselines_matched_fpr_holdout.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "baselines_matched_fpr_holdout.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
     print(f"Saved {out}")

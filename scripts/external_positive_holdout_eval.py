@@ -168,7 +168,7 @@ def main() -> None:
             print(f"\n=== {key} / {tag} ===", flush=True)
             report["results"][f"{key}_{tag}"] = score_holdout(path)
 
-    out = ROOT / "results" / "external_positive_holdout_eval.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "external_positive_holdout_eval.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))

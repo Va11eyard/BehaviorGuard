@@ -196,7 +196,7 @@ def main() -> None:
         if flag:
             print(f"  *** DISCLOSURE FLAG: category (b) > 20% — recommend §V/VII limitation ***")
 
-    out = ROOT / "results" / "positive_label_surface_audit.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "positive_label_surface_audit.json"
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(report, fh, indent=2, ensure_ascii=False)
     print(f"\nSaved: {out}")

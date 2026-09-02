@@ -117,7 +117,7 @@ def main() -> None:
             "Mahalanobis requires per-user covariance (see dual-lambda / Mahalanobis scripts)."
         ),
     }
-    out = ROOT / "results" / f"cusum_kappa_sweep_{args.dataset}.json"
+    out = ROOT / "results" / "primary" / f"cusum_kappa_sweep_{args.dataset}.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
     print(f"Saved {out}")

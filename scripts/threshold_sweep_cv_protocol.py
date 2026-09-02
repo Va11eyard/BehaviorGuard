@@ -65,7 +65,7 @@ from scripts.threshold_sweep_protocol import (  # noqa: E402
 
 SCORES_CACHE = ROOT / "results" / "threshold_sweep_cv_scores.npz"
 MAHA_COMPARE_CACHE = ROOT / "results" / "mahalanobis_comparison_scores.npz"
-OUT_PATH = ROOT / "results" / "threshold_sweep_cv_protocol.json"
+OUT_PATH = ROOT / "results" / "methodology-diagnostics" / "threshold_sweep_cv_protocol.json"
 
 BASE_CONFIG = dict(
     sensitivity_level="medium",

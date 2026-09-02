@@ -5,7 +5,7 @@ Compare linguistic configurations by AUC-PR on the full corrected holdout:
   - legacy 4-feature linguistic
   - stylometric 10-feature linguistic
 
-Writes results/stylometric_linguistic_eval.json and recommends the canonical default.
+Writes results/methodology-diagnostics/stylometric_linguistic_eval.json and recommends the canonical default.
 """
 
 from __future__ import annotations
@@ -121,7 +121,7 @@ def main() -> None:
         "recommended_mode": best["ling_mode"] if enable else "off",
         "decision_rule": "enable linguistic iff best mode beats linguistic-off AUC-PR by >0.01",
     }
-    out = ROOT / "results" / "stylometric_linguistic_eval.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "stylometric_linguistic_eval.json"
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
 

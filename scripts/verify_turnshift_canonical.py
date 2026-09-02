@@ -120,7 +120,7 @@ def main() -> None:
             f"AUC={row['auc_status']}"
         )
 
-    out = ROOT / "results" / "behaviorguard_canonical_verify.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "behaviorguard_canonical_verify.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(

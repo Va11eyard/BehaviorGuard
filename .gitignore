@@ -219,15 +219,8 @@ sentence_transformers/
 # Home-dir HF cache: ~ is not expanded in .gitignore; also ignore
 # in your user global gitignore (e.g. ~/.cache/huggingface/).
 
-# Evaluation outputs (default-ignore). Tracked buckets are un-ignored below.
+# Evaluation outputs (default-ignore). Only structured buckets are tracked.
 results/
-!results/*.json
-!results/*.csv
-!results/*.md
-!results/*.txt
-!results/*.tex
-!results/sequential_ato_scores.npz
-!results/sequential_ato_scores_bst.npz
 !results/primary/
 !results/primary/**
 !results/archived-per-message-study/
@@ -282,3 +275,4 @@ paper/*
 !paper/*.tex
 !paper/figures/
 !paper/figures/**
+paper/figures/*.pdf

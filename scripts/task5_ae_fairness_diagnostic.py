@@ -281,7 +281,7 @@ def main() -> None:
         ),
     }
 
-    out = ROOT / "results" / "task5_ae_fairness_diagnostic.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "task5_ae_fairness_diagnostic.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "w", encoding="utf-8") as fh:
         json.dump(report, fh, indent=2, ensure_ascii=False)

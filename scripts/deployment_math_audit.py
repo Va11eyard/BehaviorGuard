@@ -220,7 +220,7 @@ def main() -> None:
             "unless Mahalanobis is shown to pay for its storage cost."
         ),
     }
-    out = ROOT / "results" / "deployment_math_audit.json"
+    out = ROOT / "results" / "methodology-diagnostics" / "deployment_math_audit.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))
