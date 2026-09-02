@@ -1,417 +1,131 @@
-# TurnShift Anomaly Scoring System
+# TurnShift
+
+Sequential behavioral-shift detection for conversational AI: CUSUM over
+per-user embedding residuals.
 
 **Formerly published as BehaviorGuard.**
 
 [![CI](https://github.com/Va11eyard/BehaviorGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/Va11eyard/BehaviorGuard/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Citation](https://img.shields.io/badge/citation-CITATION.cff-blue)](CITATION.cff)
 
-A **machine learning-driven** AI security agent for detecting behavioral anomalies in conversational AI interactions.
+TurnShift maintains a per-user embedding centroid (EMA) and a CUSUM statistic
+on cosine-distance residuals. On **proxy author-substitution experiments**
+(mid-conversation donor swap; not validated real-world account-takeover
+incidents), CUSUM detects the shift with episode AUC **0.974** on PersonaChat
+and **0.900** on Blended Skill Talk. At a false-alarm budget of 1 per 1,000
+benign messages, detection is **63.0%** / **35.0%** with median delay **4** /
+**5** messages. A length-matched placebo that continues CUSUM from the same
+pre-episode state but feeds bootstrap-resampled *same-author* residuals
+detects at **0.7%** / **0.1%**, which is the evidence that the signal is
+authorship change rather than stream length. Per-message detectors, including
+the composite scorer from an earlier protocol, detect at most **1.3%** of the
+same episodes at the same budget.
 
-## Overview
-
-TurnShift protects users and systems from:
-- Account takeover (ATO)
-- Social engineering attacks
-- Unauthorized access
-- AI-assisted cyber operations
-- Prompt injection attempts
-- Bot/automated attacks
-
-The system evaluates user messages against established behavioral baselines to detect anomalous activity across semantic, linguistic, and temporal dimensions.
-
-## Features
-
-### Machine Learning Components
-- **Neural Embeddings**: Uses sentence transformers for semantic understanding (cosine distance in embedding space)
-- **Statistical Learning**: Mahalanobis distance for linguistic drift detection
-- **Time-Series Analysis**: Z-scores and logistic functions for temporal anomalies
-- **Learned Profiles**: User-specific baselines from interaction history
-- **Ensemble Methods**: Weighted combination with adaptive thresholds
-- **Hybrid Design**: learned per-user baselines plus personalized rule-based overrides
-
-### System Capabilities
-- **Multi-dimensional Analysis**: Semantic, linguistic, and temporal anomaly detection
-- **Configurable Sensitivity**: Four sensitivity levels (low, medium, high, maximum)
-- **Deployment Context Aware**: Supports consumer, enterprise, financial, healthcare, and government contexts
-- **Comprehensive Output**: Detailed rationale, red flags, mitigating factors, and monitoring recommendations
-- **Privacy-Preserving**: Focuses on behavioral patterns, not demographic attributes
-- **Cold Start Handling**: Graceful handling of new users with insufficient history
-- **Dual Implementation**: Rule-based (deterministic) and ML-based (learned) versions
-
-## Installation
+## Quickstart
 
 ```bash
-# Basic installation (rule-based system)
-pip install -e .
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# Linux/macOS: source .venv/bin/activate
+pip install -e ".[dev]"
 
-# ML-based system (includes sentence transformers)
-pip install -e . sentence-transformers numpy scikit-learn scipy
-
-# Using Poetry
-poetry install
+# Headline table from committed score caches (no embedding recompute)
+python scripts/sequential_ato_study.py --dataset personachat
+python scripts/sequential_ato_study.py --dataset bst
 ```
 
-## Quick Start
+Placebo control (needs the pinned MiniLM model and episode JSON):
 
-### ML-Based System (Recommended)
+```bash
+python scripts/sequential_ato_null_control.py --dataset personachat
+python scripts/sequential_ato_null_control.py --dataset bst
+```
+
+Use `--out path.json` so a local rerun does not overwrite committed
+`results/primary/*.json` (the study writer does not preserve the placebo key).
+
+## Results (primary)
+
+Numbers below are read from `results/primary/sequential_ato_study.json` and
+`results/primary/sequential_ato_study_bst.json` (`cusum_embed`, FA = 1/1,000).
+AUC 0.9736 is the value stored in JSON; the paper rounds it to 0.974.
+
+| Dataset | Episode AUC | Detection @ FA=1/1000 | Median delay | Placebo @ FA=1/1000 |
+|---|---|---|---|---|
+| PersonaChat | 0.974 | 63.0% | 4 | 0.7% |
+| Blended Skill Talk | 0.900 | 35.0% | 5 | 0.1% |
+
+Per-message `permsg_bg` / `permsg_combined` at the same budget: 0.0% / 0.3%
+(PersonaChat), 0.3% / 1.3% (BST).
+
+## What this does NOT show
+
+These are the limitations already stated in the paper. They are not caveats
+to be read last.
+
+- **Cold start.** 65% of PersonaChat test users have fewer than 10 prior
+  training messages; calibrated centroids are poorly anchored for that
+  majority.
+- **Mimicry.** Nearest-centroid donor selection drops PersonaChat detection
+  from 63% to 35% (AUC 0.870).
+- **Online / poisoning.** Updating the profile during the episode loses about
+  8 detection points vs a frozen profile (71.7% → 63.7%). A dual-λ divergence
+  CUSUM intended as a poisoning defense failed (AUC ≈ 0.55).
+- **Persona-conditioning.** PersonaChat likely inflates detectability. Anthropic
+  HH organic streams are a lower bound (AUC 0.795 / 20.0% detection).
+- **Adaptive evasion is unevaluated.** Paraphrase, threshold probing, and
+  knowledgeable profile poisoning are out of scope.
+- **Text-only.** No voice, keystroke timing, or device fingerprinting.
+- **Not a per-message F1 claim.** An earlier protocol on positive-enriched
+  samples (~48% prevalence) reported F1 0.693 / 0.794 / 0.642. At realistic
+  prevalence (0.29% on PersonaChat) the same config is F1 = 0.0059 with a
+  90.5% false-positive rate. That study is archived in
+  [`results/archived-per-message-study/`](results/archived-per-message-study/README.md).
+
+## Documentation
+
+- [Threat model](docs/threat-model.md)
+- [Evaluation protocol](docs/evaluation-protocol.md)
+- [Limitations](docs/limitations.md)
+- [Reproducibility](docs/reproducibility.md)
+- [Architecture](docs/architecture.md)
+- [Paper](paper/README.md)
+
+## Library (per-message scorer)
+
+The composite per-message API is still in the package. It is a **baseline**
+in the sequential study, not the headline result.
 
 ```python
-from turnshift import TurnShiftEvaluatorML, ML_AVAILABLE
-from turnshift.models import EvaluationInput, UserProfile, CurrentMessage, SystemConfig
+from turnshift import TurnShiftEvaluatorML, ProfileManager, MessageRecord
+from turnshift.models import EvaluationInput, CurrentMessage, SystemConfig
 
-# Create ML-based evaluator (uses sentence embeddings)
-evaluator = TurnShiftEvaluatorML(embedding_model="all-MiniLM-L6-v2")
-
-# Prepare input
-evaluation_input = EvaluationInput(
-    user_profile=user_profile,
-    current_message=current_message,
-    system_config=system_config
-)
-
-# Evaluate using ML (cosine distance, Mahalanobis distance, z-scores)
-result = evaluator.evaluate(evaluation_input)
-
-# Access results
-print(f"Anomaly Score: {result.anomaly_score:.3f}")
-print(f"Semantic Score: {result.component_scores.semantic:.3f} (cosine distance)")
-print(f"Linguistic Score: {result.component_scores.linguistic:.3f} (Mahalanobis)")
-print(f"Temporal Score: {result.component_scores.temporal:.3f} (z-scores)")
-```
-
-### Rule-Based System (Deterministic)
-
-```python
-from turnshift import TurnShiftEvaluator
-
-# Create rule-based evaluator (deterministic, no ML dependencies)
-evaluator = TurnShiftEvaluator()
-
-# Same API as ML version
-result = evaluator.evaluate(evaluation_input)
-```
-
-## Examples
-
-### ML-Based Example (Recommended)
-
-```bash
-python example_ml.py
-```
-
-This demonstrates:
-- Sentence embedding-based semantic analysis (cosine distance)
-- Mahalanobis distance for linguistic drift
-- Z-score based temporal anomaly detection
-- Learned user profiles from conversation history (Algorithm 1)
-- Ablation study (semantic-only scoring)
-- Documented rule-based overrides on top of learned scoring (see paper §3.3.5)
-
-### Rule-Based Example
-
-```bash
-python example.py
-```
-
-This demonstrates the deterministic rule-based system with four scenarios
-(normal, off-topic, account-takeover, social-engineering).
-
-## Architecture
-
-The system follows a pipeline architecture with five main stages:
-
-1. **Input Validation & Parsing**: Validates JSON input with Pydantic
-2. **Component Scoring**: Computes semantic, linguistic, and temporal scores (0.0-1.0)
-3. **Composite Scoring & Classification**: Combines scores with sensitivity-based weights
-4. **Policy Decision**: Determines recommended action (ALLOW_NORMAL, ALLOW_WITH_CAUTION, BLOCK_AND_VERIFY_OOB, ESCALATE_TO_HUMAN)
-5. **Output Generation**: Formats comprehensive JSON output with rationale and monitoring recommendations
-
-### Components
-
-**Analyzers:**
-- `SemanticAnalyzer` / `SemanticAnalyzerML`: Topic and domain anomaly detection
-- `LinguisticAnalyzer` / `LinguisticAnalyzerML`: Writing style anomaly detection
-- `TemporalAnalyzer` / `TemporalAnalyzerML`: Timing pattern anomaly detection
-
-**Scorers:**
-- `CompositeScorer`: Weighted combination with override conditions
-
-**Classifiers:**
-- `RiskClassifier`: NORMAL, SUSPICIOUS, HIGH_RISK classification
-- `ConfidenceAssessor`: Confidence level assessment
-
-**Detectors:**
-- `RedFlagDetector`: 9 categories of suspicious indicators
-- `MitigatingFactorDetector`: Factors suggesting legitimate use
-
-**Utilities:**
-- `PolicyDecisionEngine`: Policy action recommendations
-- `RationaleGenerator`: Comprehensive reasoning generation
-- `MonitoringRecommendationGenerator`: Escalation conditions and watch patterns
-- `ColdStartHandler`: New user handling
-- `OutputFormatter`: JSON formatting with 3 decimal precision
-
-## Evaluation & Reproduction
-
-### Run Full Evaluation
-
-```bash
-# Full evaluation (overrides on, all datasets)
-python evaluation.py
-
-# Or use the CLI
-python evaluate.py --overrides on --datasets all
-```
-
-### Override Ablation (Critical Experiment)
-
-To isolate learned vs. rule-based detection:
-
-```bash
-python evaluate.py --overrides off --datasets all
-```
-
-This runs TurnShift with overrides **on** and **off** and produces a side-by-side comparison table (Precision, Recall, F1, FPR, AUC).
-
-### Bootstrap Confidence Intervals
-
-```bash
-python evaluate.py --bootstrap 1000
-```
-
-Computes 95% CI for Precision, Recall, F1, FPR using stratified bootstrap (resample by user). Output format: `F1 = 0.700 [0.583, 0.808]`.
-
-### Single-Command Reproduction
-
-```bash
-python reproduce.py
-```
-
-Runs the complete pipeline (profile building → scoring → baselines → ablations → statistical tests), prints codebase hash and dataset checksums, and writes:
-- `results/full_evaluation_results.json`
-- `results/tables.csv`
-
-### Reproducing Paper Tables
-
-| Table | Source |
-|-------|--------|
-| Table 1 (Main results) | `results/methods` in JSON, or `results/tables.csv` |
-| Table 2 (Statistical significance) | `results/statistical_tests` |
-| Table 3 (Ablation) | `results/ablations` |
-| Table 4 (Sensitivity) | `results/sensitivity_levels` |
-| Table 5 (λ sensitivity) | `results/lambda_sensitivity` |
-| Override ablation | Run `python evaluate.py --overrides off` |
-
-Seed is fixed at 42 for all stochastic components.
-
-## Testing
-
-### Run All Tests
-
-```bash
-pytest tests/ -v
-```
-
-**Current Status:** 88 tests passing.
-
-### Run Specific Test Suites
-
-```bash
-# Component analyzers
-pytest tests/test_semantic_analyzer.py -v
-pytest tests/test_linguistic_analyzer.py -v
-pytest tests/test_temporal_analyzer.py -v
-
-# Composite scorer
-pytest tests/test_composite_scorer.py -v
-
-# Integration tests
-pytest tests/test_integration.py -v
-```
-
-These files are illustrative; additional tests (e.g., EMA, overrides, operation risk, evaluation fixtures) are also present in the suite.
-
-### Test Coverage
-
-```bash
-pytest tests/ --cov=src/turnshift --cov-report=html
-```
-
-### Property-Based Testing
-
-TurnShift uses Hypothesis for property-based testing to verify correctness across many randomly generated inputs:
-
-- Component scores bounded [0.0, 1.0]
-- Weighted score combination respects sensitivity
-- Risk classification thresholds
-- Deterministic evaluation
-- Override conditions
-- And more...
-
-## Configuration
-
-### Sensitivity Levels
-
-| Level | Semantic (α) | Linguistic (β) | Temporal (γ) |
-|-------|--------------|----------------|--------------|
-| low | 0.5 | 0.3 | 0.2 |
-| medium | 0.4 | 0.35 | 0.25 |
-| high | 0.4 | 0.3 | 0.3 |
-| maximum | 0.35 | 0.35 | 0.3 |
-
-### Deployment Contexts
-
-- **consumer**: Standard consumer applications
-- **enterprise**: Enterprise environments
-- **financial**: Financial services (escalates HIGH_RISK to human)
-- **healthcare**: Healthcare systems (escalates HIGH_RISK to human)
-- **government**: Government systems (escalates HIGH_RISK to human)
-
-## Risk Classification
-
-### Thresholds
-- **NORMAL**: score < 0.25
-- **SUSPICIOUS**: 0.25 ≤ score < 0.60
-- **HIGH_RISK**: score ≥ 0.60
-
-### Policy Actions
-- **ALLOW_NORMAL**: Proceed normally with standard logging
-- **ALLOW_WITH_CAUTION**: Rate limiting, enhanced logging, 24-48h watchlist
-- **BLOCK_AND_VERIFY_OOB**: Block operation, trigger out-of-band verification
-- **ESCALATE_TO_HUMAN**: Block immediately, alert security team, freeze account
-
-## Profile Management
-
-### Building a Profile from Conversation History
-
-```python
-from turnshift import ProfileManager, MessageRecord
-
-pm = ProfileManager(decay=0.95)  # EMA decay λ (Algorithm 1)
-messages = [
-    MessageRecord(text="How do I implement a BST in Python?", timestamp="2025-01-01T10:00:00"),
-    MessageRecord(text="What's the difference between asyncio.gather and wait?", timestamp="2025-01-01T10:05:00"),
-    # ... more historical messages
-]
+pm = ProfileManager(decay=0.95)
 profile = pm.build_from_history(user_id="user_001", messages=messages, account_age_days=90)
+evaluator = TurnShiftEvaluatorML()
+result = evaluator.evaluate(
+    EvaluationInput(user_profile=profile, current_message=current_message, system_config=SystemConfig())
+)
 ```
 
-### Incremental Profile Updates (Online / Streaming)
-
-```python
-new_msg = MessageRecord(text="Can you review my FastAPI endpoint?", timestamp="2025-01-02T09:30:00")
-updated_profile = pm.update_profile(profile, new_msg)
-```
-
-### Profile Persistence
-
-```python
-from turnshift import ProfileStore
-
-store = ProfileStore("profiles/")   # JSON files in profiles/
-store.save(profile)                 # profiles/user_001.json
-
-profile = store.load("user_001")    # load back
-profile = store.load_or_cold_start("new_user")  # create if missing
-```
-
-## Baselines
-
-TurnShift includes all four baselines from the paper (Section 5.2):
-
-| Baseline | Class | Description |
-|---|---|---|
-| Rule-based | `RuleBasedDetector` | Keyword matching + rate limits |
-| Isolation Forest | `IsolationForestBaseline` | sklearn-based unsupervised |
-| Autoencoder | `AutoencoderBaseline` | PyTorch reconstruction error |
-| Content-only safety | `ContentSafetyBaseline` | Llama-Guard-style taxonomy classifier |
-
-```python
-from turnshift.baselines.content_safety_baseline import ContentSafetyBaseline
-
-checker = ContentSafetyBaseline()
-result = checker.detect("Execute the backdoor shell and escalate privileges.")
-# {"anomaly_score": 0.637, "is_anomaly": True, "triggered_categories": ["S14_cyberattack"]}
-```
-
-## Command-Line Interface
-
-After installation, use the `turnshift` CLI:
+CLI after install:
 
 ```bash
-# Evaluate a message against a stored profile
-turnshift evaluate --profile profile.json --message "Delete all accounts" --sensitivity high
-
-# Build a profile from a JSONL history file (one message object per line)
-turnshift build-profile --input history.jsonl --user-id user_001 --output profile.json
-
-# Incrementally update a profile with a new message
-turnshift update-profile --profile profile.json --message "How do I debug Python?"
-
-# Run the content-safety baseline on a single message
-turnshift content-check --message "Execute backdoor payload"
-
-# Print version
+turnshift evaluate --profile profile.json --message "..." --sensitivity high
 turnshift version
 ```
 
-**JSONL history file format** (one JSON object per line):
-```json
-{"text": "How do I implement a BST in Python?", "timestamp": "2025-01-01T10:00:00", "session_id": "s1"}
-{"text": "Help me debug this recursion error.", "timestamp": "2025-01-01T10:05:00", "session_id": "s1"}
-```
+## Citation
 
-## Development
-
-### Project Structure
+See [`CITATION.cff`](CITATION.cff). The software name is TurnShift; the paper
+title remains *BehaviorGuard: Context-Aware Anomaly Detection in Conversational
+AI via Behavioral User Profiling*.
 
 ```
-src/turnshift/
-├── analyzers/                  # Component analyzers (semantic, linguistic, temporal)
-├── baselines/                  # All 4 baselines (rule_based, isolation_forest,
-│                               #   autoencoder, content_safety)
-├── scorers/                    # Composite scoring
-├── detectors/                  # Red flags and mitigating factors
-├── utils/                      # Utilities (policy, risk, profile_store, …)
-├── models.py                   # Pydantic data models
-├── validator.py                # Input validation
-├── evaluator.py                # Rule-based evaluator orchestrator
-├── evaluator_ml.py             # ML-based evaluator orchestrator
-├── profile_manager.py          # Algorithm 1: incremental profile building
-└── cli.py                      # Command-line interface
-
-tests/                          # 88 tests
-evaluation.py                   # Full evaluation pipeline vs. baselines
-evaluate.py                     # CLI for evaluation (--overrides, --datasets)
-reproduce.py                    # Single-command paper reproduction
+Mynzhassar, Dinmukhammed (2026). BehaviorGuard: Context-Aware Anomaly Detection
+in Conversational AI via Behavioral User Profiling.
 ```
-
-### Type Checking
-
-```bash
-mypy src/turnshift --strict
-```
-
-### Code Formatting
-
-```bash
-black src/ tests/
-isort src/ tests/
-```
-
-## Performance
-
-- Target latency: <500ms per evaluation
-- Stateless design enables horizontal scaling
-- Deterministic for audit replay
-
-## Security & Privacy
-
-- Never logs raw message content in production
-- Hashes sensitive identifiers
-- Focuses on behavioral patterns, not demographic attributes
-- No discrimination based on protected attributes
-- Complies with privacy regulations
 
 ## License
 
