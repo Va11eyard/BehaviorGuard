@@ -45,9 +45,18 @@ Outputs: `results/primary/sequential_ato_study.json` and
 `--recompute` rebuilds embedding trajectories (needs the sentence-transformers
 model). Without it, evaluation uses committed `results/primary/sequential_ato_scores*.npz`.
 
-**Warning:** re-running the study script overwrites the JSON **without** the
-`null_control_cusum_embed` key. The placebo block is written only by
-`sequential_ato_null_control.py`. Use `--out` for smoke tests.
+Equivalently, `python scripts/sequential_ato_study.py --dataset personachat
+--with-null-control` runs the placebo inline and writes both blocks in one pass.
+
+**The placebo key is protected.** The placebo needs the pinned embedding model
+and the episode dataset, so it is not computed by default. When the study
+script writes to its default `results/primary/` path without
+`--with-null-control`, it will not silently drop an existing
+`null_control_cusum_embed` block: if the `cusum_embed` thresholds are unchanged
+it carries the block forward and prints a warning to stderr; if the thresholds
+differ (e.g. after `--recompute` changed the trajectories) it refuses to
+overwrite and asks for `--with-null-control` or `--out`. Runs with `--out`
+write to a scratch path and are not subject to this check.
 
 ## Split and episode construction
 

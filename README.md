@@ -42,8 +42,10 @@ python scripts/sequential_ato_null_control.py --dataset personachat
 python scripts/sequential_ato_null_control.py --dataset bst
 ```
 
+or in one pass with `python scripts/sequential_ato_study.py --dataset personachat --with-null-control`.
 Use `--out path.json` so a local rerun does not overwrite committed
-`results/primary/*.json` (the study writer does not preserve the placebo key).
+`results/primary/*.json`. Without `--out`, the study script will not silently
+drop an existing `null_control_cusum_embed` block (see `docs/evaluation-protocol.md`).
 
 ## Results (primary)
 

@@ -447,6 +447,45 @@ def load_scores(recompute: bool, patch_window: bool = False) -> dict:
     return compute_scores()
 
 
+def _cusum_embed_thresholds(report: dict) -> list[tuple[float, float]]:
+    ops = report["detectors"]["cusum_embed"]["operating_points"]
+    return [(op["target_fa_per_1000"], op["threshold"]) for op in ops]
+
+
+def _protect_null_control(report: dict, out_path: Path) -> None:
+    """Never let a rerun silently drop the committed placebo block.
+
+    The placebo is only computed by ``--with-null-control`` (or the standalone
+    null-control script). If the target file already carries one and this run
+    does not, carry it forward when the cusum_embed thresholds it was computed
+    against are unchanged; otherwise refuse to overwrite.
+    """
+    if not out_path.exists():
+        return
+    try:
+        existing = json.loads(out_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return
+    prior = existing.get("null_control_cusum_embed")
+    if prior is None:
+        return
+    if _cusum_embed_thresholds(existing) == _cusum_embed_thresholds(report):
+        report["null_control_cusum_embed"] = prior
+        print(
+            f"WARNING: {out_path.name} already contains null_control_cusum_embed; this run did not "
+            "recompute it. The existing placebo block was carried forward because cusum_embed "
+            "thresholds are unchanged. Re-run with --with-null-control to recompute.",
+            file=sys.stderr,
+            flush=True,
+        )
+        return
+    sys.exit(
+        f"ERROR: refusing to overwrite {out_path}: it contains null_control_cusum_embed computed "
+        "against different cusum_embed thresholds than this run produced. Re-run with "
+        "--with-null-control to recompute the placebo, or use --out to write elsewhere."
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--recompute", action="store_true")
@@ -462,6 +501,12 @@ def main() -> None:
         "--patch-window",
         action="store_true",
         help="Recompute only the window_embed (CQA-style) baseline in the cache",
+    )
+    parser.add_argument(
+        "--with-null-control",
+        action="store_true",
+        help="Also run the length-matched placebo (needs the pinned embedding model and the "
+        "episode dataset) and write null_control_cusum_embed in the same JSON.",
     )
     args = parser.parse_args()
     set_dataset(args.dataset)
@@ -500,6 +545,13 @@ def main() -> None:
     for d in det_names:
         trajs = unflatten(cache[d].astype(float), lengths)
         report["detectors"][d] = evaluate_detector(trajs, episode_start, episode_len)
+
+    if args.with_null_control:
+        from scripts.sequential_ato_null_control import compute_null_control  # noqa: PLC0415
+
+        report["null_control_cusum_embed"] = compute_null_control(report, cache, DATASET)
+    elif args.out is None:
+        _protect_null_control(report, out_path)
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2), encoding="utf-8")

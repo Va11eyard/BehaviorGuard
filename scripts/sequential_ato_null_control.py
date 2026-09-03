@@ -41,29 +41,25 @@ from scripts.sequential_ato_study import (  # noqa: E402
 N_SIM = 500
 
 
-def main() -> None:
-    import argparse
+def compute_null_control(report: dict, cache: dict, dataset_path: Path, n_sim: int = N_SIM) -> dict:
+    """Return the ``null_control_cusum_embed`` block for an evaluated study report.
 
+    ``report`` must already contain ``detectors.cusum_embed.operating_points``;
+    the placebo thresholds are taken from there so the control always matches
+    the detector run it is attached to.
+    """
     from turnshift.embedding_config import load_sentence_transformer
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset", choices=sorted(study.DATASET_PATHS), default="personachat")
-    args = parser.parse_args()
-    study.set_dataset(args.dataset)
-    DATASET, SCORE_CACHE, OUT_PATH = study.DATASET, study.SCORE_CACHE, study.OUT_PATH
-
-    report = json.loads(OUT_PATH.read_text(encoding="utf-8"))
     ops = report["detectors"]["cusum_embed"]["operating_points"]
     thresholds = {op["target_fa_per_1000"]: op["threshold"] for op in ops}
 
-    cache = np.load(SCORE_CACHE, allow_pickle=True)
     lengths = cache["lengths"].astype(int)
     episode_start = cache["episode_start"].astype(int)
     episode_len = cache["episode_len"].astype(int)
     user_ids = cache["user_ids"]
     trajs = unflatten(cache["cusum_embed"].astype(float), lengths)
 
-    data = json.loads(DATASET.read_text(encoding="utf-8"))
+    data = json.loads(dataset_path.read_text(encoding="utf-8"))
     train_by_user = {st["user_id"]: [m["message_text"] for m in st["train"]] for st in data["streams"]}
 
     ep_idx = [i for i in range(len(lengths)) if episode_start[i] >= 0]
@@ -106,16 +102,16 @@ def main() -> None:
             int(el),
             thresholds,
             kappa=CUSUM_KAPPA,
-            n_sim=N_SIM,
+            n_sim=n_sim,
             rng=rng,
         )
         for k in thresholds:
             null_rates[k].append(rates[k])
 
-    out = {
+    return {
         "method": (
             "per-episode CUSUM continuation from true pre-episode state with k residuals "
-            f"bootstrap-sampled from the user's own standardized train residuals (n_sim={N_SIM}, seed={SEED})"
+            f"bootstrap-sampled from the user's own standardized train residuals (n_sim={n_sim}, seed={SEED})"
         ),
         "null_detection_rate_at_fa": {
             str(k): round(float(np.mean(v)), 4) for k, v in null_rates.items()
@@ -124,6 +120,20 @@ def main() -> None:
             str(op["target_fa_per_1000"]): op["detection_rate"] for op in ops
         },
     }
+
+
+def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset", choices=sorted(study.DATASET_PATHS), default="personachat")
+    args = parser.parse_args()
+    study.set_dataset(args.dataset)
+    DATASET, SCORE_CACHE, OUT_PATH = study.DATASET, study.SCORE_CACHE, study.OUT_PATH
+
+    report = json.loads(OUT_PATH.read_text(encoding="utf-8"))
+    cache = np.load(SCORE_CACHE, allow_pickle=True)
+    out = compute_null_control(report, {k: cache[k] for k in cache.files}, DATASET)
     report["null_control_cusum_embed"] = out
     OUT_PATH.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(out, indent=2))
