@@ -19,7 +19,7 @@ benign messages, detection is **63.0%** / **35.0%** with median delay **4** /
 pre-episode state but feeds bootstrap-resampled *same-author* residuals
 detects at **0.7%** / **0.1%**, which is the evidence that the signal is
 authorship change rather than stream length. Per-message detectors, including
-the composite scorer from an earlier protocol, detect at most **1.3%** of the
+the composite scorer from an earlier protocol, detect at most **1.7%** of the
 same episodes at the same budget.
 
 ## Quickstart
@@ -61,8 +61,8 @@ AUC 0.9736 is the value stored in JSON; the paper rounds it to 0.974.
 | PersonaChat | 0.974 | 63.0% | 4 | 0.7% |
 | Blended Skill Talk | 0.900 | 35.0% | 5 | 0.1% |
 
-Per-message `permsg_bg` / `permsg_combined` at the same budget: 0.0% / 0.3%
-(PersonaChat), 0.3% / 1.3% (BST).
+Per-message `permsg_bg` / `permsg_combined` at the same budget: 1.7% / 0.3%
+(PersonaChat), 0.7% / 1.3% (BST).
 
 ## What this does NOT show
 

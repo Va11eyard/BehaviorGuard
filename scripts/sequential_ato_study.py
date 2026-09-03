@@ -19,7 +19,8 @@ cusum_embed is the primary (headline) detector; the other six are comparators.
   cusum_combined  CUSUM over the mean of both standardized residuals
   permsg_combined same combined residual, no accumulation (isolates CUSUM's value)
   permsg_bg       per-message TurnShift composite (ling-excluded cosine,
-                  overrides off - the best-supported per-message config)
+                  overrides off) at the current production weights
+                  (medium = 0.9/0.0/0.1); AUC 0.854 / 0.808
   window_embed    CQA-style cumulative context: normalized mean embedding of the
                   last W=5 messages, distance to centroid, standardized
   verifier_lr     per-user authorship verifier (logistic regression,

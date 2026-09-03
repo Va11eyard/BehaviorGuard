@@ -101,7 +101,7 @@ at a false-alarm budget of 1 per 1{,}000 benign messages on PersonaChat (median 
 degradation quantifies PersonaChat's persona-conditioning advantage.
 A length-matched placebo control (null detection 0.7\% and 0.1\% respectively)
 confirms the signal is authorship change, not a stream-length artifact.
-Per-message detectors---including \BG{}'s own composite---detect at most 1.3\% of the
+Per-message detectors---including \BG{}'s own composite---detect at most 1.7\% of the
 same episodes at the same false-alarm budget.
 
 The contribution of this paper is therefore twofold: a diagnosed evaluation
@@ -774,8 +774,8 @@ same $\tau{=}0.60$) on the \emph{full} corrected PersonaChat holdout: the comple
 prevalence of 0.29\%, consistent with rare-event detection.
 The result collapses to F1 $= 0.0059$ with a false-positive rate of 90.5\%:
 the detector flags 9 out of 10 benign messages.
-The best-supported per-message variant (linguistic component excluded, cosine
-semantic scoring, overrides off) reaches only
+The linguistic-excluded per-message variant at the legacy weights (renormalized
+$0.6154/0.3846$; cosine semantic scoring, overrides off) reaches only
 F1 $= 0.31$ (percentile-bootstrap 95\% CI $[0.14,\,0.47]$, $n{=}5000$, seed 42) with recall
 0.28 (Clopper--Pearson 95\% CI $[0.13,\,0.47]$) and precision 0.38 on the same 29
 positives---far below the enriched-sample figures and too unstable, on 29 positives,
@@ -891,11 +891,11 @@ correction at $\alpha{=}0.05$.
 On PersonaChat, \texttt{cusum\_embed} attains AUC 0.974 and detects 63.0\% of
 episodes at the strict budget of 1 false alarm per 1{,}000 benign messages, with a
 median delay of 4 messages (81.3\% at 10/1{,}000).
-Every per-message detector collapses at the same budget (0.0--0.3\% detection),
-and the \BG{} composite itself---the subject of \Cref{app:permessage}---detects
-none: the gap between 63.0\% and 0\% at an identical false-alarm cost isolates the
-value of accumulation, since \texttt{permsg\_combined} shares the same residuals as
-the CUSUM detectors.
+Every per-message detector collapses at the same budget (0.3--1.7\% detection),
+including the \BG{} composite itself---the subject of \Cref{app:permessage}---at
+1.7\%: the gap between 63.0\% and 1.7\% at an identical false-alarm cost isolates
+the value of accumulation, since \texttt{permsg\_combined} shares the same
+residuals as the CUSUM detectors and detects 0.3\%.
 
 \begin{table*}[t]
 \centering
@@ -929,8 +929,8 @@ the CUSUM detectors.
 \texttt{cusum\_stylo}     & BST         & 0.762 (0.734--0.791) & 9.7\% (6.3--13.0)  & 4 \\
 \texttt{permsg\_combined} & PersonaChat & 0.772 (0.749--0.794) & 0.3\% (0.0--1.0)   & 4 \\
 \texttt{permsg\_combined} & BST         & 0.748 (0.720--0.774) & 1.3\% (0.3--2.7)   & 3.5 \\
-\texttt{permsg\_bg}       & PersonaChat & 0.756 (0.734--0.778) & 0.0\% (---)        & --- \\
-\texttt{permsg\_bg}       & BST         & 0.727 (0.702--0.750) & 0.3\% (0.0--1.0)   & 10 \\
+\texttt{permsg\_bg}       & PersonaChat & 0.854 (0.838--0.869) & 1.7\% (0.3--3.3)   & 4 \\
+\texttt{permsg\_bg}       & BST         & 0.808 (0.786--0.827) & 0.7\% (0.0--1.7)   & 5 \\
 \bottomrule
 \end{tabular}
 \end{table*}
@@ -1057,8 +1057,9 @@ Separately, we rebuild the per-message injected corpora with
 \emph{externally authored} attack text (AdvBench harmful behaviors, LibrAI
 Do-Not-Answer, TrustAIRLab in-the-wild jailbreaks) at identical positions and
 counts (\texttt{datasets/*\_processed\_external.json}).
-On the full PersonaChat holdout (linguistic off, $\tau{=}0.60$), detection
-\emph{holds}: external positives yield F1 $0.364$ / AUC-ROC $0.887$ / AUC-PR
+On the full PersonaChat holdout (linguistic excluded at the legacy weights,
+renormalized $0.6154/0.3846$; $\tau{=}0.60$), detection \emph{holds}: external
+positives yield F1 $0.364$ / AUC-ROC $0.887$ / AUC-PR
 $0.293$ versus corrected in-repo templates F1 $0.314$ / AUC-ROC $0.917$ / AUC-PR
 $0.228$ (\texttt{results/methodology-diagnostics/external\_positive\_holdout\_eval.json}).
 Tier-2 real multi-turn streams for sequential ATO use Anthropic HH organic traffic
@@ -1221,7 +1222,7 @@ one false alarm per 1{,}000 benign messages on PersonaChat (median delay four
 messages), replicating at AUC 0.900 and 35.0\% on Blended Skill Talk, with
 length-matched placebo controls at 0.7\% and 0.1\% confirming the signal is
 authorship change rather than a stream-length artifact (\S\ref{sec:cusum}).
-Per-message detectors---including \BG{}'s own composite---detect at most 1.3\% of
+Per-message detectors---including \BG{}'s own composite---detect at most 1.7\% of
 the same episodes at the same false-alarm cost.
 
 Deployments should enforce strict access controls on profile stores and inform users

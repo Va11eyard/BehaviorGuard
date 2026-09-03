@@ -48,6 +48,18 @@ Outputs: `results/primary/sequential_ato_study.json` and
 
 `--recompute` rebuilds embedding trajectories (needs the sentence-transformers
 model). Without it, evaluation uses committed `results/primary/sequential_ato_scores*.npz`.
+Reproducing the committed `window_embed` row additionally requires a second pass
+with `--patch-window` (the inline recompute uses a mean-embedding variant; the
+committed row uses the concatenation variant).
+
+The six CUSUM/residual detectors depend only on embeddings and stylometry, but
+`permsg_bg` runs the full composite scorer and therefore tracks
+`CompositeScorer.WEIGHTS`. Its committed rows were regenerated under the current
+medium weights (0.9 / 0.0 / 0.1): AUC 0.854 and 1.7% detection at FA = 1/1,000 on
+PersonaChat, AUC 0.808 and 0.7% on BST. The caches generated before the
+2026-08-11 weight retune gave 0.756 / 0.0% and 0.727 / 0.3%; see
+`results/methodology-diagnostics/README.md` for which archived diagnostics still
+carry the legacy weights.
 
 Equivalently, `python scripts/sequential_ato_study.py --dataset personachat
 --with-null-control` runs the placebo inline and writes both blocks in one pass.
