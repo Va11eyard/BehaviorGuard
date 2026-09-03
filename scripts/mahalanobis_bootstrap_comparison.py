@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT / "src"))
 import evaluation as ev  # noqa: E402
 from turnshift import TurnShiftEvaluatorML  # noqa: E402
 from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift.scorers.composite import LEGACY_MEDIUM_WEIGHTS  # noqa: E402
 from production_sling_audit_snippet import PRODUCTION_CLASSIFICATION_THRESHOLD  # noqa: E402
 
 DATASET = ROOT / "datasets" / "personachat_processed_corrected.json"
@@ -33,6 +34,9 @@ THRESHOLD = PRODUCTION_CLASSIFICATION_THRESHOLD
 N_BOOTSTRAP = 5000
 SEED = 42
 
+# Pinned to the pre-2026-08-11 legacy weights (renormalized 0.6154/0.3846 with
+# linguistic excluded) so the committed snapshot and the downstream
+# mahalanobis_comparison_scores.npz consumers reproduce.
 BASE_CONFIG = dict(
     sensitivity_level="medium",
     deployment_context="enterprise",
@@ -41,6 +45,7 @@ BASE_CONFIG = dict(
     linguistic_component_enabled=False,
     enable_temporal_scoring=True,
     overrides_enabled=False,
+    composite_weights=LEGACY_MEDIUM_WEIGHTS,
 )
 
 
@@ -320,12 +325,15 @@ def verify_linguistic_flag() -> dict:
 
     profile = build_user_profile(has_sensitive_ops=True)
     msg = build_current_message()
+    # All three use the legacy weights; cfg_default is the pre-2026-08-11 default
+    # (linguistic enabled), which is what the expected_* constants below encode.
     cfg_flag = SystemConfig(
         sensitivity_level="medium",
         deployment_context="enterprise",
         enable_linguistic_scoring=True,
         linguistic_component_enabled=False,
         overrides_enabled=False,
+        composite_weights=LEGACY_MEDIUM_WEIGHTS,
     )
     cfg_old = SystemConfig(
         sensitivity_level="medium",
@@ -333,8 +341,14 @@ def verify_linguistic_flag() -> dict:
         enable_linguistic_scoring=False,
         linguistic_component_enabled=True,
         overrides_enabled=False,
+        composite_weights=LEGACY_MEDIUM_WEIGHTS,
     )
-    cfg_default = SystemConfig(sensitivity_level="medium", deployment_context="enterprise")
+    cfg_default = SystemConfig(
+        sensitivity_level="medium",
+        deployment_context="enterprise",
+        linguistic_component_enabled=True,
+        composite_weights=LEGACY_MEDIUM_WEIGHTS,
+    )
     s_flag = scorer.compute_score(cs, cfg_flag, msg, profile).anomaly_score
     s_old = scorer.compute_score(cs, cfg_old, msg, profile).anomaly_score
     s_default = scorer.compute_score(cs, cfg_default, msg, profile).anomaly_score

@@ -16,7 +16,7 @@ from turnshift.models import (
     UserProfile,
     LinguisticProfile,
 )
-from turnshift.scorers.composite import CompositeScorer
+from turnshift.scorers.composite import LEGACY_MEDIUM_WEIGHTS, CompositeScorer
 
 
 # Test data builders
@@ -167,6 +167,35 @@ def test_property_weighted_combination(semantic, linguistic, temporal, sensitivi
             f"for sensitivity={sensitivity}, scores=({semantic}, {linguistic}, {temporal})"
         )
     assert 0.0 <= result.anomaly_score <= 1.0
+
+
+def test_composite_weights_override_reproduces_legacy_renormalization():
+    """composite_weights replaces WEIGHTS[sensitivity]; legacy 0.4/0.35/0.25 with
+    linguistic excluded renormalizes to 0.6154/0.3846 (pre-2026-08-11 snapshots)."""
+    scorer = CompositeScorer()
+    scores = build_component_scores(semantic=0.8, linguistic=0.9, temporal=0.4)
+    profile = build_user_profile(has_sensitive_ops=True)
+    message = build_current_message()
+
+    legacy_off = SystemConfig(
+        sensitivity_level="medium",
+        deployment_context="enterprise",
+        overrides_enabled=False,
+        linguistic_component_enabled=False,
+        composite_weights=LEGACY_MEDIUM_WEIGHTS,
+    )
+    current_off = SystemConfig(
+        sensitivity_level="medium",
+        deployment_context="enterprise",
+        overrides_enabled=False,
+        linguistic_component_enabled=False,
+    )
+    legacy_score = scorer.compute_score(scores, legacy_off, message, profile).anomaly_score
+    current_score = scorer.compute_score(scores, current_off, message, profile).anomaly_score
+
+    assert abs(legacy_score - (0.8 * 0.4 / 0.65 + 0.4 * 0.25 / 0.65)) < 1e-9
+    assert abs(current_score - (0.8 * 0.9 + 0.4 * 0.1)) < 1e-9
+    assert legacy_score != current_score
 
 
 # Feature: turnshift-anomaly-scoring, Property 11: Instant HIGH_RISK override for critical operations

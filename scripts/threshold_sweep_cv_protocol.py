@@ -43,6 +43,7 @@ sys.path.insert(0, str(ROOT / "src"))
 import evaluation as ev  # noqa: E402
 from turnshift import TurnShiftEvaluatorML  # noqa: E402
 from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift.scorers.composite import LEGACY_MEDIUM_WEIGHTS  # noqa: E402
 from scripts.personachat_holdout_split import (  # noqa: E402
     DEFAULT_DATASET,
     N_CV_FOLDS,
@@ -67,6 +68,7 @@ SCORES_CACHE = ROOT / "results" / "threshold_sweep_cv_scores.npz"
 MAHA_COMPARE_CACHE = ROOT / "results" / "mahalanobis_comparison_scores.npz"
 OUT_PATH = ROOT / "results" / "methodology-diagnostics" / "threshold_sweep_cv_protocol.json"
 
+# Pinned to the pre-2026-08-11 legacy weights so the committed snapshot reproduces.
 BASE_CONFIG = dict(
     sensitivity_level="medium",
     deployment_context="enterprise",
@@ -75,6 +77,7 @@ BASE_CONFIG = dict(
     linguistic_component_enabled=False,
     enable_semantic_scoring=True,
     enable_temporal_scoring=True,
+    composite_weights=LEGACY_MEDIUM_WEIGHTS,
 )
 
 

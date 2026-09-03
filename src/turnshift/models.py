@@ -174,6 +174,11 @@ class SystemConfig(BaseModel):
     template_path: Optional[str] = None
     semantic_scoring_mode: Literal["cosine", "mahalanobis"] = "cosine"
     mahalanobis_shrinkage: float = 0.1
+    # Explicit {semantic, linguistic, temporal} weights. None uses
+    # CompositeScorer.WEIGHTS[sensitivity_level]. Diagnostic scripts pass
+    # turnshift.scorers.composite.LEGACY_MEDIUM_WEIGHTS to reproduce snapshots
+    # generated before the 2026-08-11 medium-weight retune.
+    composite_weights: dict[str, float] | None = None
 
 
 # Component Results

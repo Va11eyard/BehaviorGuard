@@ -26,6 +26,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 import evaluation as ev  # noqa: E402
 from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift.scorers.composite import LEGACY_MEDIUM_WEIGHTS  # noqa: E402
 
 SEED = 42
 LAMBDA_DECAY = 0.50
@@ -52,6 +53,7 @@ def _prev(msgs: list, i: int):
 def score_holdout(dataset_path: Path) -> dict:
     data = json.loads(dataset_path.read_text(encoding="utf-8"))
     builder = ev._build_profile_with_pm(LAMBDA_DECAY)
+    # Pinned to the pre-2026-08-11 legacy weights so the committed snapshot reproduces.
     config = SystemConfig(
         sensitivity_level="medium",
         deployment_context="enterprise",
@@ -61,6 +63,7 @@ def score_holdout(dataset_path: Path) -> dict:
         enable_semantic_scoring=True,
         enable_temporal_scoring=True,
         semantic_scoring_mode="cosine",
+        composite_weights=LEGACY_MEDIUM_WEIGHTS,
     )
     users = {u["user_id"]: u for u in data["users"]}
     by = _by_user(data["messages"])

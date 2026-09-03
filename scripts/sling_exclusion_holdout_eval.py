@@ -22,6 +22,7 @@ sys.path.insert(0, str(ROOT / "src"))
 import evaluation as ev  # noqa: E402
 from turnshift import TurnShiftEvaluatorML  # noqa: E402
 from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
+from turnshift.scorers.composite import LEGACY_MEDIUM_WEIGHTS  # noqa: E402
 from production_sling_audit_snippet import PRODUCTION_CLASSIFICATION_THRESHOLD  # noqa: E402
 
 DATASET = ROOT / "datasets" / "personachat_processed_corrected.json"
@@ -57,13 +58,19 @@ def _prev_in_session(test_msgs: list, i: int):
 def run_holdout_eval(enable_linguistic: bool) -> dict:
     test_data = json.loads(DATASET.read_text(encoding="utf-8"))
     evaluator = TurnShiftEvaluatorML()
+    # Pinned to the pre-2026-08-11 scorer so the committed snapshot reproduces:
+    # legacy weights 0.4/0.35/0.25 and linguistic enabled (then the default).
+    # The with-linguistic arm additionally depends on pre-07-22 linguistic
+    # proxies and does not reproduce exactly (see methodology-diagnostics/README).
     config = SystemConfig(
         sensitivity_level="medium",
         deployment_context="enterprise",
         enable_semantic_scoring=True,
         enable_linguistic_scoring=enable_linguistic,
+        linguistic_component_enabled=True,
         enable_temporal_scoring=True,
         overrides_enabled=False,
+        composite_weights=LEGACY_MEDIUM_WEIGHTS,
     )
     builder = ev._build_profile_with_pm(LAMBDA_DECAY)
     by_user = _messages_by_user(test_data)

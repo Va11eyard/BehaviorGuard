@@ -12,6 +12,12 @@ from turnshift.models import (
     UserProfile,
 )
 
+# Medium weights before the 2026-08-11 AUC-PR retune (coarse grid search, F1 at
+# FPR=0). With linguistic zeroed they renormalize to 0.6154 / 0.3846. Pass as
+# SystemConfig.composite_weights to reproduce the pre-retune diagnostic snapshots
+# in results/methodology-diagnostics/ (see its README).
+LEGACY_MEDIUM_WEIGHTS = {"semantic": 0.4, "linguistic": 0.35, "temporal": 0.25}
+
 
 class CompositeScorer:
     """Combines component scores using configured weights and applies override conditions."""
@@ -118,7 +124,10 @@ class CompositeScorer:
         self, component_scores: ComponentScores, system_config: SystemConfig
     ) -> float:
         """Calculate weighted combination of component scores."""
-        weights = self.WEIGHTS[system_config.sensitivity_level].copy()
+        weights = dict(
+            system_config.composite_weights
+            or self.WEIGHTS[system_config.sensitivity_level]
+        )
 
         if not system_config.enable_semantic_scoring:
             weights["semantic"] = 0.0

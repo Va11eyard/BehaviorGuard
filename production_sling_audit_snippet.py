@@ -390,13 +390,18 @@ def collect_personachat_production_scores(
     import evaluation as ev  # noqa: E402
     from turnshift import TurnShiftEvaluatorML  # noqa: E402
     from turnshift.models import EvaluationInput, SystemConfig  # noqa: E402
+    from turnshift.scorers.composite import LEGACY_MEDIUM_WEIGHTS  # noqa: E402
 
     test_data = json.loads(dataset_path.read_text(encoding="utf-8"))
     evaluator = TurnShiftEvaluatorML()
+    # Pinned to the pre-2026-08-11 scorer (legacy weights, linguistic enabled)
+    # so the cached component scores match the committed audit snapshots.
     config = SystemConfig(
         sensitivity_level="medium",
         deployment_context="enterprise",
         overrides_enabled=False,
+        linguistic_component_enabled=True,
+        composite_weights=LEGACY_MEDIUM_WEIGHTS,
     )
     builder = ev._build_profile_with_pm(lambda_decay)
 
