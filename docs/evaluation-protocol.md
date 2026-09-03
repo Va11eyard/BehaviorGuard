@@ -88,6 +88,14 @@ Canonical CUSUM: \(S_i = \max(0, S_{i-1} + r_i - \kappa)\) with \(\kappa=0.5\)
 on standardized cosine-distance residuals to the EMA centroid
 (\(\lambda=0.5\) in the sequential study).
 
+**Two λ values, on purpose.** `ProfileManager` defaults to \(\lambda=0.95\)
+(~20-message effective window) for per-message profiling; the sequential study
+passes \(\lambda=0.5\) explicitly because its committed headline numbers were
+produced with that faster-adapting centroid, and `sequential_ato_study.py`
+exits with an error if the `ProfileManager` it is about to build profiles with
+carries any other value. Reproducing the paper with the library default is
+not a bug in the library, it is a protocol mismatch.
+
 ## Placebo (length) control
 
 Episode streams are longer than benign streams, so some detections could be

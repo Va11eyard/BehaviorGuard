@@ -151,6 +151,24 @@ def stylo_features(text: str) -> np.ndarray:
 
 # ---------------------------------------------------------------- scoring
 
+PAPER_LAMBDA = 0.5  # literal on purpose: the guard must not follow LAMBDA_DECAY if someone edits it
+
+
+def _require_paper_lambda(pm) -> None:
+    """Fail loudly if profiles would be built with anything but the paper's λ.
+
+    ProfileManager defaults to λ=0.95 (per-message profiling). The sequential
+    study's committed numbers were produced with λ=0.5; a silent fallback to the
+    library default would reproduce different, non-matching results.
+    """
+    actual = getattr(pm, "decay", None)
+    if actual != PAPER_LAMBDA:
+        sys.exit(
+            f"Sequential ATO study requires λ={PAPER_LAMBDA} (paper protocol); got {actual}. "
+            "See docs/evaluation-protocol.md."
+        )
+
+
 def compute_scores() -> dict:
     """Heavy phase: embeddings, PM profiles, per-stream statistic trajectories."""
     import evaluation as ev  # noqa: PLC0415 (heavy import: loads datasets + models)
@@ -185,8 +203,9 @@ def compute_scores() -> dict:
     std_floor = np.maximum(0.05 * global_std, 1e-3)
 
     # ---- frozen per-user baselines (ProfileManager) + residual standardizers
-    print("  building ProfileManager profiles (lambda=0.5)...", flush=True)
+    print(f"  building ProfileManager profiles (lambda={LAMBDA_DECAY})...", flush=True)
     builder = ev._build_profile_with_pm(LAMBDA_DECAY)
+    _require_paper_lambda(builder.profile_manager)
     bg_config = SystemConfig(
         sensitivity_level="medium",
         deployment_context="enterprise",

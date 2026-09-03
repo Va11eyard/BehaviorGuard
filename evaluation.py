@@ -511,6 +511,7 @@ def _build_profile_with_pm(decay: float):
             account_age_days=user_data.get("account_age_days", 100),
         )
 
+    builder.profile_manager = pm  # exposed so callers can verify the decay actually in use
     return builder
 
 
