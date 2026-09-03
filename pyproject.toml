@@ -23,8 +23,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Va11eyard/BehaviorGuard"
-Repository = "https://github.com/Va11eyard/BehaviorGuard"
+Homepage = "https://github.com/Va11eyard/turnshift"
+Repository = "https://github.com/Va11eyard/turnshift"
 
 [project.optional-dependencies]
 # Embedding model (pulls torch + transformers). Needed for TurnShiftEvaluatorML,

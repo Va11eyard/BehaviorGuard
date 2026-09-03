@@ -5,7 +5,7 @@ per-user embedding residuals.
 
 **Formerly published as BehaviorGuard.**
 
-[![CI](https://github.com/Va11eyard/BehaviorGuard/actions/workflows/ci.yml/badge.svg)](https://github.com/Va11eyard/BehaviorGuard/actions/workflows/ci.yml)
+[![CI](https://github.com/Va11eyard/turnshift/actions/workflows/ci.yml/badge.svg)](https://github.com/Va11eyard/turnshift/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Citation](https://img.shields.io/badge/citation-CITATION.cff-blue)](CITATION.cff)
 

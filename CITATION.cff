@@ -14,7 +14,7 @@ authors:
 version: "1.0.0"
 date-released: "2026-02-19"
 license: MIT
-repository-code: "https://github.com/Va11eyard/BehaviorGuard"
+repository-code: "https://github.com/Va11eyard/turnshift"
 keywords:
   - anomaly detection
   - conversational AI
