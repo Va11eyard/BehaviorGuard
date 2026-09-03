@@ -58,17 +58,33 @@ from turnshift.models import (
 # Load datasets
 print("\n[1/7] Loading datasets...")
 datasets = {}
-dataset_files = {
-    "personachat": "datasets/personachat_processed.json",
-    "blended_skill_talk": "datasets/blended_skill_talk_processed.json",
-    "anthropic_hh": "datasets/anthropic_hh_processed.json",
-}
+# Default to the de-confounded re-injection (tools/rebuild_injected_datasets.py).
+# The original *_processed.json has tail-clustered injections and metadata leakage
+# and is kept only as the rebuild input / archived-exhibit source.
+dataset_files = {}
+dataset_variant = {}
+for name in ("personachat", "blended_skill_talk", "anthropic_hh"):
+    corrected = f"datasets/{name}_processed_corrected.json"
+    if os.path.exists(corrected):
+        dataset_files[name] = corrected
+        dataset_variant[name] = "corrected"
+    else:
+        dataset_files[name] = f"datasets/{name}_processed.json"
+        dataset_variant[name] = "UNCORRECTED"
+        print(
+            f"  WARNING: {corrected} not found; loading the UNCORRECTED {dataset_files[name]} "
+            "(confounded injection, enriched tail prevalence). Results are NOT comparable to "
+            "the paper's realistic-prevalence figures. Build it with "
+            "tools/rebuild_injected_datasets.py.",
+            file=sys.stderr,
+            flush=True,
+        )
 
 for name, filepath in dataset_files.items():
-    with open(filepath, 'r') as f:
+    with open(filepath, 'r', encoding="utf-8") as f:
         datasets[name] = json.load(f)
-    print(f"  [OK] Loaded {name}: {len(datasets[name]['users'])} users, "
-          f"{len(datasets[name]['messages'])} messages")
+    print(f"  [OK] Loaded {name} ({dataset_variant[name]}: {filepath}): "
+          f"{len(datasets[name]['users'])} users, {len(datasets[name]['messages'])} messages")
 
 # Initialize components
 print("\n[2/7] Initializing detectors...")

@@ -54,14 +54,16 @@ def main():
     print(f"Seed: {SEED}")
     print(f"Codebase hash: {_codebase_hash()}")
 
-    dataset_files = {
-        "personachat": PROJECT_ROOT / "datasets" / "personachat_processed.json",
-        "blended_skill_talk": PROJECT_ROOT / "datasets" / "blended_skill_talk_processed.json",
-        "anthropic_hh": PROJECT_ROOT / "datasets" / "anthropic_hh_processed.json",
-    }
+    # Mirrors evaluation.py: corrected re-injection by default, uncorrected only as fallback.
+    dataset_files = {}
+    for name in ("personachat", "blended_skill_talk", "anthropic_hh"):
+        corrected = PROJECT_ROOT / "datasets" / f"{name}_processed_corrected.json"
+        dataset_files[name] = (
+            corrected if corrected.exists() else PROJECT_ROOT / "datasets" / f"{name}_processed.json"
+        )
     print("Dataset checksums:")
     for name, p in dataset_files.items():
-        print(f"  {name}: {_dataset_checksum(p)}")
+        print(f"  {name} ({p.name}): {_dataset_checksum(p)}")
 
     # Ensure results directory exists
     results_dir = PROJECT_ROOT / "results"

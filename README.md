@@ -87,6 +87,10 @@ to be read last.
   prevalence (0.29% on PersonaChat) the same config is F1 = 0.0059 with a
   90.5% false-positive rate. That study is archived in
   [`results/archived-per-message-study/`](results/archived-per-message-study/README.md).
+  `evaluate.py` runs the per-message pipeline on the corrected data's 750-user
+  test split; the 10,165-message / 29-positive realistic-prevalence holdout is
+  reproduced by `scripts/sling_exclusion_holdout_eval.py` (see
+  [`docs/reproducibility.md`](docs/reproducibility.md)).
 
 ## Documentation
 

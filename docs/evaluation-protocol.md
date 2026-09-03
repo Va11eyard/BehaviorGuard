@@ -22,8 +22,12 @@ in `results/archived-per-message-study/`. They are **not** primary performance
 claims.
 
 `python evaluation.py` / `python reproduce.py` still run this per-message
-pipeline. They require local `datasets/*_processed.json` files (gitignored;
-see `datasets/README.md`). There is no fast CI slice of `reproduce.py`.
+pipeline. They load the de-confounded `datasets/*_processed_corrected.json`
+files (gitignored; see `datasets/README.md`) and score the 80/20 tail of the
+750-user test split (PersonaChat: 1,521 messages, 6 positives). The 10,165 /
+29 realistic-prevalence holdout above is every user's 20% tail and is
+reproduced by `scripts/sling_exclusion_holdout_eval.py` (see
+`docs/reproducibility.md`). There is no fast CI slice of `reproduce.py`.
 
 ### Primary: sequential CUSUM over embedding residuals
 

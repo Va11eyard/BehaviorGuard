@@ -74,8 +74,8 @@ def main() -> None:
     )
     parser.add_argument(
         "--dataset-path",
-        default=str(ROOT / "datasets" / "personachat_processed.json"),
-        help="PersonaChat processed dataset (train split used for calibration)",
+        default=str(ROOT / "datasets" / "personachat_processed_corrected.json"),
+        help="PersonaChat corrected processed dataset (train split used for calibration)",
     )
     parser.add_argument(
         "--output-figure",

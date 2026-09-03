@@ -27,7 +27,14 @@ np.random.seed(SEED)
 
 def main():
     parser = argparse.ArgumentParser(
-        description="TurnShift evaluation pipeline",
+        description=(
+            "TurnShift per-message evaluation pipeline (archived protocol). Loads "
+            "datasets/*_processed_corrected.json and scores the 80/20 tail of the 750-user "
+            "test split (PersonaChat: 1,521 messages, 6 positives). The paper's realistic-"
+            "prevalence figures (10,165 messages / 29 positives / 0.29%%) use all users' tails; "
+            "reproduce them with scripts/sling_exclusion_holdout_eval.py. Primary results are "
+            "the sequential study (scripts/sequential_ato_study.py)."
+        ),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     parser.add_argument(

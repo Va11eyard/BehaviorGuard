@@ -43,15 +43,22 @@ Place preprocessed JSON under `datasets/`:
 
 ```
 datasets/
-├── personachat_processed.json
-├── personachat_processed_corrected.json   # de-confounded re-injection
+├── personachat_processed.json                  # original injection (confounded; rebuild input only)
+├── personachat_processed_corrected.json        # de-confounded re-injection (DEFAULT for evaluation.py)
 ├── blended_skill_talk_processed.json
-├── blended_skill_talk_processed_corrected.json
+├── blended_skill_talk_processed_corrected.json # default
 ├── anthropic_hh_processed.json
-├── anthropic_hh_processed_corrected.json
-├── personachat_ato_episodes.json          # sequential ATO study (tracked)
-└── blended_skill_talk_ato_episodes.json   # sequential ATO study (tracked)
+├── anthropic_hh_processed_corrected.json       # default
+├── personachat_ato_episodes.json               # sequential ATO study (tracked)
+└── blended_skill_talk_ato_episodes.json        # sequential ATO study (tracked)
 ```
+
+`evaluation.py` (and `evaluate.py` / `reproduce.py`) load `*_processed_corrected.json`.
+The original `*_processed.json` has tail-clustered injections and metadata leakage
+(`_ato` session ids, `operation_risk`); it is used only as the input to
+`tools/rebuild_injected_datasets.py`. If a corrected file is missing, `evaluation.py`
+falls back to the uncorrected one and prints a warning to stderr; those numbers are
+not comparable to the paper.
 
 **Important:** anomalies are **not** injected at runtime by `evaluation.py`.
 They are baked into the `*_processed*.json` files by
@@ -67,11 +74,33 @@ documented in `datasets/README.md`.
 ## Running the Evaluation
 
 ```bash
-# Full evaluation (default: all test users / full holdout)
+# Per-message pipeline (archived protocol): corrected data, 80/20 tail of the
+# 750-user test split. PersonaChat: 1,521 messages, 6 positives (0.39%).
 python evaluation.py
 
 # 20-user uniform random sample (compute shortcut; natural prevalence)
 python evaluate.py --max-users 20
+
+# Paper's realistic-prevalence holdout (Sec. "Re-Evaluation at Realistic
+# Prevalence"): corrected PersonaChat, 80/20 tail of ALL 5,000 users =
+# 10,165 messages / 29 positives / 0.29%. Scores it at tau=0.60:
+python scripts/sling_exclusion_holdout_eval.py
+#   -> results/methodology-diagnostics/sling_exclusion_holdout_eval.json
+# Bootstrap / Clopper-Pearson CIs on the same holdout:
+python production_sling_audit_snippet.py            # results/sling_audit_component_scores.npz
+python scripts/mahalanobis_bootstrap_comparison.py  # results/mahalanobis_comparison_scores.npz
+python scripts/compute_sling_fix_confidence_intervals.py
+#   -> results/methodology-diagnostics/sling_fix_confidence_intervals.json
+```
+
+The committed diagnostic JSONs are snapshots of the scorer at the time the s_ling
+audit was run (with-s_ling F1 0.0036 vs without 0.32 [0.14, 0.47]). Re-running
+them with the current scorer reproduces the holdout (10,165 / 29) but not those
+metric values: s_ling has since been removed, so both arms coincide, and the
+without-s_ling point estimate moves to F1 0.348 / AUC 0.953. This is the same
+per-message scorer drift noted for the `permsg_bg` baseline row.
+
+```bash
 
 # Sequential ATO study (primary headline finding)
 python scripts/sequential_ato_study.py --dataset personachat
@@ -82,6 +111,12 @@ python scripts/sequential_ato_null_control.py --dataset bst
 
 Output: `full_evaluation_results.json` (legacy pipeline) and
 `results/primary/sequential_ato_study*.json` (primary findings).
+
+Note the two holdout definitions: `evaluate_method` scores only the 750 users in
+`splits.test`, while the paper's realistic-prevalence numbers use every user's
+20% tail (`scripts/personachat_holdout_split.build_holdout_records`). Both are
+computed on the corrected data; `evaluate.py` does **not** reproduce the
+10,165 / 29 figures.
 
 > The Table III / 20-user F1 figures in earlier drafts are retained only as a
 > diagnosed base-rate artifact. Canonical claims use full-holdout and sequential
