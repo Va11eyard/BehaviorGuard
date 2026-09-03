@@ -28,7 +28,9 @@ same episodes at the same budget.
 python -m venv .venv
 # Windows: .venv\Scripts\activate
 # Linux/macOS: source .venv/bin/activate
-pip install -e ".[dev]"
+pip install -e .            # core scoring + sequential study
+pip install -e ".[dev]"     # + pytest, hypothesis, ruff, matplotlib
+pip install -e ".[eval]"    # + Hugging Face `datasets` for tools/ corpus builders
 
 # Headline table from committed score caches (no embedding recompute)
 python scripts/sequential_ato_study.py --dataset personachat
