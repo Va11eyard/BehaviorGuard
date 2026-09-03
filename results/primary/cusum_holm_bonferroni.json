@@ -41,10 +41,10 @@
     {
       "dataset": "personachat",
       "pair": "cusum_embed_vs_permsg_bg",
-      "diff_mean": 0.21682026592345774,
+      "diff_mean": 0.11979491546788815,
       "ci95_percentile": [
-        0.19462074708405727,
-        0.2404093670175344
+        0.10333451097528532,
+        0.13603578240992456
       ],
       "p_two_sided_approx": 0.0,
       "holm_adjusted_p": 0.0
@@ -107,10 +107,10 @@
     {
       "dataset": "bst",
       "pair": "cusum_embed_vs_permsg_bg",
-      "diff_mean": 0.17293054807694885,
+      "diff_mean": 0.09217407165043806,
       "ci95_percentile": [
-        0.14799137219302877,
-        0.19833512846038273
+        0.07135349380106489,
+        0.11502788418085667
       ],
       "p_two_sided_approx": 0.0,
       "holm_adjusted_p": 0.0
