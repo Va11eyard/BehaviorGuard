@@ -38,7 +38,7 @@ class SemanticAnalyzerML:
         if not TRANSFORMERS_AVAILABLE:
             raise ImportError(
                 "sentence-transformers not installed. "
-                "Install with: pip install sentence-transformers"
+                'Install with: pip install "turnshift[ml]"'
             )
 
         self.model_name = model_name or EMBEDDING_MODEL_NAME

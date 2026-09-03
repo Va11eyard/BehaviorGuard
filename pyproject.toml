@@ -17,7 +17,6 @@ classifiers = [
 ]
 dependencies = [
     "pydantic>=2.5.0",
-    "sentence-transformers>=2.2.0",
     "numpy>=1.24.0",
     "scikit-learn>=1.3.0",
     "scipy>=1.11.0",
@@ -28,12 +27,20 @@ Homepage = "https://github.com/Va11eyard/BehaviorGuard"
 Repository = "https://github.com/Va11eyard/BehaviorGuard"
 
 [project.optional-dependencies]
+# Embedding model (pulls torch + transformers). Needed for TurnShiftEvaluatorML,
+# ProfileManager text encoding, and the study's --recompute / --patch-window /
+# --with-null-control paths. Not needed for the rule-based evaluator, the CUSUM
+# detector, or reproducing the headline table from the committed .npz caches.
+ml = [
+    "sentence-transformers>=2.2.0",
+]
 # Hugging Face dataset download for the corpus-building tools (tools/*.py); not
 # needed to score messages or to run the study from committed caches.
 eval = [
     "datasets>=2.14.0",
 ]
 dev = [
+    "turnshift[ml]",
     "pytest>=7.4.3",
     "pytest-cov>=4.1.0",
     "hypothesis>=6.92.0",

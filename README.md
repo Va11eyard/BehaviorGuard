@@ -28,8 +28,9 @@ same episodes at the same budget.
 python -m venv .venv
 # Windows: .venv\Scripts\activate
 # Linux/macOS: source .venv/bin/activate
-pip install -e .            # core scoring + sequential study
-pip install -e ".[dev]"     # + pytest, hypothesis, ruff, matplotlib
+pip install -e .            # rule-based evaluator, CUSUM detector, headline table from cached scores (no torch)
+pip install -e ".[ml]"      # + sentence-transformers/torch: TurnShiftEvaluatorML, profile encoding, --recompute
+pip install -e ".[dev]"     # [ml] + pytest, hypothesis, ruff, matplotlib
 pip install -e ".[eval]"    # + Hugging Face `datasets` for tools/ corpus builders
 
 # Headline table from committed score caches (no embedding recompute)

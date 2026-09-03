@@ -80,7 +80,7 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
     if not ML_AVAILABLE:
         print(
             "ERROR: ML dependencies not installed.\n"
-            "Install with: pip install sentence-transformers numpy scikit-learn scipy",
+            'Install with: pip install "turnshift[ml]"',
             file=sys.stderr,
         )
         return 1
