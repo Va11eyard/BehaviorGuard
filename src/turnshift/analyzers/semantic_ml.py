@@ -2,13 +2,9 @@
 
 from __future__ import annotations
 
-import numpy as np
+import importlib.util
 
-try:
-    from sentence_transformers import SentenceTransformer
-    TRANSFORMERS_AVAILABLE = True
-except ImportError:
-    TRANSFORMERS_AVAILABLE = False
+import numpy as np
 
 from turnshift.models import (
     CurrentMessage,
@@ -17,6 +13,10 @@ from turnshift.models import (
     SystemConfig,
 )
 from turnshift.utils.torch_device import embedding_device
+
+# Resolved without importing: sentence-transformers drags in torch and transformers,
+# and `import turnshift` must not pay for that. The real import happens in __init__.
+TRANSFORMERS_AVAILABLE = importlib.util.find_spec("sentence_transformers") is not None
 
 
 class SemanticAnalyzerML:
@@ -45,6 +45,8 @@ class SemanticAnalyzerML:
         if model_name is None or model_name in (EMBEDDING_MODEL_NAME, EMBEDDING_MODEL_HF_ID):
             self.model = load_sentence_transformer()
         else:
+            from sentence_transformers import SentenceTransformer
+
             self.model = SentenceTransformer(model_name, device=embedding_device())
         self._embedding_revision = EMBEDDING_MODEL_REVISION
         self._embedding_cache: dict[str, np.ndarray] = {}
