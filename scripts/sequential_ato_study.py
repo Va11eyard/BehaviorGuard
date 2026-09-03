@@ -5,9 +5,17 @@ Sequential ATO detection study on the episode-injected PersonaChat dataset.
 Question: after a mid-conversation author substitution, how many messages does
 it take to detect, at a fixed false-alarm budget?
 
-Detectors (all share the same alarm-time framework; statistic trajectory per stream):
-  cusum_stylo     CUSUM over standardized stylometric residuals (primary)
-  cusum_embed     CUSUM over standardized embedding-distance residuals (ablation)
+Detectors (all share the same alarm-time framework; statistic trajectory per stream).
+Roles follow the paper's sequential-detection section and Table "tab:cusum":
+cusum_embed is the primary (headline) detector; the other six are comparators.
+
+  Primary:
+  cusum_embed     CUSUM over standardized embedding-distance residuals
+                  (AUC 0.974 PersonaChat / 0.900 BST)
+
+  Comparators:
+  cusum_stylo     CUSUM over standardized stylometric residuals
+                  (AUC 0.804 / 0.762)
   cusum_combined  CUSUM over the mean of both standardized residuals
   permsg_combined same combined residual, no accumulation (isolates CUSUM's value)
   permsg_bg       per-message TurnShift composite (ling-excluded cosine,
