@@ -533,9 +533,12 @@ def evaluate_method(
 
     Args:
         max_users: Cap on sampled test users. ``None`` (default) evaluates the
-            full test split. Historical paper runs used ``max_users=20`` as a
-            compute shortcut; that protocol is superseded by full-holdout
-            evaluation (see results/primary/sequential_ato_study*.json).
+            full test split; otherwise a seeded uniform random subsample of that
+            size is used, preserving the split's natural anomaly prevalence.
+            Historical paper runs used ``max_users=20`` with anomaly-first
+            filling (positive-enriched, ~48% prevalence); that sampling was
+            removed as a diagnosed base-rate artifact and is retained only as
+            the archived exhibit in results/archived-per-message-study/.
     """
     print(f"\n  Evaluating {method_name} on {dataset_name}...")
     
@@ -559,13 +562,16 @@ def evaluate_method(
         else:
             users_without_anomalies.append(user)
 
-    if max_users is None:
+    if max_users is None or max_users >= len(test_users):
         sampled_test_users = users_with_anomalies + users_without_anomalies
     else:
-        sampled_test_users = users_with_anomalies[:max_users]
-        remaining = max_users - len(sampled_test_users)
-        if remaining > 0:
-            sampled_test_users.extend(users_without_anomalies[:remaining])
+        # Uniform random subsample at the split's natural prevalence. max_users is a
+        # compute cap only. Filling it with anomaly-containing users first (the
+        # historical Table III protocol) is the positive-enrichment sampling the
+        # paper diagnoses as a base-rate artifact; it must not be reintroduced here.
+        rng = np.random.default_rng(SEED)
+        idx = rng.choice(len(test_users), size=max_users, replace=False)
+        sampled_test_users = [test_users[i] for i in sorted(idx)]
     
     # Build profiles and track cold-start coverage
     test_user_profiles = {}

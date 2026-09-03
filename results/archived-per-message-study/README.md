@@ -15,3 +15,8 @@ positive prevalence. At the realistic prevalence of the full corrected holdout
 (10,165 messages, 29 positives, 0.29%), the same fixed-threshold configuration
 collapses (F1 = 0.0059). Fixed-threshold F1/precision measured on
 positive-enriched samples do not generalize to realistic base rates.
+
+The anomaly-first user sampling that produced this artifact has since been
+removed from `evaluation.py` (`--max-users` now draws a seeded uniform random
+sample); `evaluate.py --max-users 20` no longer regenerates these numbers.
+This file is retained unchanged as the historical record.

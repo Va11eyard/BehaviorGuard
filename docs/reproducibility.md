@@ -70,7 +70,7 @@ documented in `datasets/README.md`.
 # Full evaluation (default: all test users / full holdout)
 python evaluation.py
 
-# Historical 20-user sample (compute shortcut; superseded by full holdout)
+# 20-user uniform random sample (compute shortcut; natural prevalence)
 python evaluate.py --max-users 20
 
 # Sequential ATO study (primary headline finding)
@@ -117,16 +117,20 @@ Expected: **88 tests passing**.
   by both `anomaly_type` and `attack_phase`.
 - Embedding model loads are revision-pinned via `embedding_config.py`.
 - `evaluate_method(..., max_users=None)` evaluates the full test split;
-  `--max-users 20` restores the historical sample for comparison only.
+  `--max-users N` takes a seeded uniform random subsample of N users at the
+  split's natural prevalence (compute cap only).
 
 ---
 
 ## Deviations from Paper / Historical Protocol
 
 - Earlier drafts reported results on 20 users per dataset (`max_users=20`).
-  That was a compute shortcut that also positive-enriched the sample. The
-  paper protocol now defaults to the full holdout; use `--max-users 20` only
-  to reproduce the diagnosed artifact.
+  That was a compute shortcut that also positive-enriched the sample by
+  filling the cap with anomaly-containing users first. The paper protocol now
+  defaults to the full holdout, and the anomaly-first filling has been removed
+  from `evaluate_method`: `--max-users 20` now yields a uniform random sample
+  and no longer reproduces the diagnosed artifact. The artifact itself is
+  preserved in `results/archived-per-message-study/`.
 - Latency figures of 13–17 ms are CPU scoring only (no profile I/O). GPU
   inference of the embedding model would reduce latency further but is not
   required.

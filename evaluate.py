@@ -52,8 +52,8 @@ def main():
         type=int,
         default=None,
         help=(
-            "Cap sampled test users (historical paper shortcut used 20). "
-            "Default None = full holdout / all test users."
+            "Cap sampled test users via a seeded uniform random subsample at natural "
+            "prevalence. Default None = full holdout / all test users."
         ),
     )
     parser.add_argument(
